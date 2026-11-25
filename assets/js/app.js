@@ -4,7 +4,7 @@
 const VERSION = '3.0.0';
 const Store = window.SintaxisStore;
 const t = (k, v) => window.I18N.t(k, v);
-const MAXH = Store.MAXH, HEART_MS = 2 * 60 * 1000, EXTRA_HEARTS = 2, DAYS = 30, PER_DAY = 8, RETO = 7;
+const MAXH = Store.MAXH, HEART_MS = 2 * 60 * 1000, EXTRA_HEARTS = MAXH /* el nivel extra rellena todas las vidas */, DAYS = 30, PER_DAY = 8, RETO = 7;
 const LOCALES = ['es', 'en', 'fr', 'it'];
 const COURSES = ['python', 'java', 'javascript', 'cpp'];
 const META = {
@@ -30,7 +30,7 @@ let openPop = null, justDone = null, justUnlock = null, firstRender = true, conf
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const rich = s => esc(s).replace(/`([^`]+)`/g, '<code>$1</code>');
-const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const shuffle = (a, rnd = Math.random) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const reduceMotion = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 const dayStr = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
 const today = () => dayStr(new Date());
@@ -69,7 +69,10 @@ function codeBlock(code, lang, blank) {
   return `<pre class="code"><code>${lines}</code></pre>`;
 }
 const joinTokens = ts => { let s = ''; ts.forEach((x, i) => { const p = ts[i - 1]; if (i > 0 && !/^[().;:,\]]/.test(x) && !/[(.\[]$/.test(p)) s += ' '; s += x; }); return s; };
-const norm = s => s.trim().replace(/\s+/g, ' ').replace(/;$/, '');
+// Los teclados de iOS y Android cambian comillas, guiones y puntos ("puntuación inteligente"): se deshace antes de comparar.
+const plain = s => s.replace(/[“”„‟″«»]/g, '"').replace(/[‘’‚‛′]/g, "'")
+  .replace(/—/g, '--').replace(/–/g, '-').replace(/…/g, '...').replace(/[  ]/g, ' ');
+const norm = s => plain(s).trim().replace(/\s+/g, ' ').replace(/;$/, '');
 
 /* ---------- iconos ---------- */
 const sv = (p, f) => `<svg viewBox="0 0 24 24" width="24" height="24" ${f ? 'fill="currentColor"' : 'fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"'} aria-hidden="true">${p}</svg>`;
@@ -99,6 +102,7 @@ const I = {
   left: sv('<path d="m15 6-6 6 6 6"/>'),
   right: sv('<path d="m9 6 6 6-6 6"/>'),
   logout: sv('<path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l-5-5 5-5M5 12h11"/>'),
+  chat: sv('<path d="M20 12.5a7.5 7.5 0 0 1-11 6.6L4 20.5l1.4-4.6A7.5 7.5 0 1 1 20 12.5zM9 11h6M9 14.5h4"/>'),
   bulb: sv('<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/>'),
 };
 
@@ -135,6 +139,7 @@ function sfx(kind) {
   if (!S.sound) return;
   try {
     AC = AC || new (window.AudioContext || window.webkitAudioContext)();
+    if (AC.state === 'suspended') AC.resume(); // iOS lo crea en pausa hasta que se reanuda tras un toque
     const seq = { ok: [[660, 0], [990, .09]], bad: [[220, 0], [165, .12]], combo: [[784, 0], [988, .07], [1319, .14]], win: [[523, 0], [659, .1], [784, .2], [1046, .32], [1319, .44]], heart: [[880, 0], [1175, .1]] }[kind];
     seq.forEach(([f, tt]) => {
       const o = AC.createOscillator(), gn = AC.createGain(), t0 = AC.currentTime + tt;
@@ -204,6 +209,7 @@ function parseHash() {
   let m;
   if ((m = h.match(/^day-(\d+)(?:-(guide|practice))?$/))) return { v: 'day', d: Math.max(0, Math.min(DAYS - 1, +m[1] - 1)), tab: m[2] || null };
   if (h === 'courses' || h === 'profile') return { v: h };
+  if (h === 'sugerencias') return { v: 'suggest' };
   return { v: 'map' };
 }
 function go(hash) { if (location.hash === '#' + hash) render(true); else location.hash = hash; }
@@ -231,11 +237,13 @@ function navItems() {
     ['extra', t('nav.extra'), I.plus, null],
     ['courses', t('nav.courses'), I.grid, '#courses'],
     ['profile', t('nav.profile'), I.user, '#profile'],
+    ['suggest', t('nav.suggest'), I.chat, '#sugerencias'],
   ];
 }
 function navHTML(compact) {
   const cd = currentDay(S.course);
-  return navItems().map(([id, label, ic, href]) => {
+  // En el menú inferior del móvil no cabe: allí se llega desde el perfil.
+  return navItems().filter(([id]) => !compact || id !== 'suggest').map(([id, label, ic, href]) => {
     if (id === 'extra') return `<button class="navbtn extra" data-act="extra" title="${t('hearts.extraBtn', { n: EXTRA_HEARTS })}">${ic}<span class="lbl">${label}</span></button>`;
     const on = (id === 'map' && route.v === 'map') || (id === 'today' && route.v === 'day' && route.d === cd) || id === route.v;
     return `<button class="navbtn ${on ? 'on' : ''}" data-go="${href.slice(1)}" ${on ? 'aria-current="page"' : ''}>${ic}<span class="lbl">${label}</span></button>`;
@@ -402,11 +410,49 @@ function renderProfile() {
       <button class="switch" role="switch" id="soundSwitch" aria-checked="${S.sound}" aria-label="${t('profile.sound')}" data-act="sound"></button></div>
     <div class="prow"><span class="medal">${I.x}</span><div><b>${t('profile.reset')}</b><p>${confirmReset ? t('profile.resetConfirm') : t('profile.resetDesc')}</p></div>
       ${confirmReset ? `<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"><button class="btn small ghost" data-act="reset-cancel">${t('common.cancel')}</button><button class="btn small danger" data-act="reset-yes">${t('profile.resetBtn')}</button></div>` : `<button class="btn small ghost" data-act="reset">${t('profile.resetBtn')}</button>`}</div>
+    <div class="prow"><span class="medal">${I.chat}</span><div><b>${t('nav.suggest')}</b><p>${t('sug.lead')}</p></div><button class="btn small ghost" data-go="sugerencias">${t('sug.send')}</button></div>
    </div><h2>${t('profile.account')}</h2><div class="plist">
     ${Store.user ? `<div class="prow"><span class="medal">${I.user}</span><div><b>${esc(Store.user.email || '')}</b>${syncHTML()}</div><button class="btn small ghost" data-act="signout">${t('profile.signout')}</button></div>`
       : `<div class="prow"><span class="medal">${I.user}</span><div><b>${t('profile.localTitle')}</b><p>${t('profile.localMode')}</p></div><span></span></div>`}
    </div></div>`;
   return h;
+}
+
+/* ---------- vista: sugerencias ---------- */
+const SUG_KINDS = ['idea', 'bug', 'content', 'other'], SUG_MAX = 2000, SUG_WAIT = 60 * 1000;
+let sug = { kind: 'idea', msg: '', ctx: true, state: '', err: '', url: '' };
+function renderSuggest() {
+  if (sug.state === 'ok') return `<div class="page"><div class="sug-done">${kibi('happy', 110)}<h1>${t('sug.ok')}</h1><p>${t('sug.okDesc')}</p>
+    <button class="btn primary" data-act="sug-again">${t('sug.again')}</button></div></div>`;
+  if (sug.state === 'github') return `<div class="page"><div class="sug-done">${kibi('idle', 110)}<h1>${t('sug.ok')}</h1><p>${t('sug.github')}</p>
+    <a class="btn primary" href="${esc(sug.url)}" target="_blank" rel="noopener">${t('sug.openGithub')}</a><button class="btn ghost" data-act="sug-again">${t('sug.again')}</button></div></div>`;
+  const where = Store.user ? 'sug.noteDb' : Store.cfg.feedbackUrl ? 'sug.noteGithub' : 'sug.off';
+  return `<div class="page"><h1>${t('sug.title')}</h1><p class="lead">${t('sug.lead')}</p>
+   <form id="sugForm" class="sugcard" novalidate>
+    <div class="field"><span class="flabel" id="sugKindL">${t('sug.kind')}</span><div class="seg sugkinds" role="group" aria-labelledby="sugKindL">${SUG_KINDS.map(k => `<button type="button" class="${sug.kind === k ? 'on' : ''}" data-sugkind="${k}" aria-pressed="${sug.kind === k}">${t('sug.kind.' + k)}</button>`).join('')}</div></div>
+    <div class="field"><label for="sugMsg">${t('sug.msg')}</label><textarea id="sugMsg" rows="6" maxlength="${SUG_MAX}" placeholder="${esc(t('sug.msgPh'))}">${esc(sug.msg)}</textarea><small class="count" id="sugCount">${sug.msg.length}/${SUG_MAX}</small></div>
+    <label class="check"><input type="checkbox" id="sugCtx" ${sug.ctx ? 'checked' : ''}> ${t('sug.context', { c: META[S.course].name, d: currentDay(S.course) + 1 })}</label>
+    ${sug.err ? `<p class="msg err" role="alert">${esc(sug.err)}</p>` : ''}
+    <div class="sug-foot"><p class="note">${t(where)}</p><button class="btn primary" type="submit" ${sug.state === 'sending' || where === 'sug.off' ? 'disabled' : ''}>${I.chat}${t(sug.state === 'sending' ? 'sug.sending' : 'sug.send')}</button></div>
+   </form></div>`;
+}
+async function sendSuggestion() {
+  const msg = $('#sugMsg').value.trim();
+  sug.msg = msg; sug.ctx = $('#sugCtx').checked; sug.err = '';
+  let last = 0; try { last = +localStorage.getItem('nibble.sugAt') || 0; } catch (e) { /* */ }
+  if (msg.length < 10) sug.err = t('sug.short');
+  else if (Date.now() - last < SUG_WAIT) sug.err = t('sug.wait');
+  if (sug.err) { render(); $('#sugMsg').focus(); return; }
+  sug.state = 'sending'; render();
+  const row = { kind: sug.kind, message: msg, locale: S.locale, course: sug.ctx ? S.course : null, day: sug.ctx ? currentDay(S.course) + 1 : null };
+  try {
+    const r = await Store.sendSuggestion(row);
+    sug = { kind: sug.kind, msg: '', ctx: sug.ctx, state: r.via === 'github' ? 'github' : 'ok', err: '', url: r.url || '' };
+    try { localStorage.setItem('nibble.sugAt', String(Date.now())); } catch (e) { /* */ }
+  } catch (err) {
+    sug.state = ''; sug.err = err && err.message === 'off' ? t('sug.off') : t('sug.err');
+  }
+  if (route.v === 'suggest') render();
 }
 
 /* ---------- render principal ---------- */
@@ -415,8 +461,8 @@ function render(swap) {
   normalizeDay(); regen(); applyTheme(); renderChrome();
   const m = $('#main');
   m.classList.toggle('swap', !!swap && !firstRender);
-  if (!CUR.data && route.v !== 'profile' && route.v !== 'courses') m.innerHTML = `<div class="wrap"><div class="nextday">${kibi('sad', 90)}<h2>${t('content.missing')}</h2><button class="btn primary" data-go="courses">${t('nav.courses')}</button></div></div>`;
-  else m.innerHTML = route.v === 'day' ? renderDay() : route.v === 'courses' ? renderCourses() : route.v === 'profile' ? renderProfile() : renderMap();
+  if (!CUR.data && !['profile', 'courses', 'suggest'].includes(route.v)) m.innerHTML = `<div class="wrap"><div class="nextday">${kibi('sad', 90)}<h2>${t('content.missing')}</h2><button class="btn primary" data-go="courses">${t('nav.courses')}</button></div></div>`;
+  else m.innerHTML = route.v === 'day' ? renderDay() : route.v === 'courses' ? renderCourses() : route.v === 'profile' ? renderProfile() : route.v === 'suggest' ? renderSuggest() : renderMap();
   firstRender = false;
 }
 async function onRoute() {
@@ -468,7 +514,7 @@ function paletteItems(q) {
   COURSES.forEach(c => { if (match(META[c].name)) items.push({ g: 'courses', ic: I.grid, label: META[c].name, sub: `${Math.round(doneCount(c) / (DAYS * PER_DAY) * 100)}%`, run: () => switchCourse(c, true) }); });
   const acts = [
     [t('nav.map'), I.map, () => go('map')], [t('nav.today'), I.play, () => go(dayHash(currentDay(S.course)))],
-    [t('hearts.extraBtn', { n: EXTRA_HEARTS }), I.plus, () => startExtra()], [t('nav.profile'), I.user, () => go('profile')], [t('act.home'), I.star, () => go('inicio')],
+    [t('hearts.extraBtn', { n: EXTRA_HEARTS }), I.plus, () => startExtra()], [t('nav.profile'), I.user, () => go('profile')], [t('nav.suggest'), I.chat, () => go('sugerencias')], [t('act.home'), I.star, () => go('inicio')],
     ...LOCALES.filter(l => l !== S.locale).map(l => [t('act.lang', { l: t('lang.' + l) }), I.globe, () => setLocale(l)]),
   ];
   if (Store.user) acts.push([t('profile.signout'), I.logout, () => doSignOut()]);
@@ -476,7 +522,7 @@ function paletteItems(q) {
   return items.slice(0, 40);
 }
 function openPalette() {
-  openModal(`<div class="q">${I.search}<input id="palq" placeholder="${t('palette.placeholder')}" autocomplete="off" aria-label="${t('nav.search')}"></div><ul id="pallist" role="listbox"></ul>`, 'palette');
+  openModal(`<div class="q">${I.search}<input id="palq" type="search" placeholder="${t('palette.placeholder')}" autocomplete="off" autocorrect="off" autocapitalize="off" enterkeyhint="go" aria-label="${t('nav.search')}"></div><ul id="pallist" role="listbox"></ul>`, 'palette');
   const inp = $('#palq');
   const draw = () => {
     palItems = paletteItems(inp.value); palSel = Math.min(palSel, Math.max(0, palItems.length - 1));
@@ -510,6 +556,13 @@ async function setLocale(l) {
 
 /* ---------- motor de lecciones ---------- */
 const LS = $('#lesson');
+/* Con el teclado abierto, iOS no encoge la pantalla: la lección se ajusta a la parte visible
+   para que el botón Comprobar no quede tapado. En Android lo hace interactive-widget (index.html). */
+function fitLesson() {
+  const vv = window.visualViewport; if (!vv || LS.hidden) return;
+  LS.style.height = vv.height + 'px'; LS.style.top = vv.offsetTop + 'px';
+}
+if (window.visualViewport) { visualViewport.addEventListener('resize', fitLesson); visualViewport.addEventListener('scroll', fitLesson); }
 function prep(ex) {
   const r = Object.assign({}, ex, { src: ex });
   if (ex.o) r.opts = shuffle(ex.o.map((o, i) => ({ t: o, ok: i === 0 })));
@@ -521,7 +574,7 @@ function startLesson(opts) {
   if ((opts.mode === 'practice' || opts.mode === 'reto') && S.hearts <= 0) { heartsModal(); return; }
   closeModal(); openPop = null;
   L = Object.assign({}, opts, { course: S.course, queue: opts.ex.map(prep), total: opts.ex.length, correct: 0, mistakes: 0, answered: 0, firstOk: 0, start: Date.now(), prog: 0, combo: 0 });
-  LS.hidden = false; document.body.classList.add('noscroll');
+  LS.hidden = false; document.body.classList.add('noscroll'); fitLesson();
   renderEx();
 }
 /* Secciones de cada nivel: el nivel 1 tiene 8, el 2 tiene 7, el 3 otra vez 8... (el reto, nivel 8, tiene 7).
@@ -536,27 +589,46 @@ function asTyped(ex) {
   if (ex.t === 'order' && !ORDER_Q.test(ex.q)) { const s = joinTokens(ex.w); if (s.length <= 70) return { t: 'type', q: ex.q, c: '', a: [s], e: ex.e, line: 'code' }; }
   return null;
 }
-function mixSections(src, n) {
-  const choice = src.filter(x => x.t !== 'type'), typed = src.map(asTyped).filter(Boolean);
-  // Rota los de escribir para que el mismo ejercicio no salga dos veces seguidas en sus dos formas.
-  typed.push(...typed.splice(0, Math.ceil(typed.length / 2)));
-  const out = [];
-  for (let i = 0; out.length < n && (choice.length || typed.length); i++) {
-    const a = i % 2 ? typed : choice, b = i % 2 ? choice : typed;
-    out.push((a.length ? a : b).shift());
+/* Elige n secciones de `list` (en orden de preferencia) y usa cada ejercicio UNA sola vez,
+   alternando elegir y escribir. Solo si no hay bastantes ejercicios distintos (el día 1 no tiene repaso)
+   repite alguno, al final y en la otra forma. */
+function mixSections(list, n, write = false) {
+  const pool = [...new Set(list)], out = [], used = [];
+  while (out.length < n && pool.length) {
+    let i = pool.findIndex(ex => (write ? asTyped(ex) : ex.t !== 'type'));
+    if (i < 0) i = 0;
+    const ex = pool.splice(i, 1)[0], ty = write || ex.t === 'type' ? asTyped(ex) : null;
+    out.push(ty || ex); used.push([ex, !!ty]);
+    write = !write;
   }
-  for (let i = 0; out.length < n && src.length; i++) out.push(src[i % src.length]);
+  for (const [ex, typed] of used) {
+    if (out.length >= n) break;
+    const other = typed ? (ex.t !== 'type' ? ex : null) : asTyped(ex);
+    if (other) out.push(other);
+  }
+  for (let i = 0; out.length < n && used.length; i++) out.push(out[i]);
   return out;
 }
-function buildLevel(d, k) {
+// Aleatorio con semilla: el repaso de un día se baraja siempre igual y cada nivel recibe un trozo distinto.
+const hash = s => { let h = 2166136261; for (const ch of s) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return h >>> 0; };
+const rng = seed => () => { seed = (seed + 0x6D2B79F5) | 0; let x = Math.imul(seed ^ (seed >>> 15), 1 | seed); x ^= x + Math.imul(x ^ (x >>> 7), 61 | x); return ((x ^ (x >>> 14)) >>> 0) / 4294967296; };
+function buildLevel(d, k, replay) {
   const days = CUR.data.days, own = days[d].x.slice(0, RETO), n = sectionsOf(k);
-  const review = shuffle(days.slice(Math.max(0, d - 3), d).flatMap(x => x.x.slice(0, RETO)));
-  if (k === RETO) return mixSections([...shuffle(own.slice()), ...review], n - 1).concat(days[d].x[RETO]);
-  return mixSections([own[k], ...shuffle(own.filter((_, j) => j !== k)), ...review], n);
+  const rnd = replay ? Math.random : rng(hash(`${CUR.course}:${CUR.loc}:${d}`));
+  if (k === RETO) return mixSections(shuffle(own.slice(), rnd), n - 1).concat(days[d].x[RETO]);
+  // Prácticas de hoy en saltos de 2 (niveles seguidos comparten como mucho una) y repaso de los días
+  // anteriores, primero los 3 más recientes. Cada nivel toma un trozo distinto del repaso.
+  const mine = [0, 2, 4, 6, 1, 3, 5].map(j => own[(k + j) % RETO]);
+  const near = d > 3 ? days.slice(d - 3, d) : days.slice(0, d), far = d > 3 ? days.slice(0, d - 3) : [];
+  const prev = [...shuffle(near.flatMap(x => x.x.slice(0, RETO)), rnd), ...shuffle(far.flatMap(x => x.x.slice(0, RETO)), rnd)];
+  const start = replay ? Math.floor(Math.random() * Math.max(1, prev.length)) : k * 4;
+  const rev = Array.from({ length: Math.min(n, prev.length) }, (_, i) => prev[(start + i) % prev.length]);
+  const list = []; mine.forEach((ex, i) => { list.push(ex); if (rev[i]) list.push(rev[i]); });
+  return mixSections([...list, ...rev.slice(mine.length)], n, k % 2 === 1);
 }
 function startNode(key) {
-  const [, d, k] = key.split(':').map((v, i) => i ? +v : v);
-  startLesson({ mode: k === RETO ? 'reto' : 'practice', d, k, key, replay: !!S.done[key], ex: buildLevel(d, k) });
+  const [, d, k] = key.split(':').map((v, i) => i ? +v : v), replay = !!S.done[key];
+  startLesson({ mode: k === RETO ? 'reto' : 'practice', d, k, key, replay, ex: buildLevel(d, k, replay) });
 }
 function startExtra() {
   if (!CUR.data) return;
@@ -588,7 +660,7 @@ function setBar(shine) {
 const isMono = s => !/\s/.test(s) || s.includes('(');
 function exHTML(ex) {
   const isRetoQ = L.mode === 'reto' && ex.src === dayData(L.d).x[RETO];
-  const write = ex.t === 'type', inp = cls => `<input class="${cls}" id="typeIn" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="${t('ex.answer')}">`;
+  const write = ex.t === 'type', inp = cls => `<input class="${cls}" id="typeIn" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" aria-label="${t('ex.answer')}">`;
   let h = `<div class="ex-tags"><span class="ex-sec">${t('ex.section', { n: L.total - L.queue.length + 1, m: L.total })}</span>`;
   h += isRetoQ ? `<span class="ex-kind">${I.crown}${t('node.reto')}</span>` : `<span class="ex-kind ${write ? 'write' : 'pick'}">${write ? I.code : I.target}${t(write ? 'ex.kind.write' : 'ex.kind.pick')}</span>`;
   h += `</div><div class="ex-head">${kibi('idle', 56)}<h2 class="ex-q">${rich(ex.q || t('ex.q.' + ex.t))}</h2></div>`;
@@ -917,6 +989,8 @@ document.addEventListener('click', async e => {
   if (d.pal !== undefined) { const it = palItems[+d.pal]; closeModal(); it && it.run(); return; }
   if (d.auth) { authMode = d.auth; authMsg = ''; renderAuth(); return; }
   if (d.land) { await leaveLanding(d.land, d.lc); return; }
+  if (d.sugkind) { sug.kind = d.sugkind; sug.msg = $('#sugMsg').value; sug.ctx = $('#sugCtx').checked; render(); return; }
+  if (d.act === 'sug-again') { sug.state = ''; render(); return; }
   if (d.copy) {
     const [dd, i] = d.copy.split(':').map(Number), code = dayData(dd).guide[i].code;
     try { await navigator.clipboard.writeText(code); toast(t('day.copied')); } catch (err) { toast(t('day.copyFail')); }
@@ -944,6 +1018,10 @@ document.addEventListener('click', async e => {
     case 'signout': await doSignOut(); break;
   }
 });
+document.addEventListener('submit', e => { if (e.target.id === 'sugForm') { e.preventDefault(); if (sug.state !== 'sending') sendSuggestion(); } });
+document.addEventListener('input', e => {
+  if (e.target.id === 'sugCtx') sug.ctx = e.target.checked;
+  if (e.target.id === 'sugMsg') { sug.msg = e.target.value; $('#sugCount').textContent = `${e.target.value.length}/${SUG_MAX}`; } });
 document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k' && !L && !$('#shell').hidden) { e.preventDefault(); openPalette(); return; }
   if (e.key === '/' && !L && $('#modal').hidden && !$('#shell').hidden && !/INPUT|TEXTAREA/.test(document.activeElement.tagName)) { e.preventDefault(); openPalette(); return; }

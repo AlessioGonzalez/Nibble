@@ -125,3 +125,29 @@ select
   max(created_at)                                                         as last_played
 from public.level_results
 group by course;
+
+-- =====================================================================
+-- 3. Sugerencias: el formulario "Sugerencias" de la app.
+--    Solo los usuarios con sesión pueden enviarlas, y nadie puede leerlas desde la app:
+--    se revisan en Supabase > Table Editor > suggestions (cambia status a 'read' o 'done').
+-- =====================================================================
+create table if not exists public.suggestions (
+  id         bigint generated always as identity primary key,
+  user_id    uuid        default auth.uid() references auth.users (id) on delete set null,
+  kind       text        not null check (kind in ('idea', 'bug', 'content', 'other')),
+  message    text        not null check (char_length(btrim(message)) between 10 and 2000),
+  course     text        check (course in ('python', 'java', 'javascript', 'cpp')),
+  locale     text        check (locale in ('es', 'en', 'fr', 'it')),
+  day        smallint    check (day between 1 and 30),
+  status     text        not null default 'new' check (status in ('new', 'read', 'done')),
+  created_at timestamptz not null default now()
+);
+create index if not exists suggestions_time on public.suggestions (created_at desc);
+
+alter table public.suggestions enable row level security;
+
+drop policy if exists "suggestions: enviar las propias" on public.suggestions;
+create policy "suggestions: enviar las propias"
+  on public.suggestions for insert
+  to authenticated
+  with check ((select auth.uid()) = user_id);

@@ -62,9 +62,12 @@ Requisitos (el validador los comprueba):
 
 ### Cómo se arma cada nivel
 
-La app no necesita más ejercicios: arma cada nivel con los 8 del día y con los de los 3 días anteriores.
+La app no necesita más ejercicios: arma cada nivel con las 7 prácticas del día y con un repaso de los días anteriores.
 
 - El nivel 1 tiene 8 secciones, el 2 tiene 7, el 3 otra vez 8, y así sucesivamente. Cada nivel empieza con su práctica (`x[k]`).
+- Dentro de un nivel cada ejercicio sale una sola vez. Solo si no hay bastantes distintos (los niveles de 8 del día 1) se repite uno, al final y en la otra forma.
+- Las prácticas de hoy se toman en saltos de 2 (`x[k]`, `x[k+2]`, `x[k+4]`…), así dos niveles seguidos comparten como mucho una.
+- El repaso empieza por los 3 días anteriores y sigue con los más antiguos. Se baraja siempre igual para cada día, curso e idioma, y cada nivel toma un trozo distinto. Al repetir un nivel ya completado, el repaso es al azar.
 - Las secciones alternan **elegir** (`mc`, `out`, `fill`, `ord`) y **escribir código**. Para las de escribir, la app convierte los ejercicios:
   - `fill`: escribes en el hueco lo que antes elegías.
   - `out`: escribes la salida exacta. Solo si la respuesta cabe en una línea y tiene 40 caracteres o menos.

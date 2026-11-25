@@ -38,10 +38,14 @@
 [hidden]{display:none!important}
 *,*::before,*::after{box-sizing:border-box}
 html,body{min-height:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--f-body);-webkit-font-smoothing:antialiased;
+/* Móvil: sin zoom de texto al girar (iOS), sin destello gris al tocar y sin espera de doble toque. */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+*{-webkit-tap-highlight-color:transparent}
+button,a,input,textarea,label{touch-action:manipulation}
+body{margin:0;overscroll-behavior-y:none;background:var(--bg);color:var(--ink);font:16px/1.55 var(--f-body);-webkit-font-smoothing:antialiased;
   padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
 body.noscroll{overflow:hidden}
-button,input{font:inherit;color:inherit}
+button,input,textarea{font:inherit;color:inherit}
 h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
 p{margin:0}
 a{color:var(--lang)}
@@ -51,7 +55,7 @@ svg{flex:none}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 
 /* ---------- Shell ---------- */
-.shell{display:grid;grid-template-columns:240px minmax(0,1fr) 320px;max-width:1320px;margin-inline:auto;min-height:100vh}
+.shell{display:grid;grid-template-columns:240px minmax(0,1fr) 320px;max-width:1320px;margin-inline:auto;min-height:100vh;min-height:100dvh}
 .side{position:sticky;top:0;height:100vh;padding-block:22px;padding-right:16px;border-right:2px solid var(--line);display:flex;flex-direction:column;gap:20px}
 .brand{display:flex;align-items:center;gap:10px;padding:4px 10px;font:800 26px/1 var(--f-display);color:var(--ink);letter-spacing:-.02em;background:none;border:0;cursor:pointer}
 .nav{display:flex;flex-direction:column;gap:4px}
@@ -338,7 +342,7 @@ main.swap .daycard.cur{animation:cardIn .45s var(--ease-back) both,glow 2.2s eas
 .palette .grp{font:700 12px/1 var(--f-display);color:var(--muted);padding:10px 12px 6px}
 
 /* ---------- Acceso ---------- */
-.auth{min-height:100vh;display:grid;place-items:center;padding-block:24px}
+.auth{min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding-block:24px}
 .authcard{width:min(440px,100%);background:var(--surface);border:2px solid var(--line);border-radius:26px;box-shadow:0 6px 0 var(--line);padding:28px;display:flex;flex-direction:column;gap:16px;animation:dlgIn .4s var(--ease-back)}
 .authcard .brand{padding:0;cursor:default;justify-content:center}
 .authcard h1{font-size:24px;font-weight:800;text-align:center}
@@ -495,8 +499,25 @@ main.swap .daycard.cur{animation:cardIn .45s var(--ease-back) both,glow 2.2s eas
 .toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 90px);transform:translateX(-50%);z-index:90;background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:14px;font-weight:700;animation:toastIn .35s var(--ease-back);max-width:calc(100vw - 32px)}
 @keyframes toastIn{from{opacity:0;transform:translate(-50%,16px)}}
 
+/* ---------- Sugerencias ---------- */
+.sugcard{display:flex;flex-direction:column;gap:18px;padding:22px;border-radius:var(--r-lg);background:var(--surface);border:2px solid var(--line);box-shadow:0 5px 0 var(--line)}
+.flabel{font:700 14px var(--f-display)}
+.sugkinds{display:flex;flex-wrap:wrap;gap:8px;border:0;overflow:visible}
+.sugkinds button,.sugkinds button + button{border:2px solid var(--line);border-radius:99px;padding:9px 14px;font:700 14px var(--f-body);background:var(--surface-2);transition:transform .12s var(--ease-back),background .15s,border-color .15s}
+.sugkinds button:hover{transform:translateY(-2px)}
+.sugkinds button.on{border-color:var(--lang);background:var(--lang-soft);color:var(--ink)}
+.field textarea{border:2px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface-2);color:var(--ink);font:500 16px/1.5 var(--f-body);resize:vertical;min-height:140px;outline:none;transition:border-color .15s}
+.field textarea:focus{border-color:var(--lang);background:var(--surface)}
+.field .count{align-self:flex-end;font:600 12px var(--f-code);color:var(--muted)}
+.check{display:flex;align-items:center;gap:10px;font-size:15px;color:var(--muted);cursor:pointer}
+.check input{width:20px;height:20px;accent-color:var(--lang)}
+.sug-foot{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.sug-foot .note{font-size:14px;color:var(--muted);flex:1 1 240px}
+.sug-done{display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;padding:36px 20px;border-radius:var(--r-lg);border:2px dashed var(--line-2);animation:dlgIn .4s var(--ease-back)}
+.sug-done p{color:var(--muted);max-width:46ch}
+
 /* ---------- Pantalla inicial ---------- */
-.landing{min-height:100vh;max-width:1120px;margin-inline:auto;padding:0 max(16px, env(safe-area-inset-right,0px)) 40px max(16px, env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:72px;overflow-x:clip}
+.landing{min-height:100vh;min-height:100dvh;max-width:1120px;margin-inline:auto;padding:0 max(16px, env(safe-area-inset-right,0px)) 40px max(16px, env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:72px;overflow-x:hidden;overflow-x:clip}
 .lnav{display:flex;align-items:center;gap:12px;padding-top:calc(env(safe-area-inset-top,0px) + 16px);flex-wrap:wrap;animation:fadeUp .5s var(--ease-out)}
 .lnav .grow{flex:1}
 .lnav .langpick{width:190px}
@@ -599,4 +620,15 @@ main.swap .daycard.cur{animation:cardIn .45s var(--ease-back) both,glow 2.2s eas
 }
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
+}
+
+/* ---------- Pantallas táctiles (iOS y Android) ---------- */
+/* iOS amplía la página si un campo tiene letra de menos de 16px al tocarlo. */
+@media (pointer:coarse){
+  .blank-in,.line-in{font-size:16px}
+}
+/* En táctil el :hover se queda "pegado" tras tocar: sin desplazamientos. */
+@media (hover:none){
+  .daycard:hover,.node:hover,.ccard:hover,.sugkinds button:hover,.reveal.in .lcourse:hover,.navbtn:hover svg{transform:none}
+  .daycard:not(.cur):hover{box-shadow:0 4px 0 var(--line)}
 }

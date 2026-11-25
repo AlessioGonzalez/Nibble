@@ -4,8 +4,11 @@
    (Supabase > Project Settings > API). Esa clave es pública por diseño: la seguridad la dan las políticas RLS
    de supabase/schema.sql. Nunca pongas aquí la clave "service_role".
    Si despliegas con GitHub Actions, también puedes definir las variables SUPABASE_URL y SUPABASE_ANON_KEY
-   del repositorio y el workflow generará este archivo. */
+   del repositorio y el workflow generará este archivo.
+   feedbackUrl: página donde se abren las sugerencias si no hay Supabase, por ejemplo
+   'https://github.com/TU-USUARIO/nibble/issues/new'. Al publicar con el workflow se rellena sola. */
 window.SINTAXIS_CONFIG = {
   supabaseUrl: '',
   supabaseAnonKey: '',
+  feedbackUrl: '',
 };

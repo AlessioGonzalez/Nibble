@@ -37,6 +37,7 @@
 
   const Store = {
     MAXH,
+    cfg: CFG,
     configured: !!(CFG.supabaseUrl && CFG.supabaseAnonKey),
     client: null,
     user: null,
@@ -162,6 +163,23 @@
       this._flushing = false;
       if (error) return;
       try { localStorage.setItem(key, JSON.stringify(JSON.parse(localStorage.getItem(key) || '[]').slice(q.length))); } catch (e) { /* */ }
+    },
+
+    /* Sugerencias. Con sesión iniciada se guardan en la tabla `suggestions` (schema.sql).
+       Sin Supabase, o si esa tabla aún no existe, devuelve un enlace para abrirla como incidencia
+       en GitHub (config.feedbackUrl, que el workflow rellena solo). Sin ninguno de los dos: Error('off'). */
+    async sendSuggestion(row) {
+      if (this.user && this.client) {
+        const { error } = await this.client.from('suggestions').insert(row);
+        if (!error) return { via: 'db' };
+        // Tabla inexistente (schema.sql antiguo): se intenta por GitHub. Cualquier otro error se muestra.
+        if (!/PGRST205|42P01/.test(error.code || '')) throw error;
+      }
+      const base = CFG.feedbackUrl;
+      if (!base) throw new Error('off');
+      const title = `[${row.kind}] ${row.message.replace(/\s+/g, ' ').slice(0, 70)}`;
+      const body = row.message + (row.course ? `\n\n---\n${row.course} · día ${row.day} · ${row.locale}` : `\n\n---\n${row.locale}`);
+      return { via: 'github', url: `${base}${base.includes('?') ? '&' : '?'}title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}` };
     },
 
     async signIn(email, password) {
