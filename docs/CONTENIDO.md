@@ -62,12 +62,16 @@ Requisitos (el validador los comprueba):
 
 ### Cómo se arma cada nivel
 
-La app no necesita más ejercicios: arma cada nivel con las 7 prácticas del día y con un repaso de los días anteriores.
+Cada nivel junta tres fuentes de ejercicios:
 
-- El nivel 1 tiene 8 secciones, el 2 tiene 7, el 3 otra vez 8, y así sucesivamente. Cada nivel empieza con su práctica (`x[k]`).
-- Dentro de un nivel cada ejercicio sale una sola vez. Solo si no hay bastantes distintos (los niveles de 8 del día 1) se repite uno, al final y en la otra forma.
-- Las prácticas de hoy se toman en saltos de 2 (`x[k]`, `x[k+2]`, `x[k+4]`…), así dos niveles seguidos comparten como mucho una.
-- El repaso empieza por los 3 días anteriores y sigue con los más antiguos. Se baraja siempre igual para cada día, curso e idioma, y cada nivel toma un trozo distinto. Al repetir un nivel ya completado, el repaso es al azar.
+- **Su práctica del día** (`x[k]`), que solo sale en ese nivel.
+- **1 o 2 de repaso** de días anteriores, primero de los 3 más recientes. Cada nivel toma un trozo distinto del repaso; al repetir un nivel ya completado, el repaso es al azar.
+- **Ejercicios generados al azar** por `assets/js/practice.js`. El generador usa solo los temas que el curso ya ha visto (la tabla `UNLOCK` dice desde qué día sale cada familia) y calcula él mismo la respuesta. Así ningún ejercicio se repite dentro de un nivel y los niveles son distintos entre sí.
+
+El reto final junta 3 prácticas del día, 3 ejercicios generados y la pregunta del reto (`x[7]`).
+
+- El nivel 1 tiene 8 secciones, el 2 tiene 7, el 3 otra vez 8, y así sucesivamente.
+- Para añadir una familia al generador, escribe su función en `make()` y su día en `UNLOCK` para los 4 lenguajes, añade sus textos `gen.*` en los 4 idiomas de `assets/js/i18n.js` y ejecuta `node scripts/check-practice.mjs`.
 - Las secciones alternan **elegir** (`mc`, `out`, `fill`, `ord`) y **escribir código**. Para las de escribir, la app convierte los ejercicios:
   - `fill`: escribes en el hueco lo que antes elegías.
   - `out`: escribes la salida exacta. Solo si la respuesta cabe en una línea y tiene 40 caracteres o menos.

@@ -556,13 +556,23 @@ async function setLocale(l) {
 
 /* ---------- motor de lecciones ---------- */
 const LS = $('#lesson');
-/* Con el teclado abierto, iOS no encoge la pantalla: la lección se ajusta a la parte visible
-   para que el botón Comprobar no quede tapado. En Android lo hace interactive-widget (index.html). */
+/* iOS: con el teclado abierto la pantalla no se encoge y el teclado es translúcido. La lección sigue
+   cubriendo toda la pantalla (así no se ve el mapa por detrás) y solo sube su contenido con --kb.
+   Si iOS desplaza la vista para enseñar el campo, la lección la sigue con translateY.
+   En Android el navegador encoge la pantalla (interactive-widget en index.html) y --kb queda en 0. */
 function fitLesson() {
   const vv = window.visualViewport; if (!vv || LS.hidden) return;
-  LS.style.height = vv.height + 'px'; LS.style.top = vv.offsetTop + 'px';
+  LS.style.setProperty('--kb', Math.max(0, Math.round(window.innerHeight - vv.height)) + 'px');
+  LS.style.transform = vv.offsetTop > 0 ? `translateY(${Math.round(vv.offsetTop)}px)` : '';
 }
 if (window.visualViewport) { visualViewport.addEventListener('resize', fitLesson); visualViewport.addEventListener('scroll', fitLesson); }
+// Bloquea la página de fondo mientras hay una lección abierta (iOS ignora overflow:hidden en body).
+let lockY = 0;
+function lockPage(on) {
+  const b = document.body;
+  if (on) { if (b.classList.contains('noscroll')) return; lockY = window.scrollY; b.style.top = `-${lockY}px`; b.classList.add('noscroll'); }
+  else if (b.classList.contains('noscroll')) { b.classList.remove('noscroll'); b.style.top = ''; window.scrollTo(0, lockY); LS.style.removeProperty('--kb'); LS.style.transform = ''; }
+}
 function prep(ex) {
   const r = Object.assign({}, ex, { src: ex });
   if (ex.o) r.opts = shuffle(ex.o.map((o, i) => ({ t: o, ok: i === 0 })));
@@ -574,7 +584,7 @@ function startLesson(opts) {
   if ((opts.mode === 'practice' || opts.mode === 'reto') && S.hearts <= 0) { heartsModal(); return; }
   closeModal(); openPop = null;
   L = Object.assign({}, opts, { course: S.course, queue: opts.ex.map(prep), total: opts.ex.length, correct: 0, mistakes: 0, answered: 0, firstOk: 0, start: Date.now(), prog: 0, combo: 0 });
-  LS.hidden = false; document.body.classList.add('noscroll'); fitLesson();
+  LS.hidden = false; lockPage(true); fitLesson();
   renderEx();
 }
 /* Secciones de cada nivel: el nivel 1 tiene 8, el 2 tiene 7, el 3 otra vez 8... (el reto, nivel 8, tiene 7).
@@ -615,17 +625,21 @@ const rng = seed => () => { seed = (seed + 0x6D2B79F5) | 0; let x = Math.imul(se
 function buildLevel(d, k, replay) {
   const days = CUR.data.days, own = days[d].x.slice(0, RETO), n = sectionsOf(k);
   const rnd = replay ? Math.random : rng(hash(`${CUR.course}:${CUR.loc}:${d}`));
-  if (k === RETO) return mixSections(shuffle(own.slice(), rnd), n - 1).concat(days[d].x[RETO]);
-  // Prácticas de hoy en saltos de 2 (niveles seguidos comparten como mucho una) y repaso de los días
-  // anteriores, primero los 3 más recientes. Cada nivel toma un trozo distinto del repaso.
-  const mine = [0, 2, 4, 6, 1, 3, 5].map(j => own[(k + j) % RETO]);
+  if (k === RETO) return mixSections([...shuffle(own.slice(), rnd).slice(0, 3), ...fresh(d, 8)], n - 1).concat(days[d].x[RETO]);
+  /* Cada nivel: su práctica del día (x[k], que solo sale en este nivel), 1 o 2 de repaso de días
+     anteriores (un trozo distinto para cada nivel) y el resto, ejercicios nuevos generados al azar
+     sobre los temas ya vistos (practice.js): no se repiten entre niveles ni al volver a jugar. */
   const near = d > 3 ? days.slice(d - 3, d) : days.slice(0, d), far = d > 3 ? days.slice(0, d - 3) : [];
   const prev = [...shuffle(near.flatMap(x => x.x.slice(0, RETO)), rnd), ...shuffle(far.flatMap(x => x.x.slice(0, RETO)), rnd)];
-  const start = replay ? Math.floor(Math.random() * Math.max(1, prev.length)) : k * 4;
-  const rev = Array.from({ length: Math.min(n, prev.length) }, (_, i) => prev[(start + i) % prev.length]);
-  const list = []; mine.forEach((ex, i) => { list.push(ex); if (rev[i]) list.push(rev[i]); });
-  return mixSections([...list, ...rev.slice(mine.length)], n, k % 2 === 1);
+  const start = replay ? Math.floor(Math.random() * Math.max(1, prev.length)) : k * 2;
+  const rev = Array.from({ length: Math.min(n >= 8 ? 2 : 1, prev.length) }, (_, i) => prev[(start + i) % prev.length]);
+  const list = [own[k], ...fresh(d, n + 6)];
+  rev.forEach((ex, i) => list.splice(2 + i * 3, 0, ex));
+  // Si el generador no está disponible, completa con las demás prácticas del día.
+  if (list.length < n) list.push(...[0, 2, 4, 6, 1, 3, 5].map(j => own[(k + j) % RETO]));
+  return mixSections(list, n, k % 2 === 1);
 }
+const fresh = (d, count) => (window.NibblePractice ? window.NibblePractice.generate(CUR.course, d + 1, count, Math.random, t) : []);
 function startNode(key) {
   const [, d, k] = key.split(':').map((v, i) => i ? +v : v), replay = !!S.done[key];
   startLesson({ mode: k === RETO ? 'reto' : 'practice', d, k, key, replay, ex: buildLevel(d, k, replay) });
@@ -633,9 +647,9 @@ function startNode(key) {
 function startExtra() {
   if (!CUR.data) return;
   closeModal();
-  if (L) { LS.hidden = true; LS.innerHTML = ''; L = null; document.body.classList.remove('noscroll'); }
+  if (L) { LS.hidden = true; LS.innerHTML = ''; L = null; lockPage(false); }
   const pool = CUR.data.days.slice(0, currentDay(S.course) + 1).flatMap(d => d.x);
-  startLesson({ mode: 'extra', ex: mixSections(shuffle(pool.slice()), 5) });
+  startLesson({ mode: 'extra', ex: mixSections(shuffle([...shuffle(pool.slice()).slice(0, 3), ...fresh(currentDay(S.course), 4)]), 5) });
 }
 function startTest(d) {
   const pool = CUR.data.days.slice(Math.max(0, d - 6), d).flatMap(x => x.x);
@@ -678,7 +692,10 @@ function renderEx() {
    <div class="ls-foot" id="foot"><div class="foot-in"><button class="btn ghost" data-act="skip">${t('ex.skip')}</button><div class="fb" id="fb"></div><button class="btn primary" id="checkBtn" data-act="check" disabled>${t('ex.check')}</button></div></div>`;
   setBar(false);
   if (ex.t === 'order') renderOrder();
-  if (ex.t === 'type') { const inp = $('#typeIn'); inp.addEventListener('input', () => { if (!ex.line) inp.style.width = Math.max(6, inp.value.length + 2) + 'ch'; $('#checkBtn').disabled = !inp.value.trim(); }); setTimeout(() => inp.focus(), 60); }
+  if (ex.t === 'type') { const inp = $('#typeIn'); inp.addEventListener('input', () => { if (!ex.line) inp.style.width = Math.max(6, inp.value.length + 2) + 'ch'; $('#checkBtn').disabled = !inp.value.trim(); });
+    // Con el teclado ya abierto, deja el campo a la vista dentro de la lección.
+    inp.addEventListener('focus', () => setTimeout(() => { fitLesson(); inp.scrollIntoView({ block: 'center' }); }, 320));
+    setTimeout(() => inp.focus(), 60); }
 }
 function renderOrder() {
   const ex = L.queue[0];
@@ -697,7 +714,7 @@ function check(skipped) {
   let ok = false, sol = '';
   if (ex.opts) { sol = ex.o[0]; ok = !skipped && L.sel !== null && ex.opts[L.sel].ok; }
   else if (ex.t === 'order') { sol = joinTokens(ex.w); const seq = ex.picked.map(id => ex.bank.find(b => b.id === id).t); ok = !skipped && seq.join('\u0001') === ex.w.join('\u0001'); }
-  else if (ex.t === 'type') { sol = ex.a[0]; const inp = $('#typeIn'), v = inp.value; ok = !skipped && ex.a.some(a => norm(a) === norm(v) || norm(a).replace(/\s/g, '') === norm(v).replace(/\s/g, '')); inp.readOnly = true; if (!ok) inp.classList.add('wrong'); }
+  else if (ex.t === 'type') { sol = ex.a[0]; const inp = $('#typeIn'), v = inp.value; ok = !skipped && (ex.a.some(a => norm(a) === norm(v) || norm(a).replace(/\s/g, '') === norm(v).replace(/\s/g, '')) || (!!ex.re && ex.re.test(norm(v).replace(/\s/g, '')))); inp.readOnly = true; if (!ok) inp.classList.add('wrong'); }
   L.phase = 'feedback'; L.answered++; S.stats.answered++;
   let lost = false;
   if (ok) { S.stats.correct++; L.correct++; if (!ex.retry) L.firstOk++; L.queue.shift(); L.combo++; sfx(L.combo >= 3 && L.combo % 3 === 0 ? 'combo' : 'ok'); }
@@ -731,7 +748,7 @@ function next() {
   const cur = L; setTimeout(() => { if (L === cur) renderEx(); }, 190);
 }
 function closeLesson() {
-  const was = L; LS.hidden = true; LS.innerHTML = ''; L = null; document.body.classList.remove('noscroll');
+  const was = L; LS.hidden = true; LS.innerHTML = ''; L = null; lockPage(false);
   if (was && was.mode === 'test' && was.passed) { go(dayHash(was.d, 'practice')); }
   else if (was && (was.mode === 'practice' || was.mode === 'reto')) { route = { v: 'day', d: was.d, tab: 'practice' }; if (location.hash !== '#' + dayHash(was.d, 'practice')) history.replaceState(null, '', '#' + dayHash(was.d, 'practice')); render(); }
   else render();
@@ -873,7 +890,7 @@ function startTyper() {
     const c = COURSES[ci], code = SNIPS[c].join('\n'), out = $('#lout');
     if (pos === 0) { $('#lfile').textContent = ext[c]; const m = META[c]; $('#lcode').style.cssText = `--c:${m.color}`; out.classList.remove('show'); }
     pos = reduceMotion() ? code.length : pos + 1;
-    box.innerHTML = codeBlock(code.slice(0, pos), c).replace(/<\/span><\/code>/, '<span class="caret"></span></span></code>');
+    box.innerHTML = codeBlock(code.slice(0, pos), c).replace(/<\/span><\/code>/, '<span class="tcaret"></span></span></code>');
     if (pos < code.length) { typerTimer = setTimeout(step, code[pos - 1] === '\n' ? 260 : 38); return; }
     out.classList.add('show');
     if (reduceMotion()) return;
