@@ -1026,7 +1026,7 @@ function renderAuth() {
   const reset = authMode === 'reset';
   a.innerHTML = `<div class="authcard"><div class="brand">${kibi('idle', 44, 'float')}<span>Nibble</span></div>
     <h1>${reset ? t('auth.forgot') : authMode === 'signup' ? t('auth.signupTitle') : t('auth.title')}</h1><p class="sub">${t('auth.sub')}</p>
-    ${!reset && Store.cfg.google !== false ? `<button class="btn gbtn block" type="button" data-act="google">${GOOGLE_G}${t('auth.google')}</button><p class="or"><span>${t('auth.or')}</span></p>` : ''}
+    ${!reset && Store.cfg.google !== false && (!Store.providers || Store.providers.google) ? `<button class="btn gbtn block" type="button" data-act="google">${GOOGLE_G}${t('auth.google')}</button><p class="or"><span>${t('auth.or')}</span></p>` : ''}
     <form id="authForm" style="display:flex;flex-direction:column;gap:14px">
       <div class="field"><label for="aemail">${t('auth.email')}</label><input id="aemail" type="email" autocomplete="email" required></div>
       ${reset ? '' : `<div class="field"><label for="apw">${t('auth.password')}</label><input id="apw" type="password" minlength="6" autocomplete="${authMode === 'signup' ? 'new-password' : 'current-password'}" required></div>`}

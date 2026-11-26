@@ -5,6 +5,9 @@
      y en localStorage como copia local. Cada nivel terminado se añade a la tabla `level_results`. */
 (function (g) {
   const CFG = g.SINTAXIS_CONFIG || {};
+  // El SDK necesita solo la dirección del proyecto (https://xxxx.supabase.co): si se copió con /rest/v1/
+  // u otra ruta detrás, se quita; con ella, el inicio de sesión iría a una dirección que no existe.
+  try { if (CFG.supabaseUrl) CFG.supabaseUrl = new URL(CFG.supabaseUrl).origin; } catch (e) { CFG.supabaseUrl = ''; }
   const SDK = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js';
   const P = g.NibbleProgress;
   const MAXH = P.MAXH, fresh = P.fresh, merge = P.merge;
@@ -72,6 +75,10 @@
       this.client = g.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey, {
         auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
       });
+      // Proveedores activos en Supabase (para no enseñar "Continuar con Google" si no está activado).
+      // Sin red o si falla, providers queda en null y el botón se muestra igual.
+      this.providers = await fetch(CFG.supabaseUrl + '/auth/v1/settings', { headers: { apikey: CFG.supabaseAnonKey } })
+        .then(r => (r.ok ? r.json() : null)).then(j => (j && j.external) || null).catch(() => null);
       this.client.auth.onAuthStateChange((ev) => {
         if (ev === 'PASSWORD_RECOVERY') this.emit('recovery');
         if (ev === 'SIGNED_OUT') { this.user = null; this.emit('signedout'); }
