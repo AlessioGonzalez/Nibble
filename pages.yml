@@ -1,0 +1,77 @@
+# Valida el contenido y publica la web en GitHub Pages en cada push a main.
+# Activa Pages en Settings > Pages > Build and deployment > Source: GitHub Actions.
+# Opcional: define las variables del repositorio SUPABASE_URL y SUPABASE_ANON_KEY
+# (Settings > Secrets and variables > Actions > Variables) para activar el login.
+name: Publicar en GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validar el contenido
+        run: node scripts/validate.mjs
+
+      # Genera ejercicios de práctica y ejecuta los de Python y JavaScript para comprobar las respuestas.
+      - name: Comprobar el generador de ejercicios
+        run: node scripts/check-practice.mjs
+
+      # Java y C++: compila y ejecuta los ejercicios generados (el runner de GitHub trae javac y g++).
+      # continue-on-error: es nuevo y aún no se ha ejecutado en el CI; si falla, avisa pero no bloquea la publicación.
+      - name: Compilar los ejercicios de Java y C++
+        continue-on-error: true
+        run: node scripts/check-compiled.mjs
+
+      # Racha de secciones, contadores por dispositivo, unión de copias y borrado del progreso.
+      - name: Probar la lógica del progreso
+        run: node --test scripts/test-progress.mjs scripts/test-app.mjs
+
+      - name: Configurar Supabase
+        if: ${{ vars.SUPABASE_URL != '' && vars.SUPABASE_ANON_KEY != '' }}
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
+          # Opcional: la variable SUPABASE_GOOGLE=false quita el botón de Google.
+          SUPABASE_GOOGLE: ${{ vars.SUPABASE_GOOGLE }}
+        run: |
+          node -e "require('fs').writeFileSync('assets/js/config.js', 'window.SINTAXIS_CONFIG = ' + JSON.stringify({ supabaseUrl: process.env.SUPABASE_URL, supabaseAnonKey: process.env.SUPABASE_ANON_KEY, google: process.env.SUPABASE_GOOGLE !== 'false' }) + ';\n')"
+
+      # Sin Supabase, las sugerencias se envían como incidencias (issues) de este repositorio.
+      - name: Enlace de sugerencias
+        run: |
+          echo "window.SINTAXIS_CONFIG.feedbackUrl = window.SINTAXIS_CONFIG.feedbackUrl || 'https://github.com/${{ github.repository }}/issues/new';" >> assets/js/config.js
+
+      - name: Preparar la web
+        run: |
+          mkdir -p _site
+          cp -r index.html manifest.webmanifest sw.js assets content _site/
+          touch _site/.nojekyll
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4

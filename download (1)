@@ -1,0 +1,10 @@
+node_modules/
+_site/
+.DS_Store
+Thumbs.db
+.legacy/
+.impeccable/
+.claude/settings.local.json
+.env
+.env.*
+*.zip
