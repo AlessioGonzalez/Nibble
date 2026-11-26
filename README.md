@@ -4,7 +4,141 @@ Aprende **Python, Java, JavaScript y C++** a bocados, con retos de 30 días al e
 
 Te acompaña **Kibi**, un hámster programador que mordisquea código. Lleva una tarjeta `</>` del color del curso que estás haciendo.
 
+- **Pantalla inicial** con la presentación de la web. Se muestra en la primera visita y siempre en `#inicio`, y también desde el buscador (`Ctrl K` > *Pantalla de inicio*).
+- **30 días por lenguaje.** Cada día tiene una guía con ejemplos reales, 7 niveles de práctica y un reto final: 240 preguntas escritas por lenguaje.
+- **Niveles de 8 y 7 secciones:** el nivel 1 de cada día tiene 8, el 2 tiene 7, el 3 otra vez 8, y así sucesivamente. Cada nivel alterna secciones de **elegir la opción correcta** con secciones de **escribir código**: completar el hueco, escribir la salida exacta o escribir la línea entera. Además de las 240 preguntas escritas, cada nivel usa **ejercicios generados al azar** (`assets/js/practice.js`) sobre los temas ya vistos: imprimir, operaciones, variables, strings, listas, condicionales, bucles y funciones. Así ningún ejercicio se repite dentro de un nivel y cada nivel es distinto, también al volver a jugarlo. Cada nivel tiene su práctica del día, 1 o 2 de repaso de días anteriores y el resto generados.
+- **Sugerencias:** una página con un formulario para enviar ideas, errores de la web o errores en las lecciones. Con Supabase se guardan en la tabla `suggestions`; sin Supabase se abren como incidencia (*issue*) del repositorio de GitHub.
+- **El reto final desbloquea el día siguiente:** 7 preguntas (6 del día y el reto), con un fallo como máximo.
+- **10 vidas.** Cada fallo resta una; se recupera una cada 2 minutos, o las 10 al momento al completar un nivel extra.
+- **Pensada para el móvil (iOS y Android):** se puede añadir a la pantalla de inicio con su propio icono. Además, los campos de escribir código desactivan el autocorrector y aceptan las comillas y guiones que ponen los teclados del móvil.
+- **4 idiomas:** español, inglés, francés e italiano (interfaz y lecciones).
+- **Cuentas con email y contraseña** (Supabase): el progreso se guarda en la nube y se mantiene en cualquier dispositivo.
+- Menú lateral, buscador con `Ctrl K`, mapa de 30 días, modo claro y oscuro, y diseño para móvil.
 
+Es una web estática: HTML, CSS y JavaScript sin dependencias ni paso de compilación.
+
+## Probarla en local
+
+Los navegadores no cargan los cursos desde `file://`, así que sirve la carpeta con cualquier servidor estático:
+
+```bash
+npx serve .
+# o bien
+python -m http.server 8000
+```
+
+Sin configurar Supabase, la app funciona en **modo local**: no pide cuenta y guarda el progreso en el navegador.
+
+## Activar las cuentas y el progreso en la nube (Supabase)
+
+1. Crea un proyecto gratuito en [supabase.com](https://supabase.com).
+2. En **SQL Editor**, ejecuta el contenido de [`supabase/schema.sql`](supabase/schema.sql). Crea la tabla `progress` con seguridad a nivel de fila: cada usuario solo puede leer y escribir su propio progreso.
+3. En **Authentication > URL Configuration**, pon como *Site URL* la dirección donde publiques la web (por ejemplo `https://tu-usuario.github.io/nibble/`) y añádela también en *Redirect URLs*. Así funcionan los enlaces de confirmación y de cambio de contraseña.
+4. En **Project Settings > API**, copia la *Project URL* y la clave *anon public* y pégalas en [`assets/js/config.js`](assets/js/config.js):
+
+   ```js
+   window.SINTAXIS_CONFIG = {
+     supabaseUrl: 'https://xxxx.supabase.co',
+     supabaseAnonKey: 'eyJ...',
+   };
+   ```
+
+   La clave *anon* es pública por diseño; la protección la dan las políticas de `schema.sql`. **Nunca** pongas la clave `service_role` en este archivo.
+
+### Entrar con Google
+
+La pantalla de acceso tiene el botón **Continuar con Google**. Para que funcione:
+
+1. En [Google Cloud Console](https://console.cloud.google.com/) crea un proyecto y, en **APIs y servicios > Pantalla de consentimiento de OAuth**, configúrala como *Externa* con el nombre Nibble y tu correo de contacto.
+2. En **APIs y servicios > Credenciales > Crear credenciales > ID de cliente de OAuth**, elige *Aplicación web*:
+   - *Orígenes de JavaScript autorizados*: la dirección de la web (por ejemplo `https://tu-usuario.github.io`).
+   - *URI de redireccionamiento autorizados*: `https://xxxx.supabase.co/auth/v1/callback` (tu *Project URL* seguida de `/auth/v1/callback`; Supabase la muestra en el paso siguiente).
+3. En Supabase, **Authentication > Sign In / Providers > Google**: actívalo y pega el *Client ID* y el *Client Secret* de Google. El secreto solo va ahí, nunca en la web ni en el repositorio.
+4. Comprueba que la dirección de la web está en **Authentication > URL Configuration > Redirect URLs** (paso 3 de arriba). Para probar en local, añade también `http://localhost:8000/`.
+
+Si no quieres el botón de Google, pon `google: false` en `config.js` (o la variable de repositorio `SUPABASE_GOOGLE` con el valor `false`). Una cuenta creada con correo y otra con Google son la misma si usan el mismo correo verificado.
+
+Con Supabase configurado, la app muestra una pantalla de acceso (entrar, crear cuenta y recuperar la contraseña). El progreso se guarda en el navegador y se sincroniza con la nube poco después de cada cambio. Al entrar desde otro dispositivo, se combinan ambas copias sin perder nada:
+
+- La experiencia y las estadísticas se cuentan por dispositivo y se suman al unirse (si juegas sin conexión en el móvil y en el ordenador, al sincronizar se suman las dos cosas).
+- La racha de secciones es global: gana la del último cambio y el récord es el mayor.
+- *Borrar progreso* se respeta en todos los dispositivos: una copia anterior al borrado no lo devuelve.
+- Si la app arranca sin conexión, usa la copia guardada de la última cuenta y la sube cuando vuelve a haber red.
+
+Esa lógica está en [`assets/js/progress.js`](assets/js/progress.js) y la prueban `node --test scripts/test-progress.mjs`.
+
+### Qué crea `schema.sql`
+
+| Objeto | Para qué sirve |
+| --- | --- |
+| Tabla `progress` | Una fila por usuario con todo su progreso. La columna `revision` cuenta los guardados y `updated_at` la pone el servidor. Una restricción impide guardar algo que no sea un objeto JSON o que ocupe más de 512 KB. |
+| Función `save_progress` | Guarda el progreso solo si nadie lo ha cambiado desde la última lectura. Si otro dispositivo guardó antes, la app vuelve a leer, combina las dos copias y reintenta. Así dos pestañas o dos móviles no se pisan el progreso. |
+| Tabla `level_results` | El historial: una fila por cada nivel, reto, nivel extra o prueba terminados, con el curso, el día, las secciones, los aciertos, los fallos, la experiencia y el tiempo. Sin conexión se guardan en una cola local y se envían después. Cada fila lleva un `client_id` único, así que un reenvío nunca la duplica. |
+| Tabla `suggestions` | Las sugerencias del formulario: tipo, mensaje y, si el usuario lo marca, el curso y el día. Solo los usuarios con sesión pueden enviarlas y nadie puede leerlas desde la app. Se revisan en **Table Editor > suggestions**, donde la columna `status` sirve para marcarlas como `read` o `done`. Como mucho 5 por usuario y hora. |
+| Vista `my_stats` | Resumen por curso del usuario que la consulta: niveles, retos, experiencia, porcentaje de aciertos y última partida. |
+
+Todas las tablas tienen seguridad a nivel de fila: cada usuario solo ve y modifica lo suyo. El archivo se puede volver a ejecutar sin perder datos y actualiza las instalaciones anteriores. Si aún no lo has ejecutado de nuevo, la app sigue funcionando con la tabla `progress` antigua, pero sin control de versiones ni historial.
+
+**Al actualizar desde una versión anterior**, vuelve a ejecutar `schema.sql` entero en el SQL Editor. Solo añade cosas (la columna `level_results.client_id`, su índice único y el límite de sugerencias); no borra ni cambia datos. Sin ese paso la app sigue funcionando: envía el historial como antes, sin la protección contra duplicados.
+
+## Publicar en GitHub Pages
+
+1. Crea un repositorio vacío en GitHub (sin README ni licencia), por ejemplo `nibble`.
+2. Desde la carpeta del proyecto, súbelo a la rama `main`:
+
+   ```bash
+   git add .
+   git commit -m "Nibble: primera versión"
+   git branch -M main
+   git remote add origin https://github.com/TU-USUARIO/nibble.git
+   git push -u origin main
+   ```
+
+3. En GitHub, ve a **Settings > Pages** y en *Build and deployment* elige *Source: GitHub Actions*.
+4. En la pestaña **Actions** verás el workflow *Publicar en GitHub Pages*. Si el primer push se hizo antes del paso 3, ábrelo y pulsa *Run workflow*.
+5. Cuando termine, la web estará en `https://TU-USUARIO.github.io/nibble/`.
+6. Opcional, para activar las cuentas: en lugar de editar `config.js`, crea las variables `SUPABASE_URL` y `SUPABASE_ANON_KEY` en **Settings > Secrets and variables > Actions > Variables**. El workflow genera `config.js` con ellas al publicar. Recuerda poner la dirección de la web en Supabase (paso 3 del apartado anterior).
+7. Sugerencias sin Supabase: el workflow enlaza solo el formulario con las incidencias del repositorio (`https://github.com/TU-USUARIO/nibble/issues/new`). Comprueba que **Settings > General > Features > Issues** está activado (lo está por defecto en los repositorios públicos). Quien envíe una sugerencia así necesita una cuenta de GitHub.
+
+Cada push a `main` ejecuta [`.github/workflows/pages.yml`](.github/workflows/pages.yml), que valida las 3840 preguntas, ejecuta los ejercicios generados de Python y JavaScript, prueba la lógica del progreso y publica la web. Si algo falla, la publicación se detiene y el registro del workflow indica dónde. También compila y ejecuta los ejercicios generados de Java y C++; ese paso avisa si falla pero de momento no detiene la publicación.
+
+La web funciona sin conexión gracias a [`sw.js`](sw.js): guarda la página, el código, las lecciones abiertas y las fuentes, y los actualiza por detrás. Después de publicar una versión nueva, se ve en la siguiente visita.
+
+## Estructura
+
+```
+index.html                 página principal
+assets/css/app.css         estilos
+assets/js/config.js        claves de Supabase (vacías = modo local)
+assets/js/content-api.js   funciones que usan los archivos de contenido
+assets/js/i18n.js          textos de la interfaz en es, en, fr e it
+assets/js/progress.js      lógica del progreso: racha de secciones, contadores, repaso, unión de copias
+assets/js/store.js         progreso del usuario, login y sincronización
+assets/js/app.js           interfaz: mapa, días, lecciones, perfil y buscador
+content/<curso>/<idioma>.js  lecciones de cada curso en cada idioma
+docs/CONTENIDO.md          cómo escribir y traducir lecciones
+scripts/validate.mjs       validador del contenido
+scripts/check-practice.mjs comprueba el generador ejecutando los ejercicios de Python y JavaScript
+scripts/check-compiled.mjs compila y ejecuta los ejercicios generados de Java y C++ (si hay javac y g++)
+scripts/test-progress.mjs  pruebas de la racha, la sincronización y el repaso
+sw.js                      service worker: la web sin conexión
+assets/js/practice.js      generador de ejercicios de práctica
+supabase/schema.sql        tabla y políticas de la base de datos
+```
+
+## Añadir o corregir lecciones
+
+Lee [`docs/CONTENIDO.md`](docs/CONTENIDO.md) y valida antes de subir cambios:
+
+```bash
+node scripts/validate.mjs                 # todo
+node scripts/validate.mjs python          # un curso
+node scripts/validate.mjs python es       # un curso en un idioma
+node scripts/check-practice.mjs           # generador de ejercicios (necesita Python)
+node scripts/check-compiled.mjs           # ejercicios de Java y C++ (necesita javac y g++)
+node --test scripts/test-progress.mjs     # racha, sincronización y repaso
+node scripts/validate.mjs --allow-missing # ignora los archivos que aún no existen
+```
 
 Si falta la traducción de un curso, la app muestra la versión en español.
 

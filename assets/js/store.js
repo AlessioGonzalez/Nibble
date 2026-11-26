@@ -6,34 +6,13 @@
 (function (g) {
   const CFG = g.SINTAXIS_CONFIG || {};
   const SDK = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js';
-  const MAXH = 10;
-
-  const fresh = () => ({
-    v: 3, course: 'python', locale: null, xp: 0, hearts: MAXH, heartsTs: 0,
-    streak: 0, maxStreak: 0, lastDay: null, daily: { day: null, xp: 0 }, goal: 30,
-    done: {}, courseXp: {}, sound: true, savedAt: 0,
-    stats: { answered: 0, correct: 0, lessons: 0, perfect: 0, extras: 0, retos: 0 },
-  });
-
-  // Une dos copias del progreso del mismo usuario (la local y la de la nube) sin perder nada.
-  function merge(a, b) {
-    if (!b || b.v !== 3) return a;
-    if (!a || !a.savedAt) return Object.assign(fresh(), b);
-    const newer = (a.savedAt || 0) >= (b.savedAt || 0) ? a : b;
-    const older = newer === a ? b : a;
-    const m = Object.assign(fresh(), JSON.parse(JSON.stringify(newer)));
-    m.done = Object.assign({}, older.done, newer.done);
-    m.xp = Math.max(a.xp || 0, b.xp || 0);
-    for (const k in m.stats) m.stats[k] = Math.max(a.stats?.[k] || 0, b.stats?.[k] || 0);
-    const keys = new Set([...Object.keys(a.courseXp || {}), ...Object.keys(b.courseXp || {})]);
-    m.courseXp = {};
-    keys.forEach(k => { m.courseXp[k] = Math.max(a.courseXp?.[k] || 0, b.courseXp?.[k] || 0); });
-    m.maxStreak = Math.max(a.maxStreak || 0, b.maxStreak || 0);
-    const s = (a.lastDay || '') >= (b.lastDay || '') ? a : b;
-    m.streak = s.streak; m.lastDay = s.lastDay;
-    if (a.daily?.day && a.daily.day === b.daily?.day) m.daily = { day: a.daily.day, xp: Math.max(a.daily.xp, b.daily.xp) };
-    return m;
-  }
+  const P = g.NibbleProgress;
+  const MAXH = P.MAXH, fresh = P.fresh, merge = P.merge;
+  const uuid = () => (g.crypto && crypto.randomUUID ? crypto.randomUUID()
+    : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 3) | 8).toString(16); }));
+  const LAST_USER = 'nibble.lastUser';
+  // Identificador de este navegador para sus contadores (ver progress.js). No identifica a la persona.
+  const device = () => { try { let d = localStorage.getItem('nibble.device'); if (!d) { d = uuid().slice(0, 8); localStorage.setItem('nibble.device', d); } return d; } catch (e) { return 'nostore'; } };
 
   const Store = {
     MAXH,
@@ -45,22 +24,24 @@
     sync: 'local',
     _listeners: [],
     _timer: null,
+    dev: device(),
+    uid: null, // sin red al arrancar: usuario de la última sesión, para usar su copia local
 
     on(fn) { this._listeners.push(fn); },
     emit(ev, data) { this._listeners.forEach(f => f(ev, data)); },
-    key() { return 'sintaxis.v3.' + (this.user ? this.user.id : 'local'); },
+    key() { return 'sintaxis.v3.' + (this.user ? this.user.id : this.uid || 'local'); },
     readLocal() {
       try { const s = JSON.parse(localStorage.getItem(this.key())); if (s && s.v === 3) return s; } catch (e) { /* sin almacenamiento */ }
       return null;
     },
     writeLocal() { try { localStorage.setItem(this.key(), JSON.stringify(this.state)); } catch (e) { /* sin almacenamiento */ } },
-    use(s) {
-      const st = Object.assign(fresh(), s || {});
-      st.stats = Object.assign(fresh().stats, st.stats);
-      this.state = st;
-      return st;
+    use(s) { this.state = P.totals(P.upgrade(s)); return this.state; },
+    // resetAt hace que las copias anteriores (otros dispositivos, la nube) no devuelvan el progreso borrado.
+    reset() {
+      const { course, locale, theme, sound } = this.state;
+      this.use(Object.assign(fresh(), { course, locale, theme, sound, resetAt: Date.now() }));
+      this.save();
     },
-    reset() { const keep = { course: this.state.course, locale: this.state.locale }; this.use(Object.assign(fresh(), keep)); this.save(); },
     save() {
       this.state.savedAt = Date.now();
       this.writeLocal();
@@ -82,7 +63,12 @@
     async init() {
       if (!this.configured) { this.use(this.readLocal()); this.setSync('local'); return { needsAuth: false }; }
       try { await this.loadSdk(); }
-      catch (e) { this.configured = false; this.use(this.readLocal()); this.setSync('err'); return { needsAuth: false, sdkError: true }; }
+      catch (e) {
+        // Sin red: se sigue con la copia local del último usuario, que se subirá en la próxima visita con red.
+        this.configured = false;
+        try { this.uid = localStorage.getItem(LAST_USER); } catch (er) { /* */ }
+        this.use(this.readLocal()); this.setSync('err'); return { needsAuth: false, sdkError: true };
+      }
       this.client = g.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey, {
         auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
       });
@@ -100,6 +86,7 @@
     async startUser(user) {
       this.user = user;
       this.rev = 0;
+      try { localStorage.setItem(LAST_USER, user.id); } catch (e) { /* */ }
       this.use(this.readLocal());
       if (await this.pull()) await this.push();
     },
@@ -147,7 +134,7 @@
       if (!this.user) return;
       try {
         const q = JSON.parse(localStorage.getItem(this.resultsKey()) || '[]');
-        q.push(r);
+        q.push(Object.assign({ client_id: uuid() }, r));
         localStorage.setItem(this.resultsKey(), JSON.stringify(q.slice(-200)));
       } catch (e) { /* sin almacenamiento */ }
       this.flushResults();
@@ -159,7 +146,14 @@
       if (!q.length) return;
       this._flushing = true;
       const key = this.resultsKey();
-      const { error } = await this.client.from('level_results').insert(q.map(r => Object.assign({}, r, { user_id: this.user.id })));
+      // client_id es único (schema.sql): si un envío llegó pero se perdió la respuesta, o dos pestañas
+      // envían la misma cola, el servidor ignora las filas repetidas.
+      const rows = q.map(r => Object.assign({}, r, { user_id: this.user.id }));
+      let { error } = await this.client.from('level_results').upsert(rows, { onConflict: 'client_id', ignoreDuplicates: true });
+      if (error && /PGRST204|42703|42P10/.test(error.code || '')) {
+        // Base de datos sin la columna client_id (schema.sql antiguo): envío normal.
+        ({ error } = await this.client.from('level_results').insert(rows.map(({ client_id, ...r }) => r)));
+      }
       this._flushing = false;
       if (error) return;
       try { localStorage.setItem(key, JSON.stringify(JSON.parse(localStorage.getItem(key) || '[]').slice(q.length))); } catch (e) { /* */ }
@@ -173,6 +167,7 @@
         const { error } = await this.client.from('suggestions').insert(row);
         if (!error) return { via: 'db' };
         // Tabla inexistente (schema.sql antiguo): se intenta por GitHub. Cualquier otro error se muestra.
+        if (error.hint === 'rate_limit') throw new Error('limit');
         if (!/PGRST205|42P01/.test(error.code || '')) throw error;
       }
       const base = CFG.feedbackUrl;
@@ -182,6 +177,12 @@
       return { via: 'github', url: `${base}${base.includes('?') ? '&' : '?'}title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}` };
     },
 
+    // Inicio de sesión con Google: Supabase lleva a la página de Google y vuelve a esta misma dirección,
+    // donde init() recoge la sesión de la URL (detectSessionInUrl). Requiere activar Google en Supabase.
+    async signInGoogle() {
+      const { error } = await this.client.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: location.origin + location.pathname } });
+      if (error) throw error;
+    },
     async signIn(email, password) {
       const { data, error } = await this.client.auth.signInWithPassword({ email, password });
       if (error) throw error;
@@ -207,6 +208,7 @@
       if (this._timer) { clearTimeout(this._timer); await this.push(); }
       await this.client.auth.signOut();
       this.user = null;
+      try { localStorage.removeItem(LAST_USER); } catch (e) { /* */ }
     },
   };
 

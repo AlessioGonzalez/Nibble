@@ -66,7 +66,7 @@ jobs:
       - name: Preparar la web
         run: |
           mkdir -p _site
-          cp -r index.html manifest.webmanifest sw.js assets content _site/
+          cp -r index.html privacidad.html terminos.html manifest.webmanifest sw.js assets content _site/
           touch _site/.nojekyll
 
       - uses: actions/configure-pages@v5

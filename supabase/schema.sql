@@ -96,6 +96,12 @@ create table if not exists public.level_results (
 );
 create index if not exists level_results_user_time on public.level_results (user_id, created_at desc);
 
+-- Identificador que pone la app a cada resultado. Si un envío llega pero se pierde la respuesta,
+-- o dos pestañas envían lo mismo, la fila repetida se ignora (upsert con ignoreDuplicates).
+-- Las filas antiguas quedan con client_id vacío: los NULL no chocan entre sí.
+alter table public.level_results add column if not exists client_id uuid;
+create unique index if not exists level_results_client_id on public.level_results (client_id);
+
 alter table public.level_results enable row level security;
 
 drop policy if exists "level_results: leer las propias" on public.level_results;
@@ -151,3 +157,20 @@ create policy "suggestions: enviar las propias"
   on public.suggestions for insert
   to authenticated
   with check ((select auth.uid()) = user_id);
+
+-- Como mucho 5 sugerencias por usuario y hora. La función es security definer porque el usuario
+-- no puede leer la tabla (RLS) y el recuento le daría siempre 0; nadie puede llamarla directamente.
+create index if not exists suggestions_user_time on public.suggestions (user_id, created_at desc);
+create or replace function public.suggestions_rate_limit()
+returns trigger language plpgsql security definer set search_path = '' as $$
+begin
+  if (select count(*) from public.suggestions s
+      where s.user_id = new.user_id and s.created_at > now() - interval '1 hour') >= 5 then
+    raise exception 'suggestions: límite de 5 por hora' using hint = 'rate_limit';
+  end if;
+  return new;
+end $$;
+revoke all on function public.suggestions_rate_limit() from public, anon, authenticated;
+drop trigger if exists suggestions_rate on public.suggestions;
+create trigger suggestions_rate before insert on public.suggestions
+  for each row execute function public.suggestions_rate_limit();

@@ -3,6 +3,7 @@
 'use strict';
 const VERSION = '3.0.0';
 const Store = window.SintaxisStore;
+const P = window.NibbleProgress;
 const t = (k, v) => window.I18N.t(k, v);
 const MAXH = Store.MAXH, HEART_MS = 2 * 60 * 1000, EXTRA_HEARTS = MAXH /* el nivel extra rellena todas las vidas */, DAYS = 30, PER_DAY = 8, RETO = 7;
 const LOCALES = ['es', 'en', 'fr', 'it'];
@@ -32,7 +33,7 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;'
 const rich = s => esc(s).replace(/`([^`]+)`/g, '<code>$1</code>');
 const shuffle = (a, rnd = Math.random) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const reduceMotion = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-const dayStr = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+const dayStr = P.dayStr;
 const today = () => dayStr(new Date());
 const yesterday = () => { const d = new Date(); d.setDate(d.getDate() - 1); return dayStr(d); };
 const fmtMs = ms => { const s = Math.ceil(ms / 1000); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
@@ -73,6 +74,19 @@ const joinTokens = ts => { let s = ''; ts.forEach((x, i) => { const p = ts[i - 1
 const plain = s => s.replace(/[“”„‟″«»]/g, '"').replace(/[‘’‚‛′]/g, "'")
   .replace(/—/g, '--').replace(/–/g, '-').replace(/…/g, '...').replace(/[  ]/g, ' ');
 const norm = s => plain(s).trim().replace(/\s+/g, ' ').replace(/;$/, '');
+// Por qué una respuesta escrita casi correcta no vale: mayúsculas, comillas, dos puntos o paréntesis. '' si no se sabe.
+function whyWrong(answers, v) {
+  const sq = x => norm(x).replace(/\s/g, ''), mine = sq(v), count = (x, c) => x.split(c).length - 1;
+  if (!mine) return '';
+  for (const a of answers.map(sq)) {
+    if (a.toLowerCase() === mine.toLowerCase()) return 'ex.why.case';
+    if (a.replace(/'/g, '"') === mine.replace(/'/g, '"')) return 'ex.why.quotes';
+    if (a.endsWith(':') && a.slice(0, -1) === mine) return 'ex.why.colon';
+  }
+  if (['()', '[]', '{}'].some(([o, c]) => count(mine, o) !== count(mine, c))) return 'ex.why.brackets';
+  if (count(mine, '"') % 2 || count(mine, "'") % 2) return 'ex.why.unclosed';
+  return '';
+}
 
 /* ---------- iconos ---------- */
 const sv = (p, f) => `<svg viewBox="0 0 24 24" width="24" height="24" ${f ? 'fill="currentColor"' : 'fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"'} aria-hidden="true">${p}</svg>`;
@@ -103,6 +117,8 @@ const I = {
   right: sv('<path d="m9 6 6 6-6 6"/>'),
   logout: sv('<path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l-5-5 5-5M5 12h11"/>'),
   chat: sv('<path d="M20 12.5a7.5 7.5 0 0 1-11 6.6L4 20.5l1.4-4.6A7.5 7.5 0 1 1 20 12.5zM9 11h6M9 14.5h4"/>'),
+  chain: sv('<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>'),
+  sun: sv('<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/>'),
   bulb: sv('<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/>'),
 };
 
@@ -155,7 +171,7 @@ function sfx(kind) {
 /* ---------- vidas, racha y meta ---------- */
 function normalizeDay() {
   if (S.lastDay && S.lastDay !== today() && S.lastDay !== yesterday()) S.streak = 0;
-  if (S.daily.day !== today()) S.daily = { day: today(), xp: 0 };
+  if (S.daily.day !== today()) P.totals(S, today());
 }
 function regen() {
   if (S.hearts >= MAXH) { S.hearts = MAXH; return 0; }
@@ -198,6 +214,7 @@ async function getContent(course, loc) {
 async function loadCurrent() {
   const r = await getContent(S.course, S.locale);
   CUR = r ? r : { course: S.course, loc: S.locale, data: null, fallback: false };
+  if (CUR.data) CUR.data.days.forEach((day, di) => day.x.forEach((x, i) => { x.ref = `${CUR.course}:${di}:${i}`; }));
 }
 const dayData = d => CUR && CUR.data && CUR.data.days[d];
 // Un curso puede estar a medio escribir: los días que faltan se muestran como "Próximamente".
@@ -216,10 +233,22 @@ function go(hash) { if (location.hash === '#' + hash) render(true); else locatio
 const dayHash = (d, tab) => `day-${d + 1}${tab ? '-' + tab : ''}`;
 
 /* ---------- piezas comunes ---------- */
+const THEMES = ['auto', 'light', 'dark'];
+const darkMQ = window.matchMedia && matchMedia('(prefers-color-scheme: dark)');
+// Claro, oscuro o automático (el del sistema). index.html lo aplica antes de pintar para que no parpadee.
+function applyColorScheme() {
+  const th = THEMES.includes(S.theme) ? S.theme : 'auto', de = document.documentElement;
+  if (th === 'auto') delete de.dataset.theme; else de.dataset.theme = th;
+  try { localStorage.setItem('nibble.theme', th); } catch (e) { /* */ }
+  const dark = th === 'dark' || (th === 'auto' && darkMQ && darkMQ.matches);
+  const meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.content = dark ? '#0D1220' : '#EDF1F7';
+}
+if (darkMQ && darkMQ.addEventListener) darkMQ.addEventListener('change', () => applyColorScheme());
 function applyTheme() {
   const m = META[S.course], r = document.documentElement.style;
   r.setProperty('--lang', m.color); r.setProperty('--lang-dark', m.dark); r.setProperty('--lang-ink', m.ink);
   document.documentElement.lang = S.locale;
+  applyColorScheme();
 }
 const badge = c => { const m = META[c]; return `<span class="badge" style="--c:${m.color};--cd:${m.dark};--ci:${m.ink}">${esc(m.short)}</span>`; };
 function heartsRow(big) { let h = ''; for (let i = 0; i < MAXH; i++) h += I.heart.replace('<svg', `<svg class="${i < S.hearts ? '' : 'off'}"`); return `<div class="hearts-row ${big ? 'big' : ''}" aria-label="${t('hearts.aria', { n: S.hearts, m: MAXH })}">${h}</div>`; }
@@ -252,6 +281,7 @@ function navHTML(compact) {
 function statsHTML() {
   const on = S.lastDay === today();
   return `<span class="stat flame ${on ? 'on' : ''}" title="${t('stat.streak')}">${I.flame}<b>${S.streak}</b></span>
+  <span class="stat run ${S.run.cur ? 'on' : ''}" title="${t('stat.run')}">${I.chain}<b>${S.run.cur}</b></span>
   <span class="stat xp" title="${t('stat.xp')}">${I.bolt}<b>${S.xp}</b></span>
   <button class="stat heart" data-act="hearts" title="${timerText()}" aria-label="${t('hearts.aria', { n: S.hearts, m: MAXH })}">${I.heart}<b>${S.hearts}</b></button>`;
 }
@@ -386,7 +416,27 @@ const ACH = [
   ['poly', () => COURSES.filter(c => doneCount(c) > 0).length >= 2, I.globe],
   ['xp1000', () => S.xp >= 1000, I.bolt],
   ['course', () => COURSES.some(c => doneCount(c) === DAYS * PER_DAY), I.trophy],
+  ['run10', () => (S.run.best || 0) >= 10, I.chain],
+  ['run50', () => (S.run.best || 0) >= 50, I.chain],
+  ['fix10', () => P.fixedCount(S) >= 10, I.check],
 ];
+// Guarda la fecha de los logros recién conseguidos. Los que ya se tenían antes de esta versión
+// se guardan con fecha 1 ("antes del historial"): no se sabe cuándo se consiguieron.
+const checkAch = (when = Date.now()) => P.unlock(S, ACH.filter(([, f]) => f()).map(([id]) => id), when);
+const fmtDate = ts => new Date(ts).toLocaleDateString(S.locale || 'es', { day: 'numeric', month: 'short', year: 'numeric' });
+const fmtTime = sec => { const h = Math.floor(sec / 3600), m = Math.round((sec % 3600) / 60); return h ? t('stats.hm', { h, m }) : t('stats.m', { m }); };
+function statsSection() {
+  const hist = P.history(S, 14), max = Math.max(1, ...hist.map(r => r.xp)), td = hist[hist.length - 1];
+  const bars = hist.map(r => `<span class="sbar ${r.day === today() ? 'today' : ''}" title="${t('stats.xpDay', { d: fmtDate(new Date(r.day + 'T12:00')), xp: r.xp })}"><i style="height:${Math.round(r.xp / max * 100)}%"></i></span>`).join('');
+  const weak = P.weak(S, S.course).slice(0, 4), due = P.pending(S, S.course).length;
+  return `<h2>${t('stats.title')}</h2><div class="sgrid">
+    <div class="card"><div class="goal-h"><h3>${t('stats.activity')}</h3><span>${hist.reduce((a, r) => a + r.xp, 0)} XP</span></div>
+      <div class="sbars" role="img" aria-label="${esc(hist.map(r => t('stats.xpDay', { d: fmtDate(new Date(r.day + 'T12:00')), xp: r.xp })).join(', '))}">${bars}</div>
+      <p class="note">${t('stats.time')}: <b>${fmtTime(P.studySeconds(S))}</b> · ${t('stats.today')}: <b>${fmtTime(td.sec)}</b>, ${td.n ? Math.round(td.ok / td.n * 100) : 0}% ${t('profile.acc')}</p>
+      <p class="note">${t('stats.since')}</p></div>
+    <div class="card"><h3>${t('stats.weak')} · ${META[S.course].name}</h3>${weak.length ? `<ul class="weak">${weak.map(w => `<li><button class="linkbtn" data-go="${dayHash(w.day - 1, 'guide')}">${t('day.n', { d: w.day })}: ${esc(dayTitle(w.day - 1))}</button><small>${t('stats.weakAcc', { p: Math.round(w.acc * 100), n: w.n })}</small></li>`).join('')}</ul>` : `<p class="note">${t('stats.weakNone')}</p>`}
+      <p class="note">${due ? t('stats.review', { n: due }) : t('stats.reviewNone')}</p></div></div>`;
+}
 function renderProfile() {
   const acc = S.stats.answered ? Math.round(S.stats.correct / S.stats.answered * 100) : 0;
   let h = `<div class="page"><h1>${t('profile.title')}</h1>
@@ -395,15 +445,19 @@ function renderProfile() {
     <div class="ptile" style="color:var(--gold)">${I.bolt}<div><b>${S.xp}</b><span>${t('profile.xp')}</span></div></div>
     <div class="ptile" style="color:var(--ok)">${I.check}<div><b>${S.stats.lessons}</b><span>${t('profile.levels')}</span></div></div>
     <div class="ptile" style="color:var(--gem)">${I.target}<div><b>${acc}%</b><span>${t('profile.acc')}</span></div></div>
-   </div><h2>${t('profile.courses')}</h2><div class="plist">`;
+    <div class="ptile" style="color:var(--ok)">${I.chain}<div><b>${S.run.cur}</b><span>${t('profile.run')}</span></div></div>
+    <div class="ptile" style="color:var(--gold)">${I.trophy}<div><b>${S.run.best}</b><span>${t('profile.runBest')}</span></div></div>
+   </div>${statsSection()}<h2>${t('profile.courses')}</h2><div class="plist">`;
   for (const c of COURSES) {
     const p = Math.round(doneCount(c) / (DAYS * PER_DAY) * 100);
-    h += `<div class="prow">${badge(c)}<div><b>${META[c].name}</b><p>${p === 100 ? t('courses.done') : t('courses.next', { d: currentDay(c) + 1 })}</p><div class="meter lang" style="--c:${META[c].color};margin-top:8px;height:8px"><i style="width:${p}%"></i></div></div><small>${p}%</small></div>`;
+    h += `<div class="prow">${badge(c)}<div><b>${META[c].name}</b><p>${p === 100 ? t('courses.done') : t('courses.next', { d: currentDay(c) + 1 })}</p><div class="meter lang" style="--c:${META[c].color};margin-top:8px;height:8px"><i style="width:${p}%"></i></div></div><small>${p}%<br>${S.courseXp[c] || 0} XP</small></div>`;
   }
   h += `</div><h2>${t('profile.ach')}</h2><div class="plist">`;
-  ACH.forEach(([id, f, ic]) => { const on = f(); h += `<div class="prow ${on ? '' : 'off'}"><span class="medal ${on ? 'on' : ''}">${ic}</span><div><b>${t('ach.' + id)}</b><p>${t('ach.' + id + '.d')}</p></div><small>${on ? t('profile.achieved') : t('profile.pending')}</small></div>`; });
+  ACH.forEach(([id, f, ic]) => { const on = f(); h += `<div class="prow ${on ? '' : 'off'}"><span class="medal ${on ? 'on' : ''}">${ic}</span><div><b>${t('ach.' + id)}</b><p>${t('ach.' + id + '.d')}</p></div><small>${on ? (S.ach[id] > 1 ? t('profile.achAt', { d: fmtDate(S.ach[id]) }) : t('profile.achieved')) : t('profile.pending')}</small></div>`; });
   h += `</div><h2>${t('profile.settings')}</h2><div class="plist">
     <div class="prow"><span class="medal">${I.globe}</span><div><b>${t('profile.lang')}</b><p>${t('profile.langDesc')}</p></div>${langPick()}</div>
+    <div class="prow"><span class="medal">${I.sun}</span><div><b>${t('profile.theme')}</b><p>${t('profile.themeDesc')}</p></div>
+      <div class="seg" role="group" aria-label="${t('profile.theme')}">${THEMES.map(th => `<button class="${(S.theme || 'auto') === th ? 'on' : ''}" data-theme-set="${th}" aria-pressed="${(S.theme || 'auto') === th}">${t('theme.' + th)}</button>`).join('')}</div></div>
     <div class="prow"><span class="medal">${I.target}</span><div><b>${t('goal.title')}</b><p>${t('profile.goalDesc')}</p></div>
       <div class="seg" role="group" aria-label="${t('goal.title')}">${[10, 20, 30, 50].map(gl => `<button class="${S.goal === gl ? 'on' : ''}" data-goal="${gl}" aria-pressed="${S.goal === gl}">${gl}</button>`).join('')}</div></div>
     <div class="prow"><span class="medal">${I.sound}</span><div><b>${t('profile.sound')}</b><p>${t('profile.soundDesc')}</p></div>
@@ -411,6 +465,7 @@ function renderProfile() {
     <div class="prow"><span class="medal">${I.x}</span><div><b>${t('profile.reset')}</b><p>${confirmReset ? t('profile.resetConfirm') : t('profile.resetDesc')}</p></div>
       ${confirmReset ? `<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"><button class="btn small ghost" data-act="reset-cancel">${t('common.cancel')}</button><button class="btn small danger" data-act="reset-yes">${t('profile.resetBtn')}</button></div>` : `<button class="btn small ghost" data-act="reset">${t('profile.resetBtn')}</button>`}</div>
     <div class="prow"><span class="medal">${I.chat}</span><div><b>${t('nav.suggest')}</b><p>${t('sug.lead')}</p></div><button class="btn small ghost" data-go="sugerencias">${t('sug.send')}</button></div>
+    <div class="prow"><span class="medal">${I.book}</span><div><b>${t('legal.title')}</b><p>${legalLinks()}</p></div><span></span></div>
    </div><h2>${t('profile.account')}</h2><div class="plist">
     ${Store.user ? `<div class="prow"><span class="medal">${I.user}</span><div><b>${esc(Store.user.email || '')}</b>${syncHTML()}</div><button class="btn small ghost" data-act="signout">${t('profile.signout')}</button></div>`
       : `<div class="prow"><span class="medal">${I.user}</span><div><b>${t('profile.localTitle')}</b><p>${t('profile.localMode')}</p></div><span></span></div>`}
@@ -450,7 +505,7 @@ async function sendSuggestion() {
     sug = { kind: sug.kind, msg: '', ctx: sug.ctx, state: r.via === 'github' ? 'github' : 'ok', err: '', url: r.url || '' };
     try { localStorage.setItem('nibble.sugAt', String(Date.now())); } catch (e) { /* */ }
   } catch (err) {
-    sug.state = ''; sug.err = err && err.message === 'off' ? t('sug.off') : t('sug.err');
+    sug.state = ''; sug.err = err && err.message === 'off' ? t('sug.off') : err && err.message === 'limit' ? t('sug.limit') : t('sug.err');
   }
   if (route.v === 'suggest') render();
 }
@@ -476,11 +531,27 @@ function scrollToCurrent() {
 }
 
 /* ---------- modales ---------- */
+let modalReturn = null;
 function openModal(html, cls = 'dialog') {
+  if ($('#modal').hidden) modalReturn = document.activeElement;
   const m = $('#modal'); m.innerHTML = `<div class="${cls}" role="dialog" aria-modal="true">${html}</div>`; m.hidden = false;
   const f = m.querySelector('input, .acts .btn, button'); f && f.focus();
 }
-function closeModal() { const m = $('#modal'); m.hidden = true; m.innerHTML = ''; }
+function closeModal() {
+  const m = $('#modal'), was = !m.hidden; m.hidden = true; m.innerHTML = '';
+  if (was && modalReturn && document.contains(modalReturn)) modalReturn.focus();
+  modalReturn = null;
+}
+// Tab no sale del modal ni de la lección abiertos (role="dialog" aria-modal).
+function trapTab(e) {
+  const box = !$('#modal').hidden ? $('#modal') : !LS.hidden ? LS : null;
+  if (!box) return;
+  const els = [...box.querySelectorAll('button:not([disabled]), input:not([readonly]), textarea, a[href], [tabindex]:not([tabindex="-1"])')].filter(el => el.offsetParent !== null);
+  if (!els.length) return;
+  const first = els[0], last = els[els.length - 1];
+  if (e.shiftKey && (document.activeElement === first || !box.contains(document.activeElement))) { last.focus(); e.preventDefault(); }
+  else if (!e.shiftKey && (document.activeElement === last || !box.contains(document.activeElement))) { first.focus(); e.preventDefault(); }
+}
 function heartsModal() {
   regen();
   openModal(`<div class="center">${heartsRow(true)}<h2>${S.hearts === 0 ? t('hearts.none') : t('hearts.have', { n: S.hearts, m: MAXH })}</h2>
@@ -579,11 +650,15 @@ function prep(ex) {
   if (ex.t === 'order') { r.bank = shuffle([...ex.w, ...(ex.x || [])]).map((o, i) => ({ t: o, id: i, used: false })); r.picked = []; }
   return r;
 }
+let lessonReturn = null;
 function startLesson(opts) {
   regen();
   if ((opts.mode === 'practice' || opts.mode === 'reto') && S.hearts <= 0) { heartsModal(); return; }
   closeModal(); openPop = null;
-  L = Object.assign({}, opts, { course: S.course, queue: opts.ex.map(prep), total: opts.ex.length, correct: 0, mistakes: 0, answered: 0, firstOk: 0, start: Date.now(), prog: 0, combo: 0 });
+  // pos: posición original de cada sección en el nivel (la usan la racha y el número de sección).
+  L = Object.assign({}, opts, { course: S.course, queue: opts.ex.map((e, i) => Object.assign(prep(e), { pos: i })), total: opts.ex.length, correct: 0, mistakes: 0, answered: 0, firstOk: 0, start: Date.now(), prog: 0, combo: 0 });
+  lessonReturn = document.activeElement;
+  LS.setAttribute('aria-label', opts.mode === 'reto' ? t('node.reto') : opts.mode === 'practice' ? t('node.practice', { n: opts.k + 1 }) : opts.mode === 'extra' ? t('nav.extra') : t('jump.label'));
   LS.hidden = false; lockPage(true); fitLesson();
   renderEx();
 }
@@ -592,13 +667,15 @@ function startLesson(opts) {
 const sectionsOf = k => (k % 2 ? 7 : 8);
 const ORDER_Q = /^(ordena|order|arrange|put |remets|ordonne|ordina|metti)/i;
 // Versión "escríbelo tú" de un ejercicio de opciones, o null si la respuesta no cabe en una línea.
-function asTyped(ex) {
+function typedForm(ex) {
   if (ex.t === 'type') return ex;
   if (ex.t === 'fill') return { t: 'type', q: ex.q, c: ex.c, a: [ex.o[0]], e: ex.e };
   if (ex.t === 'out' && !ex.o[0].includes('\n') && ex.o[0].length <= 40) return { t: 'type', q: t('ex.q.outType'), c: ex.c, a: [ex.o[0]], e: ex.e, line: 'out' };
   if (ex.t === 'order' && !ORDER_Q.test(ex.q)) { const s = joinTokens(ex.w); if (s.length <= 70) return { t: 'type', q: ex.q, c: '', a: [s], e: ex.e, line: 'code' }; }
   return null;
 }
+// La versión escrita conserva de dónde viene el ejercicio (ref) y su familia (fam).
+const asTyped = ex => { const r = typedForm(ex); return r && r !== ex ? Object.assign(r, { ref: ex.ref, fam: ex.fam }) : r; };
 /* Elige n secciones de `list` (en orden de preferencia) y usa cada ejercicio UNA sola vez,
    alternando elegir y escribir. Solo si no hay bastantes ejercicios distintos (el día 1 no tiene repaso)
    repite alguno, al final y en la otra forma. */
@@ -632,14 +709,24 @@ function buildLevel(d, k, replay) {
   const near = d > 3 ? days.slice(d - 3, d) : days.slice(0, d), far = d > 3 ? days.slice(0, d - 3) : [];
   const prev = [...shuffle(near.flatMap(x => x.x.slice(0, RETO)), rnd), ...shuffle(far.flatMap(x => x.x.slice(0, RETO)), rnd)];
   const start = replay ? Math.floor(Math.random() * Math.max(1, prev.length)) : k * 2;
-  const rev = Array.from({ length: Math.min(n >= 8 ? 2 : 1, prev.length) }, (_, i) => prev[(start + i) % prev.length]);
+  const due = dueExercises(d, own[k]), want = n >= 8 ? 2 : 1;
+  const rev = [...due, ...Array.from({ length: Math.min(want, prev.length) }, (_, i) => prev[(start + i) % prev.length]).filter(x => !due.includes(x))].slice(0, want);
   const list = [own[k], ...fresh(d, n + 6)];
   rev.forEach((ex, i) => list.splice(2 + i * 3, 0, ex));
   // Si el generador no está disponible, completa con las demás prácticas del día.
   if (list.length < n) list.push(...[0, 2, 4, 6, 1, 3, 5].map(j => own[(k + j) % RETO]));
   return mixSections(list, n, k % 2 === 1);
 }
-const fresh = (d, count) => (window.NibblePractice ? window.NibblePractice.generate(CUR.course, d + 1, count, Math.random, t) : []);
+// Ejercicios nuevos del generador; los temas con menos aciertos salen más a menudo.
+const fresh = (d, count) => (window.NibblePractice ? window.NibblePractice.generate(CUR.course, d + 1, count, Math.random, t, P.weak(S, CUR.course).map(w => w.day)) : []);
+// Fallos pendientes de repaso (del temario) de los días ya vistos, sin el ejercicio propio del nivel.
+function dueExercises(d, skip) {
+  return P.pending(S, CUR.course).map(ref => { const [, dd, i] = ref.split(':').map(Number); return dd <= d && CUR.data.days[dd] ? CUR.data.days[dd].x[i] : null; })
+    .filter(x => x && x !== skip);
+}
+// Tema de un ejercicio: el día del temario en que se enseña ('curso:día', día de 1 a 30).
+const conceptOf = ex => ex.ref ? `${L.course}:${+ex.ref.split(':')[1] + 1}`
+  : ex.fam && window.NibblePractice && NibblePractice.UNLOCK[L.course][ex.fam] ? `${L.course}:${NibblePractice.UNLOCK[L.course][ex.fam]}` : null;
 function startNode(key) {
   const [, d, k] = key.split(':').map((v, i) => i ? +v : v), replay = !!S.done[key];
   startLesson({ mode: k === RETO ? 'reto' : 'practice', d, k, key, replay, ex: buildLevel(d, k, replay) });
@@ -648,8 +735,8 @@ function startExtra() {
   if (!CUR.data) return;
   closeModal();
   if (L) { LS.hidden = true; LS.innerHTML = ''; L = null; lockPage(false); }
-  const pool = CUR.data.days.slice(0, currentDay(S.course) + 1).flatMap(d => d.x);
-  startLesson({ mode: 'extra', ex: mixSections(shuffle([...shuffle(pool.slice()).slice(0, 3), ...fresh(currentDay(S.course), 4)]), 5) });
+  const pool = CUR.data.days.slice(0, currentDay(S.course) + 1).flatMap(d => d.x), due = dueExercises(currentDay(S.course)).slice(0, 2);
+  startLesson({ mode: 'extra', ex: mixSections(shuffle([...due, ...shuffle(pool.filter(x => !due.includes(x))).slice(0, Math.max(1, 3 - due.length)), ...fresh(currentDay(S.course), 4)]), 5) });
 }
 function startTest(d) {
   const pool = CUR.data.days.slice(Math.max(0, d - 6), d).flatMap(x => x.x);
@@ -675,7 +762,7 @@ const isMono = s => !/\s/.test(s) || s.includes('(');
 function exHTML(ex) {
   const isRetoQ = L.mode === 'reto' && ex.src === dayData(L.d).x[RETO];
   const write = ex.t === 'type', inp = cls => `<input class="${cls}" id="typeIn" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" aria-label="${t('ex.answer')}">`;
-  let h = `<div class="ex-tags"><span class="ex-sec">${t('ex.section', { n: L.total - L.queue.length + 1, m: L.total })}</span>`;
+  let h = `<div class="ex-tags"><span class="ex-sec">${t('ex.section', { n: ex.pos + 1, m: L.total })}</span>${ex.retry ? `<span class="ex-kind">${t('ex.retryTag')}</span>` : ''}`;
   h += isRetoQ ? `<span class="ex-kind">${I.crown}${t('node.reto')}</span>` : `<span class="ex-kind ${write ? 'write' : 'pick'}">${write ? I.code : I.target}${t(write ? 'ex.kind.write' : 'ex.kind.pick')}</span>`;
   h += `</div><div class="ex-head">${kibi('idle', 56)}<h2 class="ex-q">${rich(ex.q || t('ex.q.' + ex.t))}</h2></div>`;
   if (ex.c) h += codeBlock(ex.c, L.course, ex.t === 'fill' ? `<span class="blank" id="blank">&nbsp;</span>` : write && !ex.line ? inp('blank-in') : '');
@@ -689,7 +776,7 @@ function exHTML(ex) {
 function renderEx() {
   const ex = L.queue[0]; L.sel = null; L.phase = 'answer';
   LS.innerHTML = `<div class="ls-top">${topHTML()}</div><div class="ls-body"><div class="ex">${exHTML(ex)}</div></div>
-   <div class="ls-foot" id="foot"><div class="foot-in"><button class="btn ghost" data-act="skip">${t('ex.skip')}</button><div class="fb" id="fb"></div><button class="btn primary" id="checkBtn" data-act="check" disabled>${t('ex.check')}</button></div></div>`;
+   <div class="ls-foot" id="foot"><div class="foot-in"><button class="btn ghost" data-act="skip">${t('ex.skip')}</button><div class="fb" id="fb" role="status" aria-live="polite"></div><button class="btn primary" id="checkBtn" data-act="check" disabled>${t('ex.check')}</button></div></div>`;
   setBar(false);
   if (ex.t === 'order') renderOrder();
   if (ex.t === 'type') { const inp = $('#typeIn'); inp.addEventListener('input', () => { if (!ex.line) inp.style.width = Math.max(6, inp.value.length + 2) + 'ch'; $('#checkBtn').disabled = !inp.value.trim(); });
@@ -711,16 +798,21 @@ function selectOpt(i) {
 }
 function check(skipped) {
   const ex = L.queue[0]; if (L.phase !== 'answer') return;
-  let ok = false, sol = '';
-  if (ex.opts) { sol = ex.o[0]; ok = !skipped && L.sel !== null && ex.opts[L.sel].ok; }
-  else if (ex.t === 'order') { sol = joinTokens(ex.w); const seq = ex.picked.map(id => ex.bank.find(b => b.id === id).t); ok = !skipped && seq.join('\u0001') === ex.w.join('\u0001'); }
-  else if (ex.t === 'type') { sol = ex.a[0]; const inp = $('#typeIn'), v = inp.value; ok = !skipped && (ex.a.some(a => norm(a) === norm(v) || norm(a).replace(/\s/g, '') === norm(v).replace(/\s/g, '')) || (!!ex.re && ex.re.test(norm(v).replace(/\s/g, '')))); inp.readOnly = true; if (!ok) inp.classList.add('wrong'); }
-  L.phase = 'feedback'; L.answered++; S.stats.answered++;
+  let ok = false, sol = '', yours = '', why = '';
+  if (ex.opts) { sol = ex.o[0]; ok = !skipped && L.sel !== null && ex.opts[L.sel].ok; if (L.sel !== null) yours = ex.opts[L.sel].t; }
+  else if (ex.t === 'order') { sol = joinTokens(ex.w); const seq = ex.picked.map(id => ex.bank.find(b => b.id === id).t); ok = !skipped && seq.join('\u0001') === ex.w.join('\u0001'); yours = joinTokens(seq); }
+  else if (ex.t === 'type') { sol = ex.a[0]; const inp = $('#typeIn'), v = inp.value; yours = v.trim(); why = whyWrong(ex.a, v); ok = !skipped && (ex.a.some(a => norm(a) === norm(v) || norm(a).replace(/\s/g, '') === norm(v).replace(/\s/g, '')) || (!!ex.re && ex.re.test(norm(v).replace(/\s/g, '')))); inp.readOnly = true; if (!ok) inp.classList.add('wrong'); }
+  L.phase = 'feedback'; L.answered++;
+  P.add(S, Store.dev, { answered: 1, correct: ok ? 1 : 0, concept: conceptOf(ex) }, today());
+  // Un fallo de un ejercicio del temario vuelve en niveles posteriores hasta que se acierta.
+  if (ex.ref && L.mode !== 'test') { if (ok) P.fix(S, ex.ref); else P.miss(S, ex.ref); }
+  // Racha de secciones: solo en los niveles del camino (no en el nivel extra ni en la prueba de salto).
+  const runBefore = S.run.cur, run = (L.mode === 'practice' || L.mode === 'reto') ? P.section(S, L.key, ex.pos, ok) : null;
   let lost = false;
-  if (ok) { S.stats.correct++; L.correct++; if (!ex.retry) L.firstOk++; L.queue.shift(); L.combo++; sfx(L.combo >= 3 && L.combo % 3 === 0 ? 'combo' : 'ok'); }
+  if (ok) { L.correct++; if (!ex.retry) L.firstOk++; L.queue.shift(); L.combo++; sfx(L.combo >= 3 && L.combo % 3 === 0 ? 'combo' : 'ok'); }
   else {
     L.mistakes++; L.combo = 0; sfx('bad'); const f = L.queue.shift();
-    if (L.mode === 'practice' || L.mode === 'extra') { const r = prep(f.src); r.retry = true; L.queue.push(r); }
+    if (L.mode === 'practice' || L.mode === 'extra') { const r = prep(f.src); r.retry = true; r.pos = f.pos; L.queue.push(r); }
     if (L.mode === 'practice' || L.mode === 'reto') { loseHeart(); lost = true; }
   }
   Store.save();
@@ -731,7 +823,7 @@ function check(skipped) {
   const oks = window.I18N.list('ex.ok');
   const sparks = ok && !reduceMotion() ? Array.from({ length: 10 }, (_, i) => `<i style="--a:${i * 36}deg;--c:var(${['--gold', '--ok', '--lang', '--heart', '--gem'][i % 5]})"></i>`).join('') : '';
   $('#fb').innerHTML = `<span class="sparks">${kibi(ok ? 'happy' : 'sad', 60)}${sparks}</span><div><p class="fb-t">${ok ? (L.combo >= 3 ? t('ex.combo', { n: L.combo }) : oks[Math.floor(Math.random() * oks.length)]) : (skipped ? t('ex.skipped') : t('ex.wrong'))}</p>
-    ${!ok ? `<p class="fb-sol">${t('ex.solution')} <code>${esc(sol)}</code></p>` : ''}<p class="fb-e">${rich(ex.e)}</p></div>`;
+    ${!ok && !skipped && yours ? `<p class="fb-yours">${t('ex.yours')} <code>${esc(yours)}</code></p>` : ''}${!ok ? `<p class="fb-sol">${t('ex.solution')} <code>${esc(sol)}</code></p>` : ''}${!ok && !skipped && why ? `<p class="fb-why">${t(why)}</p>` : ''}<p class="fb-e">${rich(ex.e)}</p>${run === 'add' ? `<p class="fb-run">${I.chain}${t('ex.run', { n: S.run.cur })}</p>` : run === 'reset' && runBefore >= 3 ? `<p class="fb-run lost">${I.chain}${t('ex.runLost', { n: runBefore })}</p>` : ''}</div>`;
   foot.querySelector('[data-act="skip"]').hidden = true;
   const btn = $('#checkBtn'); btn.disabled = false; btn.textContent = t('ex.continue'); btn.dataset.act = 'next'; btn.className = 'btn ' + (ok ? 'good' : 'danger'); btn.focus();
   LS.querySelector('.ls-top').innerHTML = topHTML(); setBar(ok);
@@ -749,6 +841,7 @@ function next() {
 }
 function closeLesson() {
   const was = L; LS.hidden = true; LS.innerHTML = ''; L = null; lockPage(false);
+  setTimeout(() => { if (lessonReturn && document.contains(lessonReturn)) lessonReturn.focus(); else $('#main').focus({ preventScroll: true }); lessonReturn = null; }, 0);
   if (was && was.mode === 'test' && was.passed) { go(dayHash(was.d, 'practice')); }
   else if (was && (was.mode === 'practice' || was.mode === 'reto')) { route = { v: 'day', d: was.d, tab: 'practice' }; if (location.hash !== '#' + dayHash(was.d, 'practice')) history.replaceState(null, '', '#' + dayHash(was.d, 'practice')); render(); }
   else render();
@@ -768,7 +861,7 @@ function countUp(el, to) {
 }
 function finish() {
   L.phase = 'end';
-  const perfect = L.mistakes === 0, c = L.course, rewards = [];
+  const perfect = L.mistakes === 0, c = L.course, rewards = [], inc = {}, secs = Math.min(86400, Math.round((Date.now() - L.start) / 1000));
   let xp = 0, title;
   if (L.mode === 'practice' || L.mode === 'reto') {
     const reto = L.mode === 'reto';
@@ -777,12 +870,12 @@ function finish() {
       justDone = L.key;
       const nk = L.k < RETO ? nodeKey(c, L.d, L.k + 1) : L.d < DAYS - 1 ? nodeKey(c, L.d + 1, 0) : null;
       justUnlock = nk;
-      if (reto) { S.stats.retos++; if (L.d < DAYS - 1) rewards.push(`<p class="reward gold">${I.star}${t('done.unlocked', { d: L.d + 2 })}</p>`); }
+      if (reto) { inc.retos = 1; if (L.d < DAYS - 1) rewards.push(`<p class="reward gold">${I.star}${t('done.unlocked', { d: L.d + 2 })}</p>`); }
     }
-    S.done[L.key] = true;
+    P.levelDone(S, L.key); inc.lessons = 1;
     title = reto ? t('done.reto') : perfect ? t('done.perfect') : t('done.practice');
   } else if (L.mode === 'extra') {
-    xp = 10; S.stats.extras++; const g = addHearts(EXTRA_HEARTS);
+    xp = 10; inc.extras = 1; const g = addHearts(EXTRA_HEARTS);
     rewards.push(`<p class="reward heart">${I.heart}${g > 0 ? t('done.hearts', { n: g }) : t('done.heartsFull')}</p>`); sfx('heart');
     title = t('done.extra');
   } else {
@@ -793,13 +886,15 @@ function finish() {
     title = t('done.test');
   }
   normalizeDay();
-  S.xp += xp; S.daily.xp += xp; S.stats.lessons++; if (perfect) S.stats.perfect++;
-  S.courseXp[c] = (S.courseXp[c] || 0) + xp;
+  // lessons cuenta solo los niveles del camino (antes también sumaban el nivel extra y la prueba de salto).
+  Object.assign(inc, { xp, course: c, sec: secs, perfect: perfect && inc.lessons ? 1 : 0 });
+  P.add(S, Store.dev, inc, today());
   if (bumpStreak()) rewards.unshift(`<p class="reward flame">${I.flame}${t('done.streak', { n: S.streak })}</p>`);
+  checkAch().forEach(id => rewards.push(`<p class="reward gold">${I.trophy}${t('done.ach', { a: t('ach.' + id) })}</p>`));
   Store.save();
-  const acc = Math.round(L.firstOk / L.total * 100), secs = Math.round((Date.now() - L.start) / 1000);
+  const acc = Math.round(L.firstOk / L.total * 100);
   Store.logResult({ course: c, locale: S.locale, mode: L.mode, day: L.d === undefined ? null : L.d + 1, level: L.k === undefined ? null : L.k + 1,
-    sections: L.total, correct: L.firstOk, mistakes: L.mistakes, xp, seconds: Math.min(86400, secs) });
+    sections: L.total, correct: L.firstOk, mistakes: L.mistakes, xp, seconds: secs });
   sfx('win');
   LS.querySelector('.ls-top').innerHTML = `<button class="iconbtn" data-act="quit" aria-label="${t('common.close')}">${I.x}</button><div class="barwrap"><div class="bar ${L.mode === 'reto' ? 'reto' : ''}"><i style="width:100%"></i></div></div>`;
   LS.querySelector('.ls-body').innerHTML = `<div class="done-screen"><div class="halo">${kibi('happy', 130)}</div><h2>${title}</h2>
@@ -860,6 +955,8 @@ const SNIPS = {
 };
 let typerTimer = null;
 function seenLanding() { try { return !!localStorage.getItem(SEEN); } catch (e) { return true; } }
+// Enlaces a la política de privacidad y a las condiciones de uso (páginas en español).
+const legalLinks = () => `<a href="privacidad.html">${t('legal.privacy')}</a> · <a href="terminos.html">${t('legal.terms')}</a>`;
 function renderLanding() {
   const login = Store.configured && !Store.user;
   const startBtn = `<button class="btn primary big" data-land="start">${t('land.start')}</button>`;
@@ -875,7 +972,7 @@ function renderLanding() {
    <section class="lsec reveal"><h2>${t('land.featTitle')}</h2><div class="lfeat">${[[I.code, 1], [I.book, 2], [I.flame, 3], [I.globe, 4]].map(([ic, n]) => `<div class="fcard" style="--i:${n}">${ic}<b>${t('land.f' + n)}</b><p>${t('land.f' + n + '.d')}</p></div>`).join('')}</div></section>
    <section class="lsec reveal"><h2>${t('land.howTitle')}</h2><ol class="lsteps">${[1, 2, 3].map(n => `<li style="--i:${n}"><span>${n}</span><b>${t('land.s' + n)}</b><p>${t('land.s' + n + '.d')}</p></li>`).join('')}</ol></section>
    <section class="lsec lfinal reveal">${kibi('happy', 96)}<h2>${t('land.finalTitle')}</h2>${startBtn}</section>
-   <footer class="lfoot">${t('land.foot')}</footer>`;
+   <footer class="lfoot">${t('land.foot')}<br>${legalLinks()}</footer>`;
   const io = 'IntersectionObserver' in window && new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .15 });
   document.querySelectorAll('#landing .reveal').forEach(el => (io ? io.observe(el) : el.classList.add('in')));
   startTyper();
@@ -922,11 +1019,14 @@ function authError(err) {
   if (/email not confirmed/i.test(m)) return t('auth.confirm');
   return t('auth.err.generic', { m });
 }
+// Logotipo de Google para su botón de acceso (los colores oficiales de la "G").
+const GOOGLE_G = '<svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C36.9 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
 function renderAuth() {
   const a = $('#auth');
   const reset = authMode === 'reset';
   a.innerHTML = `<div class="authcard"><div class="brand">${kibi('idle', 44, 'float')}<span>Nibble</span></div>
     <h1>${reset ? t('auth.forgot') : authMode === 'signup' ? t('auth.signupTitle') : t('auth.title')}</h1><p class="sub">${t('auth.sub')}</p>
+    ${!reset && Store.cfg.google !== false ? `<button class="btn gbtn block" type="button" data-act="google">${GOOGLE_G}${t('auth.google')}</button><p class="or"><span>${t('auth.or')}</span></p>` : ''}
     <form id="authForm" style="display:flex;flex-direction:column;gap:14px">
       <div class="field"><label for="aemail">${t('auth.email')}</label><input id="aemail" type="email" autocomplete="email" required></div>
       ${reset ? '' : `<div class="field"><label for="apw">${t('auth.password')}</label><input id="apw" type="password" minlength="6" autocomplete="${authMode === 'signup' ? 'new-password' : 'current-password'}" required></div>`}
@@ -935,6 +1035,7 @@ function renderAuth() {
     </form>
     ${reset ? `<button class="linkbtn" data-auth="signin">${t('auth.toSignin')}</button>` : `<button class="linkbtn" data-auth="${authMode === 'signup' ? 'signin' : 'signup'}">${authMode === 'signup' ? t('auth.toSignin') : t('auth.toSignup')}</button>
     ${authMode === 'signin' ? `<button class="linkbtn" data-auth="reset">${t('auth.forgot')}</button>` : ''}`}
+    ${reset ? '' : `<p class="legal-note">${t('legal.accept', { t: `<a href="terminos.html">${t('legal.terms')}</a>`, p: `<a href="privacidad.html">${t('legal.privacy')}</a>` })}</p>`}
     ${langPick()}</div>`;
   $('#authForm').addEventListener('submit', async e => {
     e.preventDefault();
@@ -965,12 +1066,14 @@ async function enterApp() {
   $('#auth').hidden = true; $('#landing').hidden = true; $('#shell').hidden = false; $('#bottomnav').hidden = false;
   $('#main').innerHTML = `<div class="wrap"><p class="notice">${t('content.loading')}</p></div>`;
   await loadCurrent();
+  if (checkAch(1).length) Store.save();
   route = parseHash();
   render();
   if (route.v === 'map' && currentIndex(S.course) > 0) setTimeout(scrollToCurrent, 100);
 }
 async function boot() {
   const loc = detectLocale(); window.I18N.set(loc);
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) navigator.serviceWorker.register('sw.js').catch(() => { /* sin modo sin conexión */ });
   Store.on(ev => {
     if (ev === 'sync') document.querySelectorAll('[data-sync]').forEach(el => { el.outerHTML = syncHTML(); });
     if (ev === 'recovery') pwModal();
@@ -978,6 +1081,10 @@ async function boot() {
   });
   const r = await Store.init();
   S = Store.state;
+  // Vuelta de Google o de un enlace de correo: muestra el error si lo hay y quita los datos de la URL.
+  const back = new URLSearchParams(location.hash.replace(/^#/, '') + '&' + location.search.slice(1));
+  if (back.get('error_description')) authMsg = `<p class="msg err">${esc(t('auth.err.generic', { m: back.get('error_description') }))}</p>`;
+  if (/(access_token|refresh_token|error_description|code)=/.test(location.hash + location.search)) history.replaceState(null, '', location.pathname);
   if (location.hash === '#inicio' || (!seenLanding() && !Store.user && !S.stats.lessons)) { window.I18N.set(S.locale || loc); showLanding(); return; }
   if (r.needsAuth) { window.I18N.set(Store.state.locale || loc); showAuth(); return; }
   await enterApp();
@@ -1002,6 +1109,7 @@ document.addEventListener('click', async e => {
   if (d.start) { startNode(d.start); return; }
   if (d.jump !== undefined) { jumpModal(+d.jump); return; }
   if (d.test !== undefined) { startTest(+d.test); return; }
+  if (d.themeSet) { S.theme = d.themeSet; Store.save(); render(); return; }
   if (d.goal) { S.goal = +d.goal; Store.save(); render(); return; }
   if (d.pal !== undefined) { const it = palItems[+d.pal]; closeModal(); it && it.run(); return; }
   if (d.auth) { authMode = d.auth; authMsg = ''; renderAuth(); return; }
@@ -1033,6 +1141,7 @@ document.addEventListener('click', async e => {
     case 'reset-cancel': confirmReset = false; render(); break;
     case 'reset-yes': confirmReset = false; Store.reset(); S = Store.state; go('map'); break;
     case 'signout': await doSignOut(); break;
+    case 'google': b.disabled = true; try { await Store.signInGoogle(); } catch (err) { authMsg = `<p class="msg err">${esc(authError(err))}</p>`; renderAuth(); } break;
   }
 });
 document.addEventListener('submit', e => { if (e.target.id === 'sugForm') { e.preventDefault(); if (sug.state !== 'sending') sendSuggestion(); } });
@@ -1042,6 +1151,7 @@ document.addEventListener('input', e => {
 document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k' && !L && !$('#shell').hidden) { e.preventDefault(); openPalette(); return; }
   if (e.key === '/' && !L && $('#modal').hidden && !$('#shell').hidden && !/INPUT|TEXTAREA/.test(document.activeElement.tagName)) { e.preventDefault(); openPalette(); return; }
+  if (e.key === 'Tab') { trapTab(e); return; }
   if (e.key === 'Escape') {
     if (!$('#modal').hidden) { closeModal(); return; }
     if (L) { quitLesson(); return; }

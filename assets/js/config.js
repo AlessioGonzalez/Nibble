@@ -11,4 +11,7 @@ window.SINTAXIS_CONFIG = {
   supabaseUrl: '',
   supabaseAnonKey: '',
   feedbackUrl: '',
+  // Botón "Continuar con Google" en la pantalla de acceso. Ponlo a false si no activas Google en
+  // Supabase (Authentication > Sign In / Providers > Google).
+  google: true,
 };

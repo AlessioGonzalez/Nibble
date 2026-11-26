@@ -24,6 +24,10 @@ const PRE = {
   python: { appendw: 'nums = []\n', callw: 'def area(w, h):\n    return w * h\n', ifw: 'x = score = level = speed = 1\n' },
   javascript: { appendw: 'const nums = [];\n', callw: 'function area(w, h) { return w * h; }\n', ifw: 'let x = 1, score = 1, level = 1, speed = 1;\n' },
 };
+// return solo es válido dentro de una función; la clave se guarda en un diccionario u objeto ya creado.
+Object.assign(PRE.python, { retw: 'def f(a, b, w, h, x, y):\n    ', dictw: 'stock = {}\n' });
+Object.assign(PRE.javascript, { retw: 'function f(a, b, w, h, x, y) {\n', dictw: 'const stock = {};\n' });
+const POST = { javascript: { retw: '\n}' } };
 const BODY = { python: '\n    pass', javascript: '\n}' };
 
 const py = [], js = [];
@@ -53,7 +57,7 @@ for (const course of ['python', 'javascript', 'java', 'cpp']) {
         if (ex.t === 'fill') ex.o.forEach((o, i) => bucket.push({ where, code: ex.c.replace('___', o), want: ex.q, first: i === 0, fill: true }));
         if (ex.t === 'type') for (const a of ex.a) {
           const tail = /[:{]$/.test(a.trim()) ? BODY[course] : /^(if|for)\b.*\)$/.test(a.trim()) ? ' {}' : '';
-          bucket.push({ where, code: (PRE[course][ex.fam] || '') + a + tail, syntax: true });
+          bucket.push({ where, code: (PRE[course][ex.fam] || '') + a + tail + ((POST[course] || {})[ex.fam] || ''), syntax: true });
         }
       }
     }
