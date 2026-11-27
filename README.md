@@ -9,4 +9,4 @@ Si falta la traducción de un curso, la app muestra la versión en español.
 
 ## Licencia
 
-[MIT](LICENSE)
+(LICENSE)
