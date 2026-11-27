@@ -25,9 +25,9 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: 22
 
@@ -39,14 +39,12 @@ jobs:
         run: node scripts/check-practice.mjs
 
       # Java y C++: compila y ejecuta los ejercicios generados (el runner de GitHub trae javac y g++).
-      # continue-on-error: es nuevo y aún no se ha ejecutado en el CI; si falla, avisa pero no bloquea la publicación.
       - name: Compilar los ejercicios de Java y C++
-        continue-on-error: true
         run: node scripts/check-compiled.mjs
 
       # Racha de secciones, contadores por dispositivo, unión de copias y borrado del progreso.
       - name: Probar la lógica del progreso
-        run: node --test scripts/test-progress.mjs scripts/test-app.mjs
+        run: node --test scripts/test-progress.mjs scripts/test-app.mjs scripts/test-security.mjs
 
       - name: Configurar Supabase
         if: ${{ vars.SUPABASE_URL != '' && vars.SUPABASE_ANON_KEY != '' }}
@@ -66,12 +64,14 @@ jobs:
       - name: Preparar la web
         run: |
           mkdir -p _site
-          cp -r index.html privacidad.html terminos.html manifest.webmanifest sw.js assets content _site/
+          cp -r index.html privacidad.html terminos.html manifest.webmanifest sw.js assets content .well-known _site/
+          # Los logos de marca (assets/brand) no los usa ninguna página publicada.
+          rm -rf _site/assets/brand
           touch _site/.nojekyll
 
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v4
+      - uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
+      - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
         with:
           path: _site
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4

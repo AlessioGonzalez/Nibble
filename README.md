@@ -1,6 +1,8 @@
 # Nibble
 
-Aprende **Python, Java, JavaScript y C++** a bocados, con retos de 30 días al estilo de [30 Days Of Python](https://github.com/Asabeneh/30-Days-Of-Python) y la mecánica de una app de idiomas: rachas, vidas, experiencia y ejercicios cortos. Un *nibble* son 4 bits, uno por cada lenguaje del curso.
+Aprende **Python, Java, JavaScript y C++** byte a byte, con retos de 30 días, rachas, vidas, experiencia y ejercicios cortos. Un *nibble* son 4 bits, uno por cada lenguaje del curso; cada día del reto es un byte y cada uno de sus 8 niveles, un bit.
+
+El formato de reto de 30 días se inspira en retos de la comunidad como 30 Days Of Python de Asabeneh.
 
 Te acompaña **Kibi**, un hámster programador que mordisquea código. Lleva una tarjeta `</>` del color del curso que estás haciendo.
 
@@ -9,4 +11,6 @@ Si falta la traducción de un curso, la app muestra la versión en español.
 
 ## Licencia
 
-[MIT](LICENSE)
+Todos los derechos reservados (ver [LICENSE](LICENSE)). Hasta el 27 de noviembre de 2026 el proyecto se publicó con licencia MIT; esas copias anteriores conservan esa licencia. Los componentes de terceros mantienen las suyas: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+Seguridad: [SECURITY.md](SECURITY.md).

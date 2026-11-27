@@ -1,0 +1,6 @@
+# Cómo avisar de un fallo de seguridad en Nibble. Política: SECURITY.md del repositorio.
+Contact: mailto:nibblebytesproyect@gmail.com
+Expires: 2027-11-27T00:00:00.000Z
+Preferred-Languages: es, en
+Canonical: https://alessiogonzalez.github.io/NibbleBytes/.well-known/security.txt
+Policy: https://github.com/AlessioGonzalez/NibbleBytes/blob/main/SECURITY.md

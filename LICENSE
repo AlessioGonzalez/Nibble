@@ -1,21 +1,19 @@
-MIT License
+Copyright (c) 2026 Alessio Gonzalez. Todos los derechos reservados.
+All rights reserved.
 
-Copyright (c) 2026 Nibble contributors
+Este repositorio y la web Nibble (código fuente, lecciones, ejercicios, textos,
+la mascota Kibi, las ilustraciones, los logotipos y la marca) son propiedad de
+su titular. No se concede ninguna licencia: queda prohibido copiar, reproducir,
+modificar, distribuir, sublicenciar, vender o crear obras derivadas, total o
+parcialmente, sin permiso previo y por escrito del titular. Ver el código en
+GitHub o usar la web publicada para aprender, de forma personal y no comercial,
+no otorga ningún otro derecho.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Versiones anteriores: hasta el 27 de noviembre de 2026 (commit c3844e4) este
+repositorio se publicó con licencia MIT. Quien obtuvo una copia antes de ese
+cambio conserva la licencia MIT únicamente sobre esa copia.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+Componentes de terceros: conservan sus propias licencias. Ver
+THIRD_PARTY_NOTICES.md.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+Permisos y contacto: nibblebytesproyect@gmail.com

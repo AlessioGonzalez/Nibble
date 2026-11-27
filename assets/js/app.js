@@ -1,7 +1,7 @@
 /* Nibble: interfaz. Depende de content-api.js, i18n.js y store.js. */
 (function () {
 'use strict';
-const VERSION = '3.0.0';
+const VERSION = '4.0.0';
 const Store = window.SintaxisStore;
 const P = window.NibbleProgress;
 const t = (k, v) => window.I18N.t(k, v);
@@ -9,10 +9,11 @@ const MAXH = Store.MAXH, HEART_MS = 2 * 60 * 1000, EXTRA_HEARTS = MAXH /* el niv
 const LOCALES = ['es', 'en', 'fr', 'it'];
 const COURSES = ['python', 'java', 'javascript', 'cpp'];
 const META = {
-  python: { name: 'Python', short: 'Py', color: '#3672B0', dark: '#244F7D', ink: '#FFFFFF' },
-  java: { name: 'Java', short: 'Java', color: '#D9601A', dark: '#A24611', ink: '#FFFFFF' },
-  javascript: { name: 'JavaScript', short: 'JS', color: '#E3B30F', dark: '#A98404', ink: '#2B2205' },
-  cpp: { name: 'C++', short: 'C++', color: '#16877F', dark: '#0D5E58', ink: '#FFFFFF' },
+  // btn: el color del curso con contraste AA (4,5:1) para texto encima (botones, insignias, bits encendidos).
+  python: { name: 'Python', short: 'Py', color: '#3672B0', dark: '#244F7D', ink: '#FFFFFF', btn: '#3672B0' },
+  java: { name: 'Java', short: 'Java', color: '#D9601A', dark: '#A24611', ink: '#FFFFFF', btn: '#BB5216' },
+  javascript: { name: 'JavaScript', short: 'JS', color: '#E3B30F', dark: '#A98404', ink: '#2B2205', btn: '#E3B30F' },
+  cpp: { name: 'C++', short: 'C++', color: '#16877F', dark: '#0D5E58', ink: '#FFFFFF', btn: '#137A73' },
 };
 const KW = {
   python: 'def return if elif else for while in not and or is None True False class import from as with try except finally raise lambda yield pass break continue global nonlocal self async await match case',
@@ -32,7 +33,7 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const rich = s => esc(s).replace(/`([^`]+)`/g, '<code>$1</code>');
 const shuffle = (a, rnd = Math.random) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
-const reduceMotion = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const reduceMotion = () => document.documentElement.dataset.motion === 'reduce' || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
 const dayStr = P.dayStr;
 const today = () => dayStr(new Date());
 const yesterday = () => { const d = new Date(); d.setDate(d.getDate() - 1); return dayStr(d); };
@@ -234,36 +235,62 @@ const dayHash = (d, tab) => `day-${d + 1}${tab ? '-' + tab : ''}`;
 
 /* ---------- piezas comunes ---------- */
 const THEMES = ['auto', 'light', 'dark'];
+const FONTS = ['s', 'm', 'l'];
+// Temas de color del código: el primero está siempre; los demás se desbloquean con un logro.
+const CODE_THEMES = [['ink', null], ['phosphor', 'streak3'], ['paper', 'week'], ['amber', 'run50']];
+const codeThemeOpen = id => { const r = CODE_THEMES.find(([k]) => k === id); return !!r && (!r[1] || !!S.ach[r[1]]); };
 const darkMQ = window.matchMedia && matchMedia('(prefers-color-scheme: dark)');
-// Claro, oscuro o automático (el del sistema). index.html lo aplica antes de pintar para que no parpadee.
+// Tema, tamaño de letra, animaciones y tema del código. theme.js los aplica antes de pintar para que no parpadee.
 function applyColorScheme() {
   const th = THEMES.includes(S.theme) ? S.theme : 'auto', de = document.documentElement;
   if (th === 'auto') delete de.dataset.theme; else de.dataset.theme = th;
-  try { localStorage.setItem('nibble.theme', th); } catch (e) { /* */ }
+  const fs = FONTS.includes(S.font) ? S.font : 'm';
+  if (fs === 'm') delete de.dataset.font; else de.dataset.font = fs;
+  if (S.motion === 'reduce') de.dataset.motion = 'reduce'; else delete de.dataset.motion;
+  de.dataset.code = codeThemeOpen(S.codeTheme) ? S.codeTheme : 'ink';
+  try { localStorage.setItem('nibble.theme', th); localStorage.setItem('nibble.font', fs); localStorage.setItem('nibble.motion', S.motion === 'reduce' ? 'reduce' : ''); } catch (e) { /* */ }
   const dark = th === 'dark' || (th === 'auto' && darkMQ && darkMQ.matches);
-  const meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.content = dark ? '#0D1220' : '#EDF1F7';
+  const meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.content = dark ? '#0F1014' : '#F4F2EC';
 }
 if (darkMQ && darkMQ.addEventListener) darkMQ.addEventListener('change', () => applyColorScheme());
 function applyTheme() {
   const m = META[S.course], r = document.documentElement.style;
-  r.setProperty('--lang', m.color); r.setProperty('--lang-dark', m.dark); r.setProperty('--lang-ink', m.ink);
-  document.documentElement.lang = S.locale;
+  r.setProperty('--lang', m.color); r.setProperty('--lang-dark', m.dark); r.setProperty('--lang-ink', m.ink); r.setProperty('--lang-btn', m.btn);
+  document.documentElement.lang = S.locale || window.I18N.get();
   applyColorScheme();
 }
-const badge = c => { const m = META[c]; return `<span class="badge" style="--c:${m.color};--cd:${m.dark};--ci:${m.ink}">${esc(m.short)}</span>`; };
-function heartsRow(big) { let h = ''; for (let i = 0; i < MAXH; i++) h += I.heart.replace('<svg', `<svg class="${i < S.hearts ? '' : 'off'}"`); return `<div class="hearts-row ${big ? 'big' : ''}" aria-label="${t('hearts.aria', { n: S.hearts, m: MAXH })}">${h}</div>`; }
+const badge = c => { const m = META[c]; return `<span class="badge" style="--c:${m.btn};--cd:${m.dark};--ci:${m.ink}">${esc(m.short)}</span>`; };
+const dailyXp = () => (S.daily.day === today() ? S.daily.xp : 0);
+
+/* Un día, un byte: cada nivel aprobado enciende un bit (el nivel 1 es el bit más alto). */
+const byteOf = (c, d) => { let v = 0; for (let k = 0; k < PER_DAY; k++) if (S.done[nodeKey(c, d, k)]) v |= 128 >> k; return v; };
+const hex = v => '0x' + v.toString(16).toUpperCase().padStart(2, '0');
+function bitsHTML(c, d, cur = -1) {
+  let h = '';
+  for (let k = 0; k < PER_DAY; k++) h += `<i class="${S.done[nodeKey(c, d, k)] ? 'on' : ''}${k === cur ? ' cur' : ''}${k === RETO ? ' reto' : ''}"></i>`;
+  return `<span class="bits" role="img" aria-label="${t('bits.aria', { n: dayDone(c, d), m: PER_DAY })}">${h}</span>`;
+}
+// Los 30 días de un curso en una tira: lleno, a medias o vacío.
+function stripHTML(c) {
+  let h = ''; for (let d = 0; d < DAYS; d++) { const n = dayDone(c, d); h += `<i class="${n === PER_DAY ? 'on' : n ? 'half' : ''}"></i>`; }
+  return `<span class="strip" aria-hidden="true">${h}</span>`;
+}
+function heartsMeter(big) {
+  return `<div class="hmeter ${big ? 'big' : ''}"><b>${I.heart}${S.hearts}<small>/${MAXH}</small></b>
+    <span class="meter heart" role="meter" aria-valuemin="0" aria-valuemax="${MAXH}" aria-valuenow="${S.hearts}" aria-label="${t('hearts.aria', { n: S.hearts, m: MAXH })}"><i style="width:${S.hearts / MAXH * 100}%"></i></span></div>`;
+}
 function langPick() { return `<div class="langpick" role="group" aria-label="${t('profile.lang')}">${LOCALES.map(l => `<button class="${S.locale === l ? 'on' : ''}" data-locale="${l}" aria-pressed="${S.locale === l}" title="${t('lang.' + l)}">${l}</button>`).join('')}</div>`; }
 function syncHTML() {
   const st = Store.sync;
   return `<div class="sync ${st === 'ok' ? 'ok' : st === 'busy' ? 'busy' : st === 'err' ? 'err' : ''}" data-sync><i></i>${t('sync.' + st)}</div>`;
 }
 
+// El nivel extra está en el panel de vidas y Sugerencias en el perfil (en el móvil no caben en el menú).
 function navItems() {
   const cd = currentDay(S.course);
   return [
     ['map', t('nav.map'), I.map, '#map'],
     ['today', t('nav.today'), I.play, '#' + dayHash(cd)],
-    ['extra', t('nav.extra'), I.plus, null],
     ['courses', t('nav.courses'), I.grid, '#courses'],
     ['profile', t('nav.profile'), I.user, '#profile'],
     ['suggest', t('nav.suggest'), I.chat, '#sugerencias'],
@@ -271,74 +298,88 @@ function navItems() {
 }
 function navHTML(compact) {
   const cd = currentDay(S.course);
-  // En el menú inferior del móvil no cabe: allí se llega desde el perfil.
   return navItems().filter(([id]) => !compact || id !== 'suggest').map(([id, label, ic, href]) => {
-    if (id === 'extra') return `<button class="navbtn extra" data-act="extra" title="${t('hearts.extraBtn', { n: EXTRA_HEARTS })}">${ic}<span class="lbl">${label}</span></button>`;
     const on = (id === 'map' && route.v === 'map') || (id === 'today' && route.v === 'day' && route.d === cd) || id === route.v;
     return `<button class="navbtn ${on ? 'on' : ''}" data-go="${href.slice(1)}" ${on ? 'aria-current="page"' : ''}>${ic}<span class="lbl">${label}</span></button>`;
   }).join('') + (compact ? '' : `<button class="navbtn" data-act="palette">${I.search}<span class="lbl">${t('nav.search')}</span><span class="kbd">Ctrl K</span></button>`);
 }
+
+/* Indicadores de la barra superior: cada uno con su nombre accesible y una ficha al tocarlo que explica qué es. */
+let statOpen = null;
 function statsHTML() {
-  const on = S.lastDay === today();
-  return `<span class="stat flame ${on ? 'on' : ''}" title="${t('stat.streak')}">${I.flame}<b>${S.streak}</b></span>
-  <span class="stat run ${S.run.cur ? 'on' : ''}" title="${t('stat.run')}">${I.chain}<b>${S.run.cur}</b></span>
-  <span class="stat xp" title="${t('stat.xp')}">${I.bolt}<b>${S.xp}</b></span>
-  <button class="stat heart" data-act="hearts" title="${timerText()}" aria-label="${t('hearts.aria', { n: S.hearts, m: MAXH })}">${I.heart}<b>${S.hearts}</b></button>`;
+  return [['streak', I.flame, S.streak, S.lastDay === today()], ['run', I.chain, S.run.cur, S.run.cur > 0],
+    ['xp', I.bolt, S.xp, true], ['hearts', I.heart, S.hearts, S.hearts > 0]].map(([id, ic, n, on]) => {
+    const unit = id === 'xp' ? 'XP' : id === 'hearts' ? `/${MAXH}` : t('stat.u.' + id, { n });
+    return `<button class="stat ${id} ${on ? 'on' : ''}" data-stat="${id}" aria-expanded="${statOpen === id}" aria-label="${esc(t('stat.' + id))}: ${n} ${esc(unit)}">${ic}<b>${n}</b><small>${esc(unit)}</small></button>`;
+  }).join('');
+}
+function statPopHTML() {
+  const id = statOpen; if (!id) return '';
+  let body;
+  if (id === 'hearts') body = `${heartsMeter()}<p>${t('hearts.desc', { n: EXTRA_HEARTS })}</p><p class="timer" data-timer>${timerText()}</p>
+    <button class="btn gold small block" data-act="extra">${I.plus}${t('hearts.extraBtn', { n: EXTRA_HEARTS })}</button>`;
+  else if (id === 'streak') body = `<p>${t('stat.streak.d')}</p><p class="note">${S.lastDay === today() ? t('stat.streak.on') : t('stat.streak.off')}</p>`;
+  else if (id === 'run') body = `<p>${t('stat.run.d')}</p><p class="note">${t('stat.run.best', { n: S.run.best || 0 })}</p>`;
+  else body = `<p>${t('stat.xp.d')}</p><p class="note">${t('goal.today', { n: dailyXp(), m: S.goal })}</p>`;
+  return `<div class="statpop ${id}" role="dialog" aria-label="${esc(t('stat.' + id))}"><h3>${t('stat.' + id)}</h3>${body}</div>`;
 }
 function courseMenu() {
   return `<div class="dropdown" role="menu"><p class="dh">${t('top.courses')}</p>${COURSES.map(c => {
     const p = Math.round(doneCount(c) / (DAYS * PER_DAY) * 100);
-    return `<button class="ditem ${c === S.course ? 'on' : ''}" role="menuitem" data-course="${c}">${badge(c)}<span><b>${META[c].name}</b><div class="meter lang" style="--c:${META[c].color}"><i style="width:${p}%"></i></div></span><small>${p}%</small></button>`;
+    return `<button class="ditem ${c === S.course ? 'on' : ''}" role="menuitem" data-course="${c}">${badge(c)}<span><b>${META[c].name}</b><span class="meter lang" style="--c:${META[c].color}"><i style="width:${p}%"></i></span></span><small>${p}%</small></button>`;
   }).join('')}</div>`;
 }
 let menuOpen = false;
 function topbarHTML() {
   return `<div class="dropwrap"><button class="cswitch" data-act="coursemenu" aria-haspopup="menu" aria-expanded="${menuOpen}">${badge(S.course)}<span class="cname">${META[S.course].name}</span>${I.caret}</button>${menuOpen ? courseMenu() : ''}</div>
   <button class="searchbtn" data-act="palette" aria-label="${t('nav.search')}">${I.search}<span class="lbl">${t('nav.search')}</span><span class="kbd">Ctrl K</span></button>
-  <span class="grow"></span><div class="stats">${statsHTML()}</div>`;
+  <span class="grow"></span><div class="stats">${statsHTML()}${statPopHTML()}</div>`;
 }
 function railHTML() {
-  const dx = S.daily.day === today() ? S.daily.xp : 0, pct = Math.min(100, dx / S.goal * 100);
-  return `<div class="card"><div class="goal-h"><h3>${t('hearts.title')}</h3><span class="timer" data-timer>${timerText()}</span></div>${heartsRow()}
-    <p>${t('hearts.desc', { n: EXTRA_HEARTS })}</p><button class="btn gold small" data-act="extra">${I.plus}${t('hearts.extraBtn', { n: EXTRA_HEARTS })}</button></div>
-  <div class="card"><div class="goal-h"><h3>${t('goal.title')}</h3><span>${dx}/${S.goal} XP</span></div>
-    <div class="meter" role="progressbar" aria-valuemin="0" aria-valuemax="${S.goal}" aria-valuenow="${dx}"><i style="width:${pct}%"></i></div>
-    <p>${dx >= S.goal ? t('goal.done') : t('goal.left', { n: S.goal - dx })}</p></div>
-  <div class="card">${syncHTML()}${Store.user ? `<p class="note">${esc(Store.user.email || '')}</p>` : ''}</div>`;
+  const dx = dailyXp(), pct = Math.min(100, dx / S.goal * 100);
+  return `<section class="card"><div class="card-h"><h3>${t('hearts.title')}</h3><span class="timer" data-timer>${timerText()}</span></div>${heartsMeter()}
+    <p class="note">${t('hearts.desc', { n: EXTRA_HEARTS })}</p><button class="btn gold small block" data-act="extra">${I.plus}${t('hearts.extraBtn', { n: EXTRA_HEARTS })}</button></section>
+  <section class="card"><div class="card-h"><h3>${t('goal.title')}</h3><span class="mono">${dx}/${S.goal} XP</span></div>
+    <span class="meter" role="progressbar" aria-label="${t('goal.title')}" aria-valuemin="0" aria-valuemax="${S.goal}" aria-valuenow="${dx}"><i style="width:${pct}%"></i></span>
+    <p class="note">${dx >= S.goal ? t('goal.done') : t('goal.left', { n: S.goal - dx })}</p></section>
+  <section class="card">${syncHTML()}${Store.user ? `<p class="note">${esc(Store.user.email || '')}</p>` : ''}</section>`;
 }
 function renderChrome() {
-  $('#brand').innerHTML = `${kibi('idle', 38)}<span class="lbl">Nibble</span>`;
+  $('#brand').innerHTML = `${kibi('idle', 36)}<span class="lbl">Nibble</span>`;
   $('#sidenav').innerHTML = navHTML();
   $('#bottomnav').innerHTML = navHTML(true);
   $('#topbar').innerHTML = topbarHTML();
   $('#rail').innerHTML = railHTML();
-  const who = Store.user ? `<div class="who"><span class="av">${esc((Store.user.email || '?')[0].toUpperCase())}</span><span>${esc(Store.user.email || '')}</span><button class="iconbtn" data-act="signout" title="${t('profile.signout')}" aria-label="${t('profile.signout')}">${I.logout}</button></div>` : syncHTML();
+  // El estado del guardado está solo en el panel derecho (antes salía también aquí).
+  const who = Store.user ? `<div class="who"><span class="av">${esc((Store.user.email || '?')[0].toUpperCase())}</span><span class="em">${esc(Store.user.email || '')}</span><button class="iconbtn" data-act="signout" title="${t('profile.signout')}" aria-label="${t('profile.signout')}">${I.logout}</button></div>` : '';
   $('#sidefoot').innerHTML = langPick() + who;
 }
 
 /* ---------- vista: mapa ---------- */
+function dayRow(c, d, cur, cd) {
+  const n = dayDone(c, d), soon = !dayData(d), done = n === PER_DAY, isCur = d === cd && cur < DAYS * PER_DAY;
+  const st = soon ? 'soon' : done ? 'done' : isCur ? 'cur' : !dayUnlocked(c, d) ? 'lock' : 'open';
+  const end = st === 'done' ? I.check : st === 'lock' || st === 'soon' ? I.lock : st === 'cur' ? `<span class="go">${t('map.go')}</span>` : I.right;
+  return `<button class="dayrow ${st}" data-go="${dayHash(d)}" style="--i:${d % 10}" aria-label="${t('day.n', { d: d + 1 })}: ${esc(dayTitle(d))}. ${t('bits.aria', { n, m: PER_DAY })}">
+    <span class="dnum">${String(d + 1).padStart(2, '0')}</span><span class="dtitle">${esc(dayTitle(d))}</span>${bitsHTML(c, d, st === 'cur' ? cur % PER_DAY : -1)}<code class="hex">${hex(byteOf(c, d))}</code><span class="dend">${end}</span></button>`;
+}
 function renderMap() {
-  const c = S.course, data = CUR.data, cur = currentIndex(c), cd = currentDay(c), dn = doneCount(c);
+  const c = S.course, cur = currentIndex(c), cd = currentDay(c), dn = doneCount(c), all = cur >= DAYS * PER_DAY;
   let h = `<div class="wrap">`;
   if (CUR.fallback) h += `<p class="notice">${t('content.fallback')}</p>`;
-  h += `<section class="hero">${kibi('idle', 96, 'float')}<div>
-    <h1>${t('map.title', { c: META[c].name })}</h1>
-    <p>${cur >= DAYS * PER_DAY ? t('map.allDone') : t('map.dayOf', { d: cd + 1, t: esc(dayTitle(cd)) })}</p>
-    <div class="meter" role="progressbar" aria-valuemin="0" aria-valuemax="${DAYS * PER_DAY}" aria-valuenow="${dn}"><i style="width:${dn / (DAYS * PER_DAY) * 100}%"></i></div>
-    <div class="row"><button class="btn small" data-go="${dayHash(cd)}">${I.play}${dn ? t('map.continue', { d: cd + 1 }) : t('map.start')}</button><small>${t('map.levels', { n: dn, m: DAYS * PER_DAY })}</small></div></div></section>`;
-  if (S.stats.lessons === 0) h += `<div class="welcome">${kibi('idle', 56)}<div><b>${t('map.welcomeTitle')}</b><p>${t('map.welcome')}</p></div></div>`;
+  h += `<section class="hero"><div class="hero-copy"><p class="eyebrow">${META[c].name} · ${t('map.dayOf2', { d: cd + 1 })}</p>
+    <h1>${all ? t('map.allDone') : esc(dayTitle(cd))}</h1>
+    <p class="lead">${all ? t('map.allDoneDesc') : esc(dayData(cd) ? dayData(cd).d : '')}</p>
+    <div class="hero-byte">${bitsHTML(c, cd, all ? -1 : cur % PER_DAY)}<code class="hex">${hex(byteOf(c, cd))}</code></div>
+    <div class="row"><button class="btn primary" data-go="${dayHash(cd)}">${I.play}${dn ? t('map.continue', { d: cd + 1 }) : t('map.start')}</button><small class="mono">${t('map.levels', { n: dn, m: DAYS * PER_DAY })}</small></div></div>
+    <div class="hero-kibi">${kibi('idle', 112, 'float')}</div>
+    <span class="meter course" role="progressbar" aria-label="${t('map.title', { c: META[c].name })}" aria-valuemin="0" aria-valuemax="${DAYS * PER_DAY}" aria-valuenow="${dn}"><i style="width:${dn / (DAYS * PER_DAY) * 100}%"></i></span></section>`;
+  if (S.stats.lessons === 0) h += `<div class="welcome">${kibi('idle', 52)}<div><b>${t('map.welcomeTitle')}</b><p>${t('map.welcome')}</p></div></div>`;
   for (let p = 0; p < 3; p++) {
-    h += `<div class="phase-h"><h2>${t('phase.' + p)}</h2><span>${t('phase.days', { a: p * 10 + 1, b: p * 10 + 10 })}</span></div><div class="daygrid">`;
-    for (let d = p * 10; d < p * 10 + 10; d++) {
-      const n = dayDone(c, d), unlocked = dayUnlocked(c, d), isCur = d === cd && cur < DAYS * PER_DAY, done = n === PER_DAY;
-      const soon = !dayData(d);
-      const cls = soon ? 'lock' : done ? 'done' : isCur ? 'cur' : !unlocked ? 'lock' : '';
-      const ic = soon ? I.lock : done ? I.check : !unlocked ? I.lock : isCur ? I.play : '';
-      h += `<button class="daycard ${cls}" style="--i:${d % 10}" data-go="${dayHash(d)}" aria-label="${t('day.n', { d: d + 1 })}: ${esc(dayTitle(d))}">
-        ${ic ? ic.replace('<svg', '<svg class="ic"') : ''}<span class="n">${t('day.n', { d: d + 1 })}</span><b>${esc(dayTitle(d))}</b>
-        <span class="ring" style="--p:${n / PER_DAY * 100}" data-v="${n}/${PER_DAY}"></span></button>`;
-    }
-    h += `</div>`;
+    let full = 0; for (let d = p * 10; d < p * 10 + 10; d++) if (dayDone(c, d) === PER_DAY) full++;
+    h += `<section class="phase"><div class="phase-h"><h2>${t('phase.' + p)}</h2><span class="mono">${t('phase.days', { a: p * 10 + 1, b: p * 10 + 10 })} · ${full}/10</span></div><div class="dayrows">`;
+    for (let d = p * 10; d < p * 10 + 10; d++) h += dayRow(c, d, cur, cd);
+    h += `</div></section>`;
   }
   return h + `</div>`;
 }
@@ -348,58 +389,61 @@ function renderDay() {
   const c = S.course, d = route.d, day = dayData(d), cur = currentIndex(c), unlocked = dayUnlocked(c, d), n = dayDone(c, d);
   if (!day) return `<div class="wrap"><div class="nextday">${kibi('idle', 90, 'float')}<h2>${t('day.n', { d: d + 1 })}: ${t('day.soon')}</h2><p>${t('day.soonDesc')}</p>
     <button class="btn primary" data-go="map">${t('nav.map')}</button></div></div>`;
-  const tab = route.tab || (unlocked && n > 0 ? 'practice' : unlocked ? 'guide' : 'guide');
-  let dots = ''; for (let k = 0; k < PER_DAY; k++) dots += `<i class="${S.done[nodeKey(c, d, k)] ? 'on' : ''} ${k === RETO ? 'reto' : ''}"></i>`;
+  const tab = route.tab || (unlocked && n > 0 ? 'practice' : 'guide');
+  const curK = cur >= d * PER_DAY && cur < (d + 1) * PER_DAY ? cur % PER_DAY : -1;
   let h = `<div class="wrap">${CUR.fallback ? `<p class="notice">${t('content.fallback')}</p>` : ''}
-   <header class="dayhead"><div class="top"><button class="crumb" data-go="map">${I.left}${t('nav.map')}</button><span class="lvl">${t('lvl.' + phase(d))}</span>
-     <div class="nav2"><button data-go="${dayHash(d - 1)}" ${d === 0 ? 'disabled' : ''} aria-label="${t('day.prev')}">${I.left}</button><button data-go="${dayHash(d + 1)}" ${d === DAYS - 1 ? 'disabled' : ''} aria-label="${t('day.next')}">${I.right}</button></div></div>
-     <div><p class="n">${t('day.nOf', { d: d + 1 })}</p><h1>${esc(day.t)}</h1><p>${esc(day.d)}</p></div><div class="dots" aria-label="${n}/${PER_DAY}">${dots}</div></header>
-   <div class="tabs" role="tablist" data-tab="${tab}"><span class="slider"></span>
+   <header class="dayhead"><div class="top"><button class="crumb" data-go="map">${I.left}${t('nav.map')}</button>
+     <div class="nav2"><button class="iconbtn" data-go="${dayHash(d - 1)}" ${d === 0 ? 'disabled' : ''} aria-label="${t('day.prev')}">${I.left}</button><button class="iconbtn" data-go="${dayHash(d + 1)}" ${d === DAYS - 1 ? 'disabled' : ''} aria-label="${t('day.next')}">${I.right}</button></div></div>
+     <p class="eyebrow">${t('day.nOf', { d: d + 1 })} · ${t('lvl.' + phase(d))}</p><h1>${esc(day.t)}</h1><p class="lead">${esc(day.d)}</p>
+     <div class="daybyte">${bitsHTML(c, d, curK)}<code class="hex">${hex(byteOf(c, d))}</code><small>${t('bits.aria', { n, m: PER_DAY })}</small></div></header>
+   <div class="tabs" role="tablist" data-tab="${tab}">
      <button role="tab" aria-selected="${tab === 'guide'}" class="${tab === 'guide' ? 'on' : ''}" data-go="${dayHash(d, 'guide')}">${I.book}${t('day.guide')}</button>
      <button role="tab" aria-selected="${tab === 'practice'}" class="${tab === 'practice' ? 'on' : ''}" data-go="${dayHash(d, 'practice')}">${I.target}${t('day.practice')}</button></div>`;
   if (tab === 'guide') {
-    h += `<div class="guide">${day.guide.map((s, i) => `<section class="gsec ${s.real ? 'real' : ''}">
+    h += `<div class="readbar" aria-hidden="true"><i></i></div><div class="guide">${day.guide.map((s, i) => `<section class="gsec ${s.real ? 'real' : ''}">
       <h2>${esc(s.h)}${s.real ? `<span class="tag-real">${I.bulb}${t('day.real')}</span>` : ''}</h2>
       ${s.p.map(p => `<p>${rich(p)}</p>`).join('')}
-      ${s.code ? codeBlock(s.code, c) + `<button class="copybtn" data-copy="${d}:${i}">${t('day.copy')}</button>` : ''}</section>`).join('')}
-      <div class="guide-end"><button class="btn primary" data-go="${dayHash(d, 'practice')}">${I.target}${t('day.startPractice')}</button></div></div>`;
+      ${s.code ? `<div class="codewrap">${codeBlock(s.code, c)}<button class="copybtn" data-copy="${d}:${i}">${t('day.copy')}</button></div>` : ''}</section>`).join('')}
+      <div class="guide-end">${kibi('happy', 64)}<p>${t('day.guideEnd')}</p><button class="btn primary" data-go="${dayHash(d, 'practice')}">${I.target}${t('day.startPractice')}</button></div></div>
+      <div class="practice-fab" id="fab"><button class="btn primary block" data-go="${dayHash(d, 'practice')}">${I.target}${t('day.startPractice')}</button></div>`;
   } else if (!unlocked) {
     h += `<div class="nextday">${I.lock.replace('<svg', '<svg style="width:40px;height:40px"')}<h2>${t('day.locked')}</h2><p>${t('day.lockedDesc')}</p>
       <button class="btn gold" data-jump="${d}">${t('day.jump')}</button></div>`;
   } else {
-    h += `<div class="path">`;
+    h += `<ol class="levels">`;
     for (let k = 0; k < PER_DAY; k++) {
-      const gi = d * PER_DAY + k, key = nodeKey(c, d, k), st = S.done[key] ? 'done' : gi === cur ? 'current' : 'locked';
-      const off = k === RETO ? 0 : Math.round(Math.sin(k * 1.2) * 56), open = openPop === key, isReto = k === RETO;
-      const icon = st === 'done' ? I.check : st === 'locked' ? I.lock : isReto ? I.crown : I.code;
-      h += `<div class="nwrap ${st} ${open ? 'open' : ''} ${justDone === key ? 'just' : ''} ${justUnlock === key ? 'unlock' : ''}" style="--off:${off}px">
-        ${st === 'current' && !open ? `<span class="start-tag">${isReto ? t('node.retoTag') : t('node.start')}</span>` : ''}
-        <button class="node ${isReto ? 'reto' : ''} ${st === 'locked' ? 'locked' : ''}" data-node="${key}" aria-expanded="${open}" aria-label="${isReto ? t('node.reto') : t('node.practice', { n: k + 1 })}">${icon}${!isReto && st !== 'done' ? `<span class="num">${k + 1}</span>` : ''}</button>
-        ${st === 'current' ? `<span class="ring ${isReto ? 'sq' : ''}"></span>` : ''}${open ? popHTML(d, k, st) : ''}</div>`;
+      const gi = d * PER_DAY + k, key = nodeKey(c, d, k), st = S.done[key] ? 'done' : gi === cur ? 'current' : 'locked', isReto = k === RETO;
+      const xp = st === 'done' ? (isReto ? 5 : 2) : isReto ? 20 : 5;
+      const desc = st === 'locked' ? t('node.lockedDesc') : t(isReto ? 'node.retoDesc' : 'node.practiceDesc', { n: sectionsOf(k) }) + (st === 'done' ? ' ' + t('node.done') : '');
+      h += `<li class="level ${st} ${isReto ? 'reto' : ''} ${justDone === key ? 'just' : ''} ${justUnlock === key ? 'unlock' : ''}">
+        <span class="lbit" aria-hidden="true">${st === 'done' ? 1 : 0}</span>
+        <div class="linfo"><span class="lk">${isReto ? I.crown : ''}${t('level.bit', { n: k + 1 })}</span><b>${isReto ? t('node.reto') : t('node.practice', { n: k + 1 })}</b><p>${desc}</p></div>
+        ${st === 'locked' ? `<span class="lstate" role="img" aria-label="${t('node.locked')}">${I.lock}</span>` : `<button class="btn small ${st === 'current' ? (isReto ? 'gold' : 'primary') : 'ghost'}" data-start="${key}">${st === 'done' ? t('node.replay', { xp }) : t('node.go', { xp })}</button>`}</li>`;
     }
-    h += `<div class="path-kibi ${Math.sin(3 * 1.2) > 0 ? 'l' : 'r'}">${kibi('idle', 88, 'float')}</div></div>`;
-    if (S.done[nodeKey(c, d, RETO)]) h += `<div class="nextday">${I.trophy.replace('<svg', '<svg style="width:44px;height:44px;color:var(--gold)"')}<h2>${d === DAYS - 1 ? t('day.allDone') : t('day.complete')}</h2>${d < DAYS - 1 ? `<button class="btn primary" data-go="${dayHash(d + 1)}">${t('day.goNext', { d: d + 2 })}</button>` : ''}</div>`;
+    h += `</ol>`;
+    if (S.done[nodeKey(c, d, RETO)]) h += `<div class="nextday done">${kibi('happy', 80)}<h2>${d === DAYS - 1 ? t('day.allDone') : t('day.complete')}</h2><p class="mono">${t('day.byteWritten', { h: hex(byteOf(c, d)) })}</p>${d < DAYS - 1 ? `<button class="btn primary" data-go="${dayHash(d + 1)}">${t('day.goNext', { d: d + 2 })}</button>` : ''}</div>`;
   }
   return h + `</div>`;
 }
-function popHTML(d, k, st) {
-  const isReto = k === RETO, title = isReto ? t('node.reto') : t('node.practice', { n: k + 1 });
-  if (st === 'locked') return `<div class="pop locked" role="dialog"><h3>${title}</h3><p>${t('node.lockedDesc')}</p></div>`;
-  const xp = isReto ? 20 : 5, rxp = isReto ? 5 : 2;
-  return `<div class="pop ${isReto ? 'reto' : ''}" role="dialog"><h3>${title}</h3><p>${t(isReto ? 'node.retoDesc' : 'node.practiceDesc', { n: sectionsOf(k) })}${st === 'done' ? ' ' + t('node.done') : ''}</p>
-    <button class="btn" data-start="${nodeKey(S.course, d, k)}">${st === 'done' ? t('node.replay', { xp: rxp }) : t('node.go', { xp })}</button></div>`;
+// Indicador de lectura de la guía y botón fijo "Empezar la práctica" al acercarse al final.
+function onScroll() {
+  const g = document.querySelector('#main .guide'); if (!g) return;
+  const r = g.getBoundingClientRect(), total = Math.max(1, r.height - innerHeight * 0.6), p = Math.min(1, Math.max(0, -r.top / total));
+  const bar = document.querySelector('.readbar i'); if (bar) bar.style.transform = `scaleX(${p})`;
+  const end = document.querySelector('#main .guide-end'), fab = $('#fab');
+  if (fab && end) fab.classList.toggle('show', p > 0.4 && end.getBoundingClientRect().top > innerHeight - 40);
 }
+window.addEventListener('scroll', onScroll, { passive: true });
 
 /* ---------- vista: cursos ---------- */
 function renderCourses() {
-  let h = `<div class="page"><h1>${t('courses.title')}</h1><p class="lead">${t('courses.lead')}</p><div class="ccards">`;
+  let h = `<div class="page"><p class="eyebrow">${t('nav.courses')}</p><h1>${t('courses.title')}</h1><p class="lead">${t('courses.lead')}</p><div class="ccards">`;
   for (const c of COURSES) {
     const m = META[c], dn = doneCount(c), p = Math.round(dn / (DAYS * PER_DAY) * 100);
     h += `<article class="ccard ${c === S.course ? 'on' : ''}" style="--c:${m.color};--cd:${m.dark};--ci:${m.ink}">
-      <div class="top">${badge(c)}<h3>${m.name}</h3></div><p>${t('course.' + c)}</p>
-      <p>${dn === DAYS * PER_DAY ? t('courses.done') : t('courses.next', { d: currentDay(c) + 1 })}</p>
-      <div class="meter lang"><i style="width:${p}%"></i></div>
-      <div class="foot"><small>${t('map.levels', { n: dn, m: DAYS * PER_DAY })}</small><button class="btn small ${c === S.course ? 'primary' : 'ghost'}" data-course="${c}" data-open="1">${dn ? t('courses.continue') : t('courses.start')}</button></div></article>`;
+      <div class="top">${badge(c)}<h3>${m.name}</h3>${c === S.course ? `<span class="pill">${t('courses.current')}</span>` : ''}</div><p>${t('course.' + c)}</p>
+      ${stripHTML(c)}
+      <div class="foot"><small class="mono">${dn === DAYS * PER_DAY ? t('courses.done') : t('courses.next', { d: currentDay(c) + 1 })} · ${p}%</small><button class="btn small ${c === S.course ? 'primary' : 'ghost'}" data-course="${c}" data-open="1">${dn ? t('courses.continue') : t('courses.start')}</button></div></article>`;
   }
   return h + `</div></div>`;
 }
@@ -425,52 +469,108 @@ const ACH = [
 const checkAch = (when = Date.now()) => P.unlock(S, ACH.filter(([, f]) => f()).map(([id]) => id), when);
 const fmtDate = ts => new Date(ts).toLocaleDateString(S.locale || 'es', { day: 'numeric', month: 'short', year: 'numeric' });
 const fmtTime = sec => { const h = Math.floor(sec / 3600), m = Math.round((sec % 3600) / 60); return h ? t('stats.hm', { h, m }) : t('stats.m', { m }); };
-function statsSection() {
-  const hist = P.history(S, 14), max = Math.max(1, ...hist.map(r => r.xp)), td = hist[hist.length - 1];
-  const bars = hist.map(r => `<span class="sbar ${r.day === today() ? 'today' : ''}" title="${t('stats.xpDay', { d: fmtDate(new Date(r.day + 'T12:00')), xp: r.xp })}"><i style="height:${Math.round(r.xp / max * 100)}%"></i></span>`).join('');
-  const weak = P.weak(S, S.course).slice(0, 4), due = P.pending(S, S.course).length;
-  return `<h2>${t('stats.title')}</h2><div class="sgrid">
-    <div class="card"><div class="goal-h"><h3>${t('stats.activity')}</h3><span>${hist.reduce((a, r) => a + r.xp, 0)} XP</span></div>
-      <div class="sbars" role="img" aria-label="${esc(hist.map(r => t('stats.xpDay', { d: fmtDate(new Date(r.day + 'T12:00')), xp: r.xp })).join(', '))}">${bars}</div>
-      <p class="note">${t('stats.time')}: <b>${fmtTime(P.studySeconds(S))}</b> · ${t('stats.today')}: <b>${fmtTime(td.sec)}</b>, ${td.n ? Math.round(td.ok / td.n * 100) : 0}% ${t('profile.acc')}</p>
-      <p class="note">${t('stats.since')}</p></div>
-    <div class="card"><h3>${t('stats.weak')} · ${META[S.course].name}</h3>${weak.length ? `<ul class="weak">${weak.map(w => `<li><button class="linkbtn" data-go="${dayHash(w.day - 1, 'guide')}">${t('day.n', { d: w.day })}: ${esc(dayTitle(w.day - 1))}</button><small>${t('stats.weakAcc', { p: Math.round(w.acc * 100), n: w.n })}</small></li>`).join('')}</ul>` : `<p class="note">${t('stats.weakNone')}</p>`}
-      <p class="note">${due ? t('stats.review', { n: due }) : t('stats.reviewNone')}</p></div></div>`;
+// Cuadrícula de actividad: 18 semanas (columnas) de lunes a domingo, con la XP de cada día de todos los dispositivos.
+function activityHTML() {
+  const hist = P.history(S, 126), first = new Date(hist[0].day + 'T12:00'), pad = (first.getDay() + 6) % 7;
+  const lv = x => (x <= 0 ? 0 : x <= 10 ? 1 : x <= 25 ? 2 : x <= 50 ? 3 : 4), active = hist.filter(r => r.xp > 0).length;
+  const cells = '<i class="pad"></i>'.repeat(pad) + hist.map(r => `<i class="l${lv(r.xp)}${r.day === today() ? ' today' : ''}" title="${esc(t('stats.xpDay', { d: fmtDate(new Date(r.day + 'T12:00')), xp: r.xp }))}"></i>`).join('');
+  return `<div class="card wide"><div class="card-h"><h3>${t('stats.grid')}</h3><span class="mono">${t('stats.activeDays', { n: active })}</span></div>
+    <div class="actgrid" role="img" aria-label="${t('stats.activeDays', { n: active })}">${cells}</div>
+    <div class="actlegend" aria-hidden="true"><span>${t('stats.less')}</span><i class="l0"></i><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i><span>${t('stats.more')}</span></div></div>`;
 }
+// El curso como 30 bytes, en forma de volcado hexadecimal: una fila por cada fase de 10 días.
+function hexdumpHTML(c) {
+  let rows = '', full = 0;
+  for (let r = 0; r < 3; r++) {
+    rows += `<div class="hxrow"><span class="hxaddr">${String(r * 10 + 1).padStart(2, '0')}</span>`;
+    for (let d = r * 10; d < r * 10 + 10; d++) { const v = byteOf(c, d); if (v === 255) full++; rows += `<span class="hx ${v === 255 ? 'full' : v ? 'part' : ''}" title="${t('day.n', { d: d + 1 })}: ${esc(dayTitle(d))}">${v.toString(16).toUpperCase().padStart(2, '0')}</span>`; }
+    rows += `</div>`;
+  }
+  return `<div class="card wide"><div class="card-h"><h3>${t('profile.bytes', { c: META[c].name })}</h3><span class="mono">${full}/30</span></div>
+    <div class="hexdump" role="img" aria-label="${t('profile.bytesAria', { n: full })}">${rows}</div><p class="note">${t('profile.bytesDesc')}</p></div>`;
+}
+function statsSection() {
+  const td = P.history(S, 1)[0], weak = P.weak(S, S.course).slice(0, 4), due = P.pending(S, S.course).length;
+  return `<h2>${t('stats.title')}</h2><div class="sgrid">${activityHTML()}${hexdumpHTML(S.course)}
+    <div class="card"><h3>${t('stats.weak')} · ${META[S.course].name}</h3>${weak.length ? `<ul class="weak">${weak.map(w => `<li><button class="linkbtn" data-go="${dayHash(w.day - 1, 'guide')}">${t('day.n', { d: w.day })}: ${esc(dayTitle(w.day - 1))}</button><small>${t('stats.weakAcc', { p: Math.round(w.acc * 100), n: w.n })}</small></li>`).join('')}</ul>` : `<p class="note">${t('stats.weakNone')}</p>`}
+      <p class="note">${due ? t('stats.review', { n: due }) : t('stats.reviewNone')}</p></div>
+    <div class="card"><h3>${t('stats.time')}</h3><p class="bignum mono">${fmtTime(P.studySeconds(S))}</p>
+      <p class="note">${t('stats.today')}: <b>${fmtTime(td.sec)}</b>, ${td.n ? Math.round(td.ok / td.n * 100) : 0}% ${t('profile.acc')}</p><p class="note">${t('stats.since')}</p></div></div>`;
+}
+const seg = (label, items, cur, attr) => `<div class="seg" role="group" aria-label="${esc(label)}">${items.map(([v, txt, off, tip]) => `<button class="${cur === v ? 'on' : ''}" data-${attr}="${v}" aria-pressed="${cur === v}" ${off ? `disabled title="${esc(tip)}"` : ''}>${off ? I.lock : ''}${txt}</button>`).join('')}</div>`;
 function renderProfile() {
   const acc = S.stats.answered ? Math.round(S.stats.correct / S.stats.answered * 100) : 0;
-  let h = `<div class="page"><h1>${t('profile.title')}</h1>
+  let h = `<div class="page"><header class="phead">${kibi('idle', 72)}<div><p class="eyebrow">${t('nav.profile')}</p><h1>${t('profile.title')}</h1>
+    <p class="lead">${Store.user ? esc(Store.user.email || '') : t('profile.localTitle')}</p></div></header>
    <div class="ptiles">
-    <div class="ptile" style="color:var(--flame)">${I.flame}<div><b>${S.streak}</b><span>${t('profile.streak', { n: S.streak })}</span></div></div>
-    <div class="ptile" style="color:var(--gold)">${I.bolt}<div><b>${S.xp}</b><span>${t('profile.xp')}</span></div></div>
-    <div class="ptile" style="color:var(--ok)">${I.check}<div><b>${S.stats.lessons}</b><span>${t('profile.levels')}</span></div></div>
-    <div class="ptile" style="color:var(--gem)">${I.target}<div><b>${acc}%</b><span>${t('profile.acc')}</span></div></div>
-    <div class="ptile" style="color:var(--ok)">${I.chain}<div><b>${S.run.cur}</b><span>${t('profile.run')}</span></div></div>
-    <div class="ptile" style="color:var(--gold)">${I.trophy}<div><b>${S.run.best}</b><span>${t('profile.runBest')}</span></div></div>
+    <div class="ptile flame">${I.flame}<b>${S.streak}</b><span>${t('profile.streak', { n: S.streak })}</span></div>
+    <div class="ptile gold">${I.bolt}<b>${S.xp}</b><span>${t('profile.xp')}</span></div>
+    <div class="ptile ok">${I.check}<b>${S.stats.lessons}</b><span>${t('profile.levels')}</span></div>
+    <div class="ptile gem">${I.target}<b>${acc}%</b><span>${t('profile.acc')}</span></div>
+    <div class="ptile ok">${I.chain}<b>${S.run.cur}</b><span>${t('profile.run')}</span></div>
+    <div class="ptile gold">${I.trophy}<b>${S.run.best}</b><span>${t('profile.runBest')}</span></div>
    </div>${statsSection()}<h2>${t('profile.courses')}</h2><div class="plist">`;
   for (const c of COURSES) {
     const p = Math.round(doneCount(c) / (DAYS * PER_DAY) * 100);
-    h += `<div class="prow">${badge(c)}<div><b>${META[c].name}</b><p>${p === 100 ? t('courses.done') : t('courses.next', { d: currentDay(c) + 1 })}</p><div class="meter lang" style="--c:${META[c].color};margin-top:8px;height:8px"><i style="width:${p}%"></i></div></div><small>${p}%<br>${S.courseXp[c] || 0} XP</small></div>`;
+    h += `<div class="prow">${badge(c)}<div><b>${META[c].name}</b><p>${p === 100 ? t('courses.done') : t('courses.next', { d: currentDay(c) + 1 })}</p>${stripHTML(c)}</div><small class="mono">${p}%<br>${S.courseXp[c] || 0} XP</small></div>`;
   }
-  h += `</div><h2>${t('profile.ach')}</h2><div class="plist">`;
-  ACH.forEach(([id, f, ic]) => { const on = f(); h += `<div class="prow ${on ? '' : 'off'}"><span class="medal ${on ? 'on' : ''}">${ic}</span><div><b>${t('ach.' + id)}</b><p>${t('ach.' + id + '.d')}</p></div><small>${on ? (S.ach[id] > 1 ? t('profile.achAt', { d: fmtDate(S.ach[id]) }) : t('profile.achieved')) : t('profile.pending')}</small></div>`; });
+  h += `</div><h2>${t('profile.ach')}</h2><div class="achgrid">`;
+  ACH.forEach(([id, f, ic]) => { const on = f(); h += `<div class="ach ${on ? 'on' : ''}"><span class="medal">${ic}</span><b>${t('ach.' + id)}</b><p>${t('ach.' + id + '.d')}</p><small>${on ? (S.ach[id] > 1 ? t('profile.achAt', { d: fmtDate(S.ach[id]) }) : t('profile.achieved')) : t('profile.pending')}</small></div>`; });
   h += `</div><h2>${t('profile.settings')}</h2><div class="plist">
     <div class="prow"><span class="medal">${I.globe}</span><div><b>${t('profile.lang')}</b><p>${t('profile.langDesc')}</p></div>${langPick()}</div>
     <div class="prow"><span class="medal">${I.sun}</span><div><b>${t('profile.theme')}</b><p>${t('profile.themeDesc')}</p></div>
-      <div class="seg" role="group" aria-label="${t('profile.theme')}">${THEMES.map(th => `<button class="${(S.theme || 'auto') === th ? 'on' : ''}" data-theme-set="${th}" aria-pressed="${(S.theme || 'auto') === th}">${t('theme.' + th)}</button>`).join('')}</div></div>
+      ${seg(t('profile.theme'), THEMES.map(th => [th, t('theme.' + th)]), S.theme || 'auto', 'theme-set')}</div>
+    <div class="prow"><span class="medal txt">Aa</span><div><b>${t('profile.font')}</b><p>${t('profile.fontDesc')}</p></div>
+      ${seg(t('profile.font'), FONTS.map(f => [f, t('font.' + f)]), FONTS.includes(S.font) ? S.font : 'm', 'font')}</div>
+    <div class="prow"><span class="medal">${I.code}</span><div><b>${t('profile.code')}</b><p>${t('profile.codeDesc')}</p></div>
+      ${seg(t('profile.code'), CODE_THEMES.map(([k, a]) => [k, t('code.' + k), !codeThemeOpen(k), a ? t('code.lock', { a: t('ach.' + a) }) : '']), codeThemeOpen(S.codeTheme) ? S.codeTheme : 'ink', 'codetheme')}</div>
     <div class="prow"><span class="medal">${I.target}</span><div><b>${t('goal.title')}</b><p>${t('profile.goalDesc')}</p></div>
-      <div class="seg" role="group" aria-label="${t('goal.title')}">${[10, 20, 30, 50].map(gl => `<button class="${S.goal === gl ? 'on' : ''}" data-goal="${gl}" aria-pressed="${S.goal === gl}">${gl}</button>`).join('')}</div></div>
+      ${seg(t('goal.title'), [10, 20, 30, 50].map(g => [g, String(g)]), S.goal, 'goal')}</div>
     <div class="prow"><span class="medal">${I.sound}</span><div><b>${t('profile.sound')}</b><p>${t('profile.soundDesc')}</p></div>
-      <button class="switch" role="switch" id="soundSwitch" aria-checked="${S.sound}" aria-label="${t('profile.sound')}" data-act="sound"></button></div>
+      <button class="switch" role="switch" aria-checked="${S.sound}" aria-label="${t('profile.sound')}" data-act="sound"></button></div>
+    <div class="prow"><span class="medal">${I.bolt}</span><div><b>${t('profile.motion')}</b><p>${t('profile.motionDesc')}</p></div>
+      <button class="switch" role="switch" aria-checked="${S.motion === 'reduce'}" aria-label="${t('profile.motion')}" data-act="motion"></button></div>
+    <div class="prow"><span class="medal">${I.star}</span><div><b>${t('ob.again')}</b><p>${t('ob.againDesc')}</p></div><button class="btn small ghost" data-act="onboard">${t('ob.againBtn')}</button></div>
     <div class="prow"><span class="medal">${I.x}</span><div><b>${t('profile.reset')}</b><p>${confirmReset ? t('profile.resetConfirm') : t('profile.resetDesc')}</p></div>
-      ${confirmReset ? `<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"><button class="btn small ghost" data-act="reset-cancel">${t('common.cancel')}</button><button class="btn small danger" data-act="reset-yes">${t('profile.resetBtn')}</button></div>` : `<button class="btn small ghost" data-act="reset">${t('profile.resetBtn')}</button>`}</div>
+      ${confirmReset ? `<div class="btnrow"><button class="btn small ghost" data-act="reset-cancel">${t('common.cancel')}</button><button class="btn small danger" data-act="reset-yes">${t('profile.resetBtn')}</button></div>` : `<button class="btn small ghost" data-act="reset">${t('profile.resetBtn')}</button>`}</div>
     <div class="prow"><span class="medal">${I.chat}</span><div><b>${t('nav.suggest')}</b><p>${t('sug.lead')}</p></div><button class="btn small ghost" data-go="sugerencias">${t('sug.send')}</button></div>
     <div class="prow"><span class="medal">${I.book}</span><div><b>${t('legal.title')}</b><p>${legalLinks()}</p></div><span></span></div>
    </div><h2>${t('profile.account')}</h2><div class="plist">
     ${Store.user ? `<div class="prow"><span class="medal">${I.user}</span><div><b>${esc(Store.user.email || '')}</b>${syncHTML()}</div><button class="btn small ghost" data-act="signout">${t('profile.signout')}</button></div>`
-      : `<div class="prow"><span class="medal">${I.user}</span><div><b>${t('profile.localTitle')}</b><p>${t('profile.localMode')}</p></div><span></span></div>`}
+      : `<div class="prow"><span class="medal">${I.user}</span><div><b>${t('profile.localTitle')}</b><p>${t('profile.localMode')}</p>${syncHTML()}</div><span></span></div>`}
    </div></div>`;
   return h;
+}
+
+/* ---------- bienvenida en 3 pasos (la primera vez) ---------- */
+// Objetivo diario en minutos, traducido a la meta de XP (state.goal). Un nivel son unos 3 minutos y 5 XP.
+const OB_GOALS = [[5, 10], [10, 20], [20, 50]];
+const OB_LEVELS = [0, 7, 14]; // día (índice) al que lleva la prueba de nivel; 0: empezar por el día 1
+let ob = null;
+function onboardHTML() {
+  const s = ob.step, dots = [0, 1, 2].map(i => `<i class="${i <= s ? 'on' : ''}"></i>`).join('');
+  let body;
+  if (s === 0) body = `<h2 id="obT">${t('ob.goal')}</h2><p>${t('ob.goalDesc')}</p><div class="obopts">${OB_GOALS.map(([m, xp]) => `<button class="obopt ${ob.goal === xp ? 'on' : ''}" data-obgoal="${xp}" aria-pressed="${ob.goal === xp}"><b>${t('ob.min', { n: m })}</b><small class="mono">${xp} XP</small></button>`).join('')}</div>`;
+  else if (s === 1) body = `<h2 id="obT">${t('ob.level')}</h2><p>${t('ob.levelDesc', { c: META[S.course].name })}</p><div class="obopts col">${OB_LEVELS.map((d, i) => `<button class="obopt ${ob.level === d ? 'on' : ''}" data-oblevel="${d}" aria-pressed="${ob.level === d}"><b>${t('ob.lv' + i)}</b><small>${t('ob.lv' + i + '.d', { d: d + 1 })}</small></button>`).join('')}</div>`;
+  else body = `<h2 id="obT">${t('ob.remind')}</h2><p>${t('ob.remindDesc')}</p><div class="field"><label for="obtime">${t('ob.time')}</label><input id="obtime" type="time" value="${esc(ob.remind)}"></div><p class="note">${t('ob.remindNote')}</p>`;
+  return `<div class="obhead">${kibi('idle', 60, 'float')}<span class="obdots" role="img" aria-label="${t('ob.step', { n: s + 1, m: 3 })}">${dots}</span></div>${body}
+   <div class="acts">${s ? `<button class="btn ghost" data-ob="back">${t('ob.back')}</button>` : `<button class="btn ghost" data-ob="skip">${t('ob.skip')}</button>`}<button class="btn primary" data-ob="next">${s < 2 ? t('ob.next') : t('ob.finish')}</button></div>`;
+}
+function openOnboard(focusSel) {
+  ob = ob || { step: 0, goal: OB_GOALS.some(([, x]) => x === S.goal) ? S.goal : 20, level: 0, remind: S.remind || '' };
+  openModal(onboardHTML(), 'dialog onboard');
+  $('#modal [role="dialog"]').setAttribute('aria-labelledby', 'obT');
+  const f = focusSel && $('#modal ' + focusSel); if (f) f.focus();
+}
+function obAction(a) {
+  const tm = $('#obtime'); if (tm) ob.remind = tm.value;
+  if (a === 'back') { ob.step--; openOnboard(); return; }
+  if (a === 'next' && ob.step < 2) { ob.step++; openOnboard(); return; }
+  // El recordatorio se guarda para cuando la app tenga avisos: ahora no se envía nada.
+  if (a === 'next') { S.goal = ob.goal; S.remind = ob.remind || ''; }
+  S.onboarded = true; Store.save();
+  const lvl = a === 'next' ? ob.level : 0; ob = null; closeModal(); render();
+  if (lvl > 0 && CUR.data) jumpModal(lvl);
 }
 
 /* ---------- vista: sugerencias ---------- */
@@ -521,12 +621,12 @@ function render(swap) {
   firstRender = false;
 }
 async function onRoute() {
-  route = parseHash(); openPop = null; menuOpen = false;
+  route = parseHash(); openPop = null; menuOpen = false; statOpen = null;
   render(true);
   window.scrollTo(0, 0);
 }
 function scrollToCurrent() {
-  const el = document.querySelector('.nwrap.current') || document.querySelector('.daycard.cur');
+  const el = document.querySelector('.level.current') || document.querySelector('.dayrow.cur');
   if (el) el.scrollIntoView({ block: 'center', behavior: reduceMotion() ? 'auto' : 'smooth' });
 }
 
@@ -554,7 +654,7 @@ function trapTab(e) {
 }
 function heartsModal() {
   regen();
-  openModal(`<div class="center">${heartsRow(true)}<h2>${S.hearts === 0 ? t('hearts.none') : t('hearts.have', { n: S.hearts, m: MAXH })}</h2>
+  openModal(`<div class="center">${heartsMeter(true)}<h2>${S.hearts === 0 ? t('hearts.none') : t('hearts.have', { n: S.hearts, m: MAXH })}</h2>
    <p>${t('hearts.modal', { n: EXTRA_HEARTS })}</p><p class="timer" data-timer>${timerText()}</p></div>
    <div class="acts"><button class="btn gold" data-act="extra">${I.plus}${t('hearts.extraBtn', { n: EXTRA_HEARTS })}</button><button class="btn ghost" data-act="close">${t('common.close')}</button></div>`);
 }
@@ -563,10 +663,11 @@ function jumpModal(d) {
    <div class="acts"><button class="btn ghost" data-act="close">${t('common.cancel')}</button><button class="btn primary" data-test="${d}">${t('jump.start')}</button></div>`);
 }
 function pwModal() {
-  openModal(`<h2>${t('auth.newPw')}</h2><form id="pwForm" class="field"><label for="newpw">${t('auth.password')}</label><input id="newpw" type="password" minlength="6" autocomplete="new-password" required><div id="pwMsg"></div>
+  openModal(`<h2>${t('auth.newPw')}</h2><form id="pwForm" class="field"><label for="newpw">${t('auth.password')}</label><input id="newpw" type="password" minlength="8" autocomplete="new-password" required><div id="pwMsg"></div>
    <div class="acts"><button class="btn primary" type="submit">${t('auth.savePw')}</button></div></form>`);
   $('#pwForm').addEventListener('submit', async e => {
     e.preventDefault();
+    if ($('#newpw').value.length < 8) { $('#pwMsg').innerHTML = `<p class="msg err">${t('auth.err.short')}</p>`; return; }
     try { await Store.updatePassword($('#newpw').value); $('#pwMsg').innerHTML = `<p class="msg ok">${t('auth.pwSaved')}</p>`; setTimeout(closeModal, 1200); }
     catch (err) { $('#pwMsg').innerHTML = `<p class="msg err">${esc(authError(err))}</p>`; }
   });
@@ -579,7 +680,7 @@ function paletteItems(q) {
   const items = [];
   const match = s => !q || s.toLowerCase().includes(q);
   if (CUR.data) CUR.data.days.forEach((d, i) => {
-    const label = `${t('day.n', { d: i + 1 })}: ${d.t}`;
+    const label = `${t('day.n', { d: i + 1 })}: ${d.t}`; // texto plano: se escapa al pintarlo (esc(it.label))
     if (match(label) || match(d.d) || q === String(i + 1)) items.push({ g: 'days', ic: dayUnlocked(S.course, i) ? I.book : I.lock, label, sub: `${dayDone(S.course, i)}/${PER_DAY}`, run: () => go(dayHash(i)) });
   });
   COURSES.forEach(c => { if (match(META[c].name)) items.push({ g: 'courses', ic: I.grid, label: META[c].name, sub: `${Math.round(doneCount(c) / (DAYS * PER_DAY) * 100)}%`, run: () => switchCourse(c, true) }); });
@@ -733,6 +834,7 @@ function startNode(key) {
 }
 function startExtra() {
   if (!CUR.data) return;
+  statOpen = null;
   closeModal();
   if (L) { LS.hidden = true; LS.innerHTML = ''; L = null; lockPage(false); }
   const pool = CUR.data.days.slice(0, currentDay(S.course) + 1).flatMap(d => d.x), due = dueExercises(currentDay(S.course)).slice(0, 2);
@@ -957,25 +1059,53 @@ let typerTimer = null;
 function seenLanding() { try { return !!localStorage.getItem(SEEN); } catch (e) { return true; } }
 // Enlaces a la política de privacidad y a las condiciones de uso (páginas en español).
 const legalLinks = () => `<a href="privacidad.html">${t('legal.privacy')}</a> · <a href="terminos.html">${t('legal.terms')}</a>`;
+/* Ejercicio de prueba en la portada, sin registrarse: el mismo tipo de pregunta que en los niveles.
+   La respuesta se comprueba con la solución escrita aquí (no se ejecuta código). */
+const TRIAL = { code: 'bits = 4\nprint(bits * 2)', opts: ['44', '8', 'bits * 2'], ok: '8' };
+let trialSel = null;
+function trialHTML() {
+  const done = trialSel !== null, right = trialSel === TRIAL.ok;
+  return `<div class="trial" id="trial"><div class="trial-h"><span class="badge" style="--c:${META.python.color};--cd:${META.python.dark};--ci:#fff">Py</span><b>${t('trial.tag')}</b></div>
+    <h3>${t('trial.q')}</h3>${codeBlock(TRIAL.code, 'python')}
+    <div class="opts" role="group" aria-label="${esc(t('trial.q'))}">${TRIAL.opts.map((o, i) => `<button class="opt mono ${done && o === TRIAL.ok ? 'right' : ''} ${done && o === trialSel && !right ? 'wrong' : ''}" data-trial="${i}" ${done ? 'disabled' : ''}><span class="k">${i + 1}</span><span class="t">${esc(o)}</span></button>`).join('')}</div>
+    <p class="trial-fb ${done ? (right ? 'ok' : 'bad') : ''}" role="status" aria-live="polite">${done ? `<b>${t(right ? 'trial.ok' : 'trial.bad')}</b> ${t('trial.e')}` : ''}</p>
+    ${done ? `<button class="btn primary" data-land="start" data-lc="python">${t('trial.more')}</button>` : ''}</div>`;
+}
 function renderLanding() {
   const login = Store.configured && !Store.user;
   const startBtn = `<button class="btn primary big" data-land="start">${t('land.start')}</button>`;
-  $('#landing').innerHTML = `<header class="lnav"><div class="lbrand">${kibi('idle', 40)}<b>Nibble</b></div><span class="grow"></span>${langPick()}
+  const bits = [1, 1, 1, 1, 0, 0, 0, 0].map((b, i) => `<span class="lbbit ${b ? 'on' : ''}" style="--i:${i}"><b>${b}</b><small>${t('level.bit', { n: i + 1 })}</small></span>`).join('');
+  $('#landing').innerHTML = `<header class="lnav"><div class="lbrand">${kibi('idle', 38)}<b>Nibble</b></div><span class="grow"></span>${langPick()}
     ${login ? `<button class="btn small ghost" data-land="signin">${t('land.signin')}</button>` : ''}</header>
+   <main>
    <section class="lhero"><div class="lcopy">
      <p class="eyebrow">Python · Java · JavaScript · C++</p><h1>${t('land.title')}</h1><p class="lead">${t('land.lead')}</p>
      <div class="lcta">${startBtn}${login ? `<button class="btn ghost big" data-land="signin">${t('land.signin')}</button>` : ''}</div><p class="note">${t('land.free')}</p></div>
      <div class="lart"><div class="lcode" id="lcode"><div class="lcode-top"><i></i><i></i><i></i><span id="lfile"></span></div><div id="typer"></div>
        <div class="lout" id="lout"><span>${t('land.output')}</span><code>nibble = 4 bits</code>${I.check}</div></div>
-       <div class="lkibi">${kibi('idle', 150, 'float')}</div></div></section>
-   <section class="lsec reveal"><h2>${t('land.coursesTitle')}</h2><div class="lcourses">${COURSES.map((c, i) => { const m = META[c]; return `<button class="lcourse" data-land="start" data-lc="${c}" style="--c:${m.color};--cd:${m.dark};--ci:${m.ink};--i:${i}">${badge(c)}<b>${m.name}</b><p>${t('course.' + c)}</p><small>${t('land.days')}</small></button>`; }).join('')}</div></section>
-   <section class="lsec reveal"><h2>${t('land.featTitle')}</h2><div class="lfeat">${[[I.code, 1], [I.book, 2], [I.flame, 3], [I.globe, 4]].map(([ic, n]) => `<div class="fcard" style="--i:${n}">${ic}<b>${t('land.f' + n)}</b><p>${t('land.f' + n + '.d')}</p></div>`).join('')}</div></section>
-   <section class="lsec reveal"><h2>${t('land.howTitle')}</h2><ol class="lsteps">${[1, 2, 3].map(n => `<li style="--i:${n}"><span>${n}</span><b>${t('land.s' + n)}</b><p>${t('land.s' + n + '.d')}</p></li>`).join('')}</ol></section>
+       <div class="lkibi">${kibi('idle', 132, 'float')}</div></div></section>
+   <section class="lsec lsplit reveal"><div><p class="eyebrow">${t('land.byteTag')}</p><h2>${t('land.byteTitle')}</h2><p class="lead">${t('land.byteDesc')}</p>
+       <div class="lbyte" aria-hidden="true">${bits}<code class="hex">0xF0</code></div></div>${trialHTML()}</section>
+   <section class="lsec reveal"><p class="eyebrow">${t('land.coursesTag')}</p><h2>${t('land.coursesTitle')}</h2><div class="lcourses">${COURSES.map((c, i) => { const m = META[c]; return `<article class="lcourse" style="--c:${m.color};--cd:${m.dark};--ci:${m.ink};--i:${i}">
+       <div class="top">${badge(c)}<b>${m.name}</b></div><p>${t('course.' + c)}</p><small class="mono">${t('land.days')}</small>
+       <details class="syl" data-syl="${c}"><summary>${t('land.syllabus')}</summary><ol class="syl-list"><li class="note">${t('land.loading')}</li></ol></details>
+       <button class="btn small ghost" data-land="start" data-lc="${c}">${t('land.startCourse', { c: m.name })}</button></article>`; }).join('')}</div></section>
+   <section class="lsec reveal"><p class="eyebrow">${t('land.featTag')}</p><h2>${t('land.featTitle')}</h2><div class="lfeat">${[[I.code, 1], [I.book, 2], [I.flame, 3], [I.globe, 4]].map(([ic, n]) => `<div class="fcard" style="--i:${n}">${ic}<b>${t('land.f' + n)}</b><p>${t('land.f' + n + '.d')}</p></div>`).join('')}</div></section>
+   <section class="lsec reveal"><p class="eyebrow">${t('land.faqTag')}</p><h2>${t('land.faqTitle')}</h2><div class="faq">${[1, 2, 3, 4, 5, 6].map(n => `<details><summary>${t('faq.q' + n)}</summary><p>${t('faq.a' + n)}</p></details>`).join('')}</div></section>
    <section class="lsec lfinal reveal">${kibi('happy', 96)}<h2>${t('land.finalTitle')}</h2>${startBtn}</section>
-   <footer class="lfoot">${t('land.foot')}<br>${legalLinks()}</footer>`;
-  const io = 'IntersectionObserver' in window && new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .15 });
+   </main>
+   <footer class="lfoot"><p>${t('land.foot')}</p><p>${t('land.credit')}</p><p>${legalLinks()}</p></footer>`;
+  const io = 'IntersectionObserver' in window && new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .12 });
   document.querySelectorAll('#landing .reveal').forEach(el => (io ? io.observe(el) : el.classList.add('in')));
   startTyper();
+}
+// Temario de un curso en la portada: se carga el contenido del curso solo al abrir su desplegable.
+async function fillSyllabus(det) {
+  const c = det.dataset.syl, list = det.querySelector('.syl-list');
+  if (!COURSES.includes(c) || det.dataset.done) return;
+  const r = await getContent(c, window.I18N.get());
+  det.dataset.done = '1';
+  list.innerHTML = r && r.data ? r.data.days.map((d, i) => `<li><span class="mono">${String(i + 1).padStart(2, '0')}</span>${esc(d.t)}</li>`).join('') : `<li class="note">${t('content.missing')}</li>`;
 }
 // Escribe el mismo programa en los 4 lenguajes, uno tras otro, con el color de cada curso.
 function startTyper() {
@@ -1015,7 +1145,7 @@ function authError(err) {
   const m = (err && err.message) || '';
   if (/invalid login/i.test(m)) return t('auth.err.invalid');
   if (/already registered/i.test(m)) return t('auth.err.exists');
-  if (/password should be|at least 6/i.test(m)) return t('auth.err.short');
+  if (/password should be|at least \d|weak_password/i.test(m)) return t('auth.err.short');
   if (/email not confirmed/i.test(m)) return t('auth.confirm');
   return t('auth.err.generic', { m });
 }
@@ -1029,7 +1159,7 @@ function renderAuth() {
     ${!reset && Store.cfg.google !== false && (!Store.providers || Store.providers.google) ? `<button class="btn gbtn block" type="button" data-act="google">${GOOGLE_G}${t('auth.google')}</button><p class="or"><span>${t('auth.or')}</span></p>` : ''}
     <form id="authForm" style="display:flex;flex-direction:column;gap:14px">
       <div class="field"><label for="aemail">${t('auth.email')}</label><input id="aemail" type="email" autocomplete="email" required></div>
-      ${reset ? '' : `<div class="field"><label for="apw">${t('auth.password')}</label><input id="apw" type="password" minlength="6" autocomplete="${authMode === 'signup' ? 'new-password' : 'current-password'}" required></div>`}
+      ${reset ? '' : `<div class="field"><label for="apw">${t('auth.password')}</label><input id="apw" type="password" minlength="8" autocomplete="${authMode === 'signup' ? 'new-password' : 'current-password'}" required></div>`}
       <div id="authMsg">${authMsg}</div>
       <button class="btn primary block" type="submit">${reset ? t('auth.sendReset') : authMode === 'signup' ? t('auth.signup') : t('auth.signin')}</button>
     </form>
@@ -1040,6 +1170,7 @@ function renderAuth() {
   $('#authForm').addEventListener('submit', async e => {
     e.preventDefault();
     const email = $('#aemail').value.trim(), pw = $('#apw') ? $('#apw').value : '', btn = e.target.querySelector('button[type="submit"]');
+    if (authMode !== 'reset' && pw.length < 8) { authMsg = `<p class="msg err">${t('auth.err.short')}</p>`; renderAuth(); $('#aemail').value = email; $('#apw').focus(); return; }
     btn.disabled = true; btn.textContent = t('auth.loading');
     try {
       if (authMode === 'reset') { await Store.sendReset(email); authMsg = `<p class="msg ok">${t('auth.resetSent')}</p>`; renderAuth(); return; }
@@ -1070,9 +1201,11 @@ async function enterApp() {
   route = parseHash();
   render();
   if (route.v === 'map' && currentIndex(S.course) > 0) setTimeout(scrollToCurrent, 100);
+  if (!S.onboarded && !S.stats.lessons && CUR.data) setTimeout(() => { if ($('#modal').hidden && !L) openOnboard(); }, 250);
 }
 async function boot() {
   const loc = detectLocale(); window.I18N.set(loc);
+  const skip = document.querySelector('.skip'); if (skip) skip.textContent = t('a11y.skip');
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) navigator.serviceWorker.register('sw.js').catch(() => { /* sin modo sin conexión */ });
   Store.on(ev => {
     if (ev === 'sync') document.querySelectorAll('[data-sync]').forEach(el => { el.outerHTML = syncHTML(); });
@@ -1096,7 +1229,7 @@ document.addEventListener('click', async e => {
   if (!b) {
     if (e.target.id === 'modal') { closeModal(); return; }
     let changed = false;
-    if (openPop && !e.target.closest('.pop')) { openPop = null; changed = true; }
+    if (statOpen && !e.target.closest('.statpop')) { statOpen = null; changed = true; }
     if (menuOpen && !e.target.closest('.dropwrap')) { menuOpen = false; changed = true; }
     if (changed) render();
     return;
@@ -1105,12 +1238,19 @@ document.addEventListener('click', async e => {
   if (d.go !== undefined) { closeModal(); go(d.go); return; }
   if (d.course) { closeModal(); await switchCourse(d.course, !!d.open); return; }
   if (d.locale) { await setLocale(d.locale); return; }
-  if (d.node) { openPop = openPop === d.node ? null : d.node; render(); return; }
+  if (d.stat) { statOpen = statOpen === d.stat ? null : d.stat; menuOpen = false; renderChrome(); return; }
+  if (statOpen && !b.closest('.statpop')) { statOpen = null; renderChrome(); }
   if (d.start) { startNode(d.start); return; }
   if (d.jump !== undefined) { jumpModal(+d.jump); return; }
   if (d.test !== undefined) { startTest(+d.test); return; }
   if (d.themeSet) { S.theme = d.themeSet; Store.save(); render(); return; }
   if (d.goal) { S.goal = +d.goal; Store.save(); render(); return; }
+  if (d.font) { S.font = d.font; Store.save(); render(); return; }
+  if (d.codetheme) { if (codeThemeOpen(d.codetheme)) { S.codeTheme = d.codetheme; Store.save(); render(); } return; }
+  if (d.obgoal) { ob.goal = +d.obgoal; openOnboard(`[data-obgoal="${d.obgoal}"]`); return; }
+  if (d.oblevel !== undefined) { ob.level = +d.oblevel; openOnboard(`[data-oblevel="${d.oblevel}"]`); return; }
+  if (d.ob) { obAction(d.ob); return; }
+  if (d.trial !== undefined) { if (trialSel === null) { trialSel = TRIAL.opts[+d.trial]; sfx(trialSel === TRIAL.ok ? 'ok' : 'bad'); $('#trial').outerHTML = trialHTML(); const f = $('#trial .trial-fb'); f && f.scrollIntoView({ block: 'nearest', behavior: reduceMotion() ? 'auto' : 'smooth' }); } return; }
   if (d.pal !== undefined) { const it = palItems[+d.pal]; closeModal(); it && it.run(); return; }
   if (d.auth) { authMode = d.auth; authMsg = ''; renderAuth(); return; }
   if (d.land) { await leaveLanding(d.land, d.lc); return; }
@@ -1137,6 +1277,8 @@ document.addEventListener('click', async e => {
     case 'quit': quitLesson(); break;
     case 'quit-yes': closeModal(); closeLesson(); break;
     case 'sound': S.sound = !S.sound; Store.save(); render(); break;
+    case 'motion': S.motion = S.motion === 'reduce' ? '' : 'reduce'; Store.save(); render(); break;
+    case 'onboard': ob = null; openOnboard(); break;
     case 'reset': confirmReset = true; render(); break;
     case 'reset-cancel': confirmReset = false; render(); break;
     case 'reset-yes': confirmReset = false; Store.reset(); S = Store.state; go('map'); break;
@@ -1144,6 +1286,8 @@ document.addEventListener('click', async e => {
     case 'google': b.disabled = true; try { await Store.signInGoogle(); } catch (err) { authMsg = `<p class="msg err">${esc(authError(err))}</p>`; renderAuth(); } break;
   }
 });
+// El temario de cada curso en la portada se carga al abrir su desplegable (toggle no burbujea: se escucha en captura).
+document.addEventListener('toggle', e => { if (e.target.matches && e.target.matches('details[data-syl]') && e.target.open) fillSyllabus(e.target); }, true);
 document.addEventListener('submit', e => { if (e.target.id === 'sugForm') { e.preventDefault(); if (sug.state !== 'sending') sendSuggestion(); } });
 document.addEventListener('input', e => {
   if (e.target.id === 'sugCtx') sug.ctx = e.target.checked;
@@ -1155,7 +1299,7 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     if (!$('#modal').hidden) { closeModal(); return; }
     if (L) { quitLesson(); return; }
-    if (openPop || menuOpen) { openPop = null; menuOpen = false; render(); }
+    if (openPop || menuOpen || statOpen) { const st = statOpen; openPop = null; menuOpen = false; statOpen = null; render(); if (st) { const b = document.querySelector(`[data-stat="${st}"]`); b && b.focus(); } }
     return;
   }
   if (!L || !$('#modal').hidden) return;
@@ -1173,7 +1317,7 @@ setInterval(() => {
     Store.save();
     if (L) { const hh = $('#lsHearts'); if (hh) { hh.querySelector('b').textContent = S.hearts; hh.classList.remove('gain'); void hh.offsetWidth; hh.classList.add('gain'); } }
     else { renderChrome(); document.querySelectorAll('.stat.heart').forEach(s => s.classList.add('bump')); }
-    if (!$('#modal').hidden && $('#modal .hearts-row')) heartsModal();
+    if (!$('#modal').hidden && $('#modal .hmeter')) heartsModal();
   }
   document.querySelectorAll('[data-timer]').forEach(el => { el.textContent = timerText(); });
 }, 1000);

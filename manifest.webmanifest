@@ -1,12 +1,12 @@
 {
   "name": "Nibble",
   "short_name": "Nibble",
-  "description": "Aprende Python, Java, JavaScript y C++ a bocados.",
+  "description": "Aprende Python, Java, JavaScript y C++ byte a byte.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#0D1220",
-  "theme_color": "#17203A",
+  "background_color": "#F4F2EC",
+  "theme_color": "#F4F2EC",
   "icons": [
     { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
     { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }

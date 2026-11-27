@@ -3,11 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Política de privacidad · Nibble</title>
 <meta name="description" content="Qué datos guarda Nibble, para qué los usa, con quién los comparte y cómo ejercer tus derechos.">
 <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
-<script>try { var th = localStorage.getItem('nibble.theme'); if (th === 'light' || th === 'dark') document.documentElement.dataset.theme = th; } catch (e) {}</script>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<script src="assets/js/theme.js"></script>
 <link rel="stylesheet" href="assets/css/legal.css">
 </head>
 <body>
@@ -49,9 +50,8 @@
     <p>No vendemos ni cedemos tus datos. Para funcionar, Nibble usa estos proveedores, que los tratan por nuestra cuenta o te prestan su propio servicio:</p>
     <ul>
       <li><strong>Supabase</strong>: base de datos y autenticación de las cuentas.</li>
-      <li><strong>Google</strong>: inicio de sesión con Google (si lo eliges) y las fuentes tipográficas de la web.</li>
+      <li><strong>Google</strong>: inicio de sesión con Google, solo si lo eliges.</li>
       <li><strong>GitHub</strong>: alojamiento de la web (GitHub Pages) y sugerencias enviadas sin cuenta.</li>
-      <li><strong>jsDelivr</strong>: entrega de la biblioteca que conecta la web con Supabase.</li>
     </ul>
     <p>Algunos de estos proveedores pueden tratar datos fuera del Espacio Económico Europeo. En ese caso lo hacen con las garantías previstas por la normativa, como las cláusulas contractuales tipo de la Comisión Europea.</p>
 

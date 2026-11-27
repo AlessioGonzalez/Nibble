@@ -119,6 +119,29 @@ create policy "level_results: borrar las propias"
   on public.level_results for delete
   using ((select auth.uid()) = user_id);
 
+-- Resultados imposibles o en masa: el trigger los descarta en silencio (return null) en lugar de dar error,
+-- porque la app envía su cola de resultados en un solo lote y un error atascaría la cola para siempre.
+--   - más de 120 resultados por usuario y hora;
+--   - menos de 2 segundos por sección;
+--   - más aciertos que secciones, o más XP de la que da ese modo (práctica 5, reto 25, extra 10, prueba 20).
+-- security definer: cuenta las filas del usuario sin depender de RLS; nadie puede llamarla directamente.
+create or replace function public.level_results_guard()
+returns trigger language plpgsql security definer set search_path = '' as $$
+begin
+  if new.seconds < 2 * new.sections
+     or new.correct > new.sections
+     or new.xp > case new.mode when 'practice' then 5 when 'reto' then 25 when 'extra' then 10 else 20 end
+     or (select count(*) from public.level_results r
+         where r.user_id = new.user_id and r.created_at > now() - interval '1 hour') >= 120 then
+    return null;
+  end if;
+  return new;
+end $$;
+revoke all on function public.level_results_guard() from public, anon, authenticated;
+drop trigger if exists level_results_guard on public.level_results;
+create trigger level_results_guard before insert on public.level_results
+  for each row execute function public.level_results_guard();
+
 -- Resumen por curso del usuario que consulta (respeta las políticas de arriba).
 create or replace view public.my_stats with (security_invoker = true) as
 select

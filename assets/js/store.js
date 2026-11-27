@@ -8,7 +8,8 @@
   // El SDK necesita solo la dirección del proyecto (https://xxxx.supabase.co): si se copió con /rest/v1/
   // u otra ruta detrás, se quita; con ella, el inicio de sesión iría a una dirección que no existe.
   try { if (CFG.supabaseUrl) CFG.supabaseUrl = new URL(CFG.supabaseUrl).origin; } catch (e) { CFG.supabaseUrl = ''; }
-  const SDK = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js';
+  // Copia propia de supabase-js (sin CDN en tiempo de ejecución; licencia MIT, ver THIRD_PARTY_NOTICES.md).
+  const SDK = 'assets/vendor/supabase-js-2.45.4.min.js';
   const P = g.NibbleProgress;
   const MAXH = P.MAXH, fresh = P.fresh, merge = P.merge;
   const uuid = () => (g.crypto && crypto.randomUUID ? crypto.randomUUID()
@@ -41,8 +42,9 @@
     use(s) { this.state = P.totals(P.upgrade(s)); return this.state; },
     // resetAt hace que las copias anteriores (otros dispositivos, la nube) no devuelvan el progreso borrado.
     reset() {
-      const { course, locale, theme, sound } = this.state;
-      this.use(Object.assign(fresh(), { course, locale, theme, sound, resetAt: Date.now() }));
+      // Se conservan las preferencias (no son progreso): curso, idioma, tema, sonido, letra, animaciones y bienvenida.
+      const { course, locale, theme, sound, font, motion, codeTheme, onboarded, remind } = this.state;
+      this.use(Object.assign(fresh(), { course, locale, theme, sound, font, motion, codeTheme, onboarded, remind, resetAt: Date.now() }));
       this.save();
     },
     save() {

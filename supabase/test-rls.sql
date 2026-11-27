@@ -72,6 +72,24 @@ begin
   assert (select count(*) from public.my_stats) = 0, 'my_stats: B ve el resumen de A';
 end $$;
 
+-- 3b. level_results_guard: los resultados imposibles y los envíos en masa se descartan sin error.
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-00000000000a","role":"authenticated"}', true);
+do $$
+declare before_n int;
+begin
+  before_n := (select count(*) from public.level_results);
+  -- 8 secciones en 3 segundos, más aciertos que secciones y más XP de la que da una práctica.
+  insert into public.level_results (course, locale, mode, day, level, sections, correct, mistakes, xp, seconds)
+    values ('python', 'es', 'practice', 1, 2, 8, 8, 0, 5, 3),
+           ('python', 'es', 'practice', 1, 2, 8, 9, 0, 5, 60),
+           ('python', 'es', 'practice', 1, 2, 8, 8, 0, 50, 60);
+  assert (select count(*) from public.level_results) = before_n, 'level_results_guard: ha aceptado un resultado imposible';
+  -- Un lote de 200 resultados válidos: solo entran 120 en la misma hora, sin error.
+  insert into public.level_results (course, locale, mode, day, level, sections, correct, mistakes, xp, seconds)
+    select 'python', 'es', 'practice', 1, 3, 8, 8, 0, 5, 60 from generate_series(1, 200);
+  assert (select count(*) from public.level_results) = 120, 'level_results_guard: el límite de 120 por hora no se aplica';
+end $$;
+
 -- 4. Sugerencias: nadie las lee desde la app y hay como mucho 5 por hora.
 do $$
 begin
