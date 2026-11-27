@@ -12,6 +12,7 @@ import path from 'node:path';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 globalThis.window = globalThis;
+await import(pathToFileURL(path.join(ROOT, 'assets/js/order.js')));
 await import(pathToFileURL(path.join(ROOT, 'assets/js/practice.js')));
 const P = globalThis.NibblePractice;
 const PER_DAY = +process.argv[2] || 40;

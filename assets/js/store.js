@@ -35,7 +35,7 @@
     emit(ev, data) { this._listeners.forEach(f => f(ev, data)); },
     key() { return 'sintaxis.v3.' + (this.user ? this.user.id : this.uid || 'local'); },
     readLocal() {
-      try { const s = JSON.parse(localStorage.getItem(this.key())); if (s && s.v === 3) return s; } catch (e) { /* sin almacenamiento */ }
+      try { const s = JSON.parse(localStorage.getItem(this.key())); if (s && (s.v === 3 || s.v === P.V)) return s; /* una v3 la convierte upgrade() al usarla */ } catch (e) { /* sin almacenamiento */ }
       return null;
     },
     writeLocal() { try { localStorage.setItem(this.key(), JSON.stringify(this.state)); } catch (e) { /* sin almacenamiento */ } },
@@ -161,7 +161,7 @@
       let { error } = await this.client.from('level_results').upsert(rows, { onConflict: 'client_id', ignoreDuplicates: true });
       if (error && /PGRST204|42703|42P10/.test(error.code || '')) {
         // Base de datos sin la columna client_id (schema.sql antiguo): envío normal.
-        ({ error } = await this.client.from('level_results').insert(rows.map(({ client_id, ...r }) => r)));
+        ({ error } = await this.client.from('level_results').insert(rows.map(({ client_id, day_id, ...r }) => r)));
       }
       this._flushing = false;
       if (error) return;

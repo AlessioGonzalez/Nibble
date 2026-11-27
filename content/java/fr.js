@@ -4,6 +4,7 @@
   days: [
     // ───────────── Jour 1 ─────────────
     {
+      id: 'java-intro',
       t: 'Introduction',
       d: 'La JVM, javac, la méthode main et System.out.println.',
       guide: [
@@ -42,6 +43,7 @@
     },
     // ───────────── Jour 2 ─────────────
     {
+      id: 'java-vars',
       t: 'Variables et types',
       d: 'Types primitifs, String, var, final et conversions.',
       guide: [
@@ -82,6 +84,7 @@
     },
     // ───────────── Jour 3 ─────────────
     {
+      id: 'java-operators',
       t: 'Opérateurs',
       d: 'Arithmétiques, comparaison, logiques, incréments et priorité.',
       guide: [
@@ -120,6 +123,7 @@
     },
     // ───────────── Jour 4 ─────────────
     {
+      id: 'java-strings',
       t: 'Chaînes de caractères',
       d: 'length, charAt, substring, equals, split et StringBuilder.',
       guide: [
@@ -157,6 +161,7 @@
     },
     // ───────────── Jour 5 ─────────────
     {
+      id: 'java-arrays',
       t: 'Tableaux',
       d: 'Tableaux de taille fixe, indices, la classe Arrays et matrices.',
       guide: [
@@ -193,6 +198,7 @@
     },
     // ───────────── Jour 6 ─────────────
     {
+      id: 'java-arraylist',
       t: 'ArrayList',
       d: 'Listes dynamiques : add, get, set, remove, size et classes enveloppes.',
       guide: [
@@ -229,6 +235,7 @@
     },
     // ───────────── Jour 7 ─────────────
     {
+      id: 'java-sets',
       t: 'Ensembles',
       d: 'HashSet, TreeSet, LinkedHashSet et opérations ensemblistes.',
       guide: [
@@ -266,6 +273,7 @@
     },
     // ───────────── Jour 8 ─────────────
     {
+      id: 'java-maps',
       t: 'Maps',
       d: 'HashMap et TreeMap : put, get, getOrDefault, merge et parcours.',
       guide: [
@@ -301,6 +309,7 @@
     },
     // ───────────── Jour 9 ─────────────
     {
+      id: 'java-conditionals',
       t: 'Conditions',
       d: 'if, else if, else, l’opérateur ternaire et switch.',
       guide: [
@@ -337,6 +346,7 @@
     },
     // ───────────── Jour 10 ─────────────
     {
+      id: 'java-loops',
       t: 'Boucles',
       d: 'for, for-each, while, do-while, break et continue.',
       guide: [
@@ -374,6 +384,7 @@
     },
     // ───────────── Jour 11 ─────────────
     {
+      id: 'java-methods',
       t: 'Méthodes',
       d: 'Types de retour, void, paramètres, surcharge et récursion.',
       guide: [
@@ -414,6 +425,7 @@
     },
     // ───────────── Jour 12 ─────────────
     {
+      id: 'java-packages',
       t: 'Paquetages et imports',
       d: 'package, import, java.lang et modificateurs d’accès.',
       guide: [
@@ -450,6 +462,7 @@
     },
     // ───────────── Jour 13 ─────────────
     {
+      id: 'java-classes',
       t: 'Classes et objets',
       d: 'Attributs, méthodes, constructeurs, new et this.',
       guide: [
@@ -487,6 +500,7 @@
     },
     // ───────────── Jour 14 ─────────────
     {
+      id: 'java-encapsulation',
       t: 'Encapsulation',
       d: 'private, getters, setters avec validation, static et final.',
       guide: [
@@ -521,6 +535,7 @@
     },
     // ───────────── Jour 15 ─────────────
     {
+      id: 'java-inheritance',
       t: 'Héritage',
       d: 'extends, super, @Override et la classe Object.',
       guide: [
@@ -557,6 +572,7 @@
     },
     // ───────────── Jour 16 ─────────────
     {
+      id: 'java-polymorphism',
       t: 'Polymorphisme et interfaces',
       d: 'interface, implements, classes abstraites et méthodes default.',
       guide: [
@@ -594,6 +610,7 @@
     },
     // ───────────── Jour 17 ─────────────
     {
+      id: 'java-exceptions',
       t: 'Exceptions',
       d: 'try, catch, finally, throw et checked face à unchecked.',
       guide: [
@@ -633,6 +650,7 @@
     },
     // ───────────── Jour 18 ─────────────
     {
+      id: 'java-generics',
       t: 'Génériques',
       d: 'Classes et méthodes génériques, l’opérateur diamant et les jokers.',
       guide: [
@@ -669,6 +687,7 @@
     },
     // ───────────── Jour 19 ─────────────
     {
+      id: 'java-datetime',
       t: 'Date et heure',
       d: 'java.time : LocalDate, plusDays, ChronoUnit et formats.',
       guide: [
@@ -706,6 +725,7 @@
     },
     // ───────────── Jour 20 ─────────────
     {
+      id: 'java-regex',
       t: 'Expressions régulières',
       d: 'Pattern, Matcher, matches, replaceAll et split.',
       guide: [
@@ -742,6 +762,7 @@
     },
     // ───────────── Jour 21 ─────────────
     {
+      id: 'java-files',
       t: 'Fichiers',
       d: 'java.nio : Path, Files, lire, écrire et parcourir de gros fichiers.',
       guide: [
@@ -778,6 +799,7 @@
     },
     // ───────────── Jour 22 ─────────────
     {
+      id: 'java-lambdas',
       t: 'Lambdas',
       d: 'Interfaces fonctionnelles, Function, Predicate, Consumer, Supplier et références de méthodes.',
       guide: [
@@ -814,6 +836,7 @@
     },
     // ───────────── Jour 23 ─────────────
     {
+      id: 'java-streams',
       t: 'Streams',
       d: 'filter, map, sorted, reduce, collect, regroupements et évaluation paresseuse.',
       guide: [
@@ -850,6 +873,7 @@
     },
     // ───────────── Jour 24 ─────────────
     {
+      id: 'java-optional',
       t: 'Optional et records',
       d: 'Des valeurs qui peuvent manquer sans null, et des classes de données immuables en une ligne.',
       guide: [
@@ -886,6 +910,7 @@
     },
     // ───────────── Jour 25 ─────────────
     {
+      id: 'java-enums',
       t: 'Enums et switch moderne',
       d: 'enum avec attributs et méthodes, values, ordinal et switch avec flèches et yield.',
       guide: [
@@ -922,6 +947,7 @@
     },
     // ───────────── Jour 26 ─────────────
     {
+      id: 'java-concurrency',
       t: 'Concurrence',
       d: 'Threads, conditions de course, synchronized, AtomicInteger et ExecutorService.',
       guide: [
@@ -958,6 +984,7 @@
     },
     // ───────────── Jour 27 ─────────────
     {
+      id: 'java-build',
       t: 'Maven et Gradle',
       d: 'Outils de build : structure du projet, dépendances, tests et packaging.',
       guide: [
@@ -993,6 +1020,7 @@
     },
     // ───────────── Jour 28 ─────────────
     {
+      id: 'java-jdbc',
       t: 'JDBC et bases de données',
       d: 'Connexions, PreparedStatement, ResultSet, injection SQL et transactions.',
       guide: [
@@ -1028,6 +1056,7 @@
     },
     // ───────────── Jour 29 ─────────────
     {
+      id: 'java-spring',
       t: 'API REST avec Spring Boot',
       d: '@RestController, mappings, @PathVariable, @RequestBody, ResponseEntity et couches.',
       guide: [
@@ -1063,6 +1092,7 @@
     },
     // ───────────── Jour 30 ─────────────
     {
+      id: 'java-wrapup',
       t: 'Conclusion',
       d: 'Révision finale du défi, bonnes pratiques, erreurs classiques et comment continuer.',
       guide: [

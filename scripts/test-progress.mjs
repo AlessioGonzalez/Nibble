@@ -7,6 +7,7 @@ import path from 'node:path';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 globalThis.window = globalThis;
+await import(pathToFileURL(path.join(ROOT, 'assets/js/order.js')));
 await import(pathToFileURL(path.join(ROOT, 'assets/js/progress.js')));
 const P = globalThis.NibbleProgress;
 const reload = s => P.totals(P.upgrade(JSON.parse(JSON.stringify(s))));
@@ -110,14 +111,15 @@ test('la meta diaria suma la XP de hoy de todos los dispositivos', () => {
 test('conceptos: aciertos por tema, sumados entre dispositivos', () => {
   const base = P.totals(P.upgrade(null)); base.savedAt = 1;
   const a = reload(base), b = reload(base);
-  P.add(a, 'A', { answered: 1, correct: 0, concept: 'python:8' });
-  P.add(a, 'A', { answered: 1, correct: 0, concept: 'python:8' });
-  P.add(b, 'B', { answered: 1, correct: 1, concept: 'python:8' });
-  P.add(b, 'B', { answered: 3, correct: 3, concept: 'python:2' });
+  P.add(a, 'A', { answered: 1, correct: 0, concept: 'python:py-dicts' });
+  P.add(a, 'A', { answered: 1, correct: 0, concept: 'python:py-dicts' });
+  P.add(b, 'B', { answered: 1, correct: 1, concept: 'python:py-dicts' });
+  P.add(b, 'B', { answered: 3, correct: 3, concept: 'python:py-vars' });
   a.savedAt = 2; b.savedAt = 3;
   const m = P.merge(a, b);
-  assert.deepEqual(m.skill['python:8'], [1, 3]);
-  assert.deepEqual(P.weak(m, 'python', 3).map(w => w.day), [8]);
+  assert.deepEqual(m.skill['python:py-dicts'], [1, 3]);
+  // weak() da el id y el número actual del día (py-dicts es el día 8).
+  assert.deepEqual(P.weak(m, 'python', 3).map(w => [w.id, w.day]), [['py-dicts', 8]]);
   assert.deepEqual(P.weak(m, 'java', 1), []);
 });
 
@@ -149,4 +151,52 @@ test('historial de actividad, tiempo y fechas de logros', () => {
   assert.deepEqual(P.unlock(s, ['first'], 900), []);
   const other = P.totals(P.upgrade(null)); other.savedAt = 2; s.savedAt = 1; other.ach = { first: 300 };
   assert.equal(P.merge(s, other).ach.first, 300);
+});
+
+/* ---------- v4: progreso por identificador de día ---------- */
+// Copia v3 realista: claves con el número de día (0-29) y temas con el día de 1 a 30.
+const v3State = () => ({
+  v: 3, course: 'python', xp: 70, savedAt: 10, resetAt: 0, lastDay: '2026-11-20', streak: 2,
+  done: Object.fromEntries([...Array(8).keys()].map(k => [`python:0:${k}`, true]).concat([['python:1:0', true], ['java:0:0', true]])),
+  passed: { 'python:1:1': 5 }, review: { 'python:2:4': [100, 0], 'java:0:3': [50, 60] },
+  dev: { A: { xp: 70, c: { python: 65, java: 5 }, s: { lessons: 10 }, d: {}, k: { 'python:3': [1, 4], 'java:1': [2, 2] } } },
+  run: { cur: 3, best: 9, at: 5 }, ach: { first: 1 },
+});
+const doneIn = (s, c) => Object.keys(s.done).filter(k => k.startsWith(c + ':') && s.done[k]).length;
+
+test('v4: una copia v3 migrada muestra exactamente el mismo progreso', () => {
+  const old = v3State(), m = P.totals(P.upgrade(old));
+  assert.equal(m.v, 4);
+  assert.equal(doneIn(m, 'python'), doneIn(old, 'python'));
+  assert.equal(doneIn(m, 'java'), 1);
+  assert.ok(m.done['python:py-intro:7'] && m.done['python:py-vars:0'] && m.done['java:java-intro:0']);
+  assert.deepEqual(m.passed, { 'python:py-vars:1': 5 });
+  assert.deepEqual(P.pending(m, 'python'), ['python:py-operators:4']);
+  assert.deepEqual(P.pending(m, 'java'), []);
+  // Los temas usaban el día de 1 a 30: 'python:3' es el día 3 (py-operators).
+  assert.deepEqual(m.skill['python:py-operators'], [1, 4]);
+  assert.deepEqual(m.skill['java:java-intro'], [2, 2]);
+  assert.deepEqual(P.weak(m, 'python', 1).map(w => [w.id, w.day]), [['py-operators', 3]]);
+  assert.equal(m.xp, 70); assert.equal(m.run.best, 9); assert.equal(m.streak, 2);
+  // Volver a convertir no cambia nada.
+  assert.deepEqual(P.upgrade(m).done, m.done);
+});
+
+test('v4: unir una copia v3 de otro dispositivo con una v4 no pierde nada', () => {
+  const nuevo = P.totals(P.upgrade(v3State()));
+  P.levelDone(nuevo, 'python:py-vars:1'); nuevo.savedAt = 20;
+  const viejo = v3State(); viejo.done['python:1:2'] = true; viejo.savedAt = 15;
+  for (const m of [P.merge(nuevo, viejo), P.merge(viejo, nuevo)]) {
+    assert.equal(m.v, 4);
+    for (const k of ['python:py-intro:0', 'python:py-vars:0', 'python:py-vars:1', 'python:py-vars:2', 'java:java-intro:0']) assert.ok(m.done[k], k);
+    assert.ok(!Object.keys(m.done).some(k => /:\d+:/.test(k)), 'quedan claves con número de día');
+    assert.deepEqual(P.pending(m, 'python'), ['python:py-operators:4']);
+  }
+});
+
+test('v4: los ids de order.js son únicos y hay 30 por curso', () => {
+  for (const c of ['python', 'javascript', 'java', 'cpp']) {
+    const ids = globalThis.NibbleOrder[c];
+    assert.equal(ids.length, 30); assert.equal(new Set(ids).size, 30);
+  }
 });

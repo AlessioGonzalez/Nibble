@@ -4,6 +4,7 @@
   days: [
     // ───────────────────────── Día 1
     {
+      id: 'cpp-intro',
       t: 'Introducción',
       d: 'Qué es C++, compilar, main, iostream y std::cout.',
       guide: [
@@ -43,6 +44,7 @@
     },
     // ───────────────────────── Día 2
     {
+      id: 'cpp-vars',
       t: 'Variables y tipos',
       d: 'int, double, char, bool, auto, const y conversiones.',
       guide: [
@@ -84,6 +86,7 @@
     },
     // ───────────────────────── Día 3
     {
+      id: 'cpp-operators',
       t: 'Operadores',
       d: 'Aritméticos, comparación, lógicos, incrementos y precedencia.',
       guide: [
@@ -124,6 +127,7 @@
     },
     // ───────────────────────── Día 4
     {
+      id: 'cpp-strings',
       t: 'Strings',
       d: 'std::string: concatenar, size, substr, find y conversiones.',
       guide: [
@@ -163,6 +167,7 @@
     },
     // ───────────────────────── Día 5
     {
+      id: 'cpp-arrays',
       t: 'Arrays',
       d: 'Arrays clásicos, std::array, límites y matrices.',
       guide: [
@@ -199,6 +204,7 @@
     },
     // ───────────────────────── Día 6
     {
+      id: 'cpp-vectors',
       t: 'Vectores',
       d: 'std::vector: push_back, pop_back, insert, erase, at y recorridos.',
       guide: [
@@ -236,6 +242,7 @@
     },
     // ───────────────────────── Día 7
     {
+      id: 'cpp-sets',
       t: 'Sets',
       d: 'std::set y std::unordered_set: elementos únicos.',
       guide: [
@@ -273,6 +280,7 @@
     },
     // ───────────────────────── Día 8
     {
+      id: 'cpp-maps',
       t: 'Maps',
       d: 'std::map y std::unordered_map: pares clave-valor.',
       guide: [
@@ -309,6 +317,7 @@
     },
     // ───────────────────────── Día 9
     {
+      id: 'cpp-conditionals',
       t: 'Condicionales',
       d: 'if, else if, switch, el operador ternario y FizzBuzz.',
       guide: [
@@ -347,6 +356,7 @@
     },
     // ───────────────────────── Día 10
     {
+      id: 'cpp-loops',
       t: 'Bucles',
       d: 'for, while, do-while, range-for, break y continue.',
       guide: [
@@ -384,6 +394,7 @@
     },
     // ───────────────────────── Día 11
     {
+      id: 'cpp-functions',
       t: 'Funciones',
       d: 'Declaración, prototipos, valores por defecto, sobrecarga y recursión.',
       guide: [
@@ -422,6 +433,7 @@
     },
     // ───────────────────────── Día 12
     {
+      id: 'cpp-headers',
       t: 'Cabeceras y namespaces',
       d: 'Archivos .h y .cpp, #include, #pragma once y namespace.',
       guide: [
@@ -460,6 +472,7 @@
     },
     // ───────────────────────── Día 13
     {
+      id: 'cpp-references',
       t: 'Referencias',
       d: 'Paso por valor, referencias, paso por referencia y const&.',
       guide: [
@@ -498,6 +511,7 @@
     },
     // ───────────────────────── Día 14
     {
+      id: 'cpp-pointers',
       t: 'Punteros',
       d: 'Direcciones, *, &, nullptr y aritmética de punteros.',
       guide: [
@@ -535,6 +549,7 @@
     },
     // ───────────────────────── Día 15
     {
+      id: 'cpp-memory',
       t: 'Memoria dinámica',
       d: 'Stack y heap, new, delete, fugas y punteros colgantes.',
       guide: [
@@ -572,6 +587,7 @@
     },
     // ───────────────────────── Día 16
     {
+      id: 'cpp-structs',
       t: 'Structs y enums',
       d: 'Agrupar datos con struct y definir constantes con enum class.',
       guide: [
@@ -610,6 +626,7 @@
     },
     // ───────────────────────── Día 17
     {
+      id: 'cpp-classes',
       t: 'Clases',
       d: 'class, public, private, métodos const, this y ->.',
       guide: [
@@ -646,6 +663,7 @@
     },
     // ───────────────────────── Día 18
     {
+      id: 'cpp-constructors',
       t: 'Constructores y destructores',
       d: 'Inicialización, listas de inicialización, explicit, destructores y RAII.',
       guide: [
@@ -683,6 +701,7 @@
     },
     // ───────────────────────── Día 19
     {
+      id: 'cpp-inheritance',
       t: 'Herencia',
       d: 'Clases derivadas, protected, constructores de la base y orden de construcción.',
       guide: [
@@ -718,6 +737,7 @@
     },
     // ───────────────────────── Día 20
     {
+      id: 'cpp-polymorphism',
       t: 'Polimorfismo',
       d: 'virtual, override, clases abstractas y destructor virtual.',
       guide: [
@@ -753,6 +773,7 @@
     },
     // ───────────────────────── Día 21
     {
+      id: 'cpp-overloading',
       t: 'Sobrecarga de operadores',
       d: 'operator+, operator==, operator<, operator<< y functores.',
       guide: [
@@ -790,6 +811,7 @@
     },
     // ───────────────────────── Día 22
     {
+      id: 'cpp-templates',
       t: 'Plantillas',
       d: 'template, typename, plantillas de función y de clase.',
       guide: [
@@ -826,6 +848,7 @@
     },
     // ───────────────────────── Día 23
     {
+      id: 'cpp-exceptions',
       t: 'Excepciones',
       d: 'throw, try, catch, excepciones estándar y excepciones propias.',
       guide: [
@@ -864,6 +887,7 @@
     },
     // ───────────────────────── Día 24
     {
+      id: 'cpp-stl',
       t: 'Algoritmos de la STL',
       d: 'sort, reverse, find, count, max_element y accumulate.',
       guide: [
@@ -901,6 +925,7 @@
     },
     // ───────────────────────── Día 25
     {
+      id: 'cpp-iterators',
       t: 'Iteradores y lambdas',
       d: 'begin, end, lambdas, capturas por copia y por referencia.',
       guide: [
@@ -939,6 +964,7 @@
     },
     // ───────────────────────── Día 26
     {
+      id: 'cpp-smart-pointers',
       t: 'Smart pointers',
       d: 'unique_ptr, shared_ptr, weak_ptr y RAII.',
       guide: [
@@ -975,6 +1001,7 @@
     },
     // ───────────────────────── Día 27
     {
+      id: 'cpp-move',
       t: 'Semántica de movimiento',
       d: 'lvalues, rvalues, std::move, constructor de movimiento y la regla del cero.',
       guide: [
@@ -1011,6 +1038,7 @@
     },
     // ───────────────────────── Día 28
     {
+      id: 'cpp-files',
       t: 'Archivos',
       d: 'ofstream, ifstream, getline, modos de apertura y formato de números.',
       guide: [
@@ -1048,6 +1076,7 @@
     },
     // ───────────────────────── Día 29
     {
+      id: 'cpp-concurrency',
       t: 'Concurrencia',
       d: 'std::thread, join, mutex, atomic y async.',
       guide: [
@@ -1085,6 +1114,7 @@
     },
     // ───────────────────────── Día 30
     {
+      id: 'cpp-wrapup',
       t: 'Conclusiones',
       d: 'Repaso final, herramientas del día a día y siguientes pasos.',
       guide: [

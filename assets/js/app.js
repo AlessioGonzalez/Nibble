@@ -1,7 +1,7 @@
 /* Nibble: interfaz. Depende de content-api.js, i18n.js y store.js. */
 (function () {
 'use strict';
-const VERSION = '4.0.0';
+const VERSION = '4.1.0';
 const Store = window.SintaxisStore;
 const P = window.NibbleProgress;
 const t = (k, v) => window.I18N.t(k, v);
@@ -191,7 +191,11 @@ function bumpStreak() {
 }
 
 /* ---------- progreso ---------- */
-const nodeKey = (c, d, k) => `${c}:${d}:${k}`;
+// El progreso se guarda por identificador de día (order.js); d es la posición del día (0-29) en el temario actual.
+const ORDER = window.NibbleOrder;
+const dayId = (c, d) => ORDER[c][d];
+const dayPos = (c, id) => ORDER[c].indexOf(id);
+const nodeKey = (c, d, k) => `${c}:${dayId(c, d)}:${k}`;
 function currentIndex(c) { for (let i = 0; i < DAYS * PER_DAY; i++) if (!S.done[nodeKey(c, Math.floor(i / PER_DAY), i % PER_DAY)]) return i; return DAYS * PER_DAY; }
 const doneCount = c => { let n = 0; for (let i = 0; i < DAYS * PER_DAY; i++) if (S.done[nodeKey(c, Math.floor(i / PER_DAY), i % PER_DAY)]) n++; return n; };
 const dayDone = (c, d) => { let n = 0; for (let k = 0; k < PER_DAY; k++) if (S.done[nodeKey(c, d, k)]) n++; return n; };
@@ -215,7 +219,7 @@ async function getContent(course, loc) {
 async function loadCurrent() {
   const r = await getContent(S.course, S.locale);
   CUR = r ? r : { course: S.course, loc: S.locale, data: null, fallback: false };
-  if (CUR.data) CUR.data.days.forEach((day, di) => day.x.forEach((x, i) => { x.ref = `${CUR.course}:${di}:${i}`; }));
+  if (CUR.data) CUR.data.days.forEach((day, di) => day.x.forEach((x, i) => { x.ref = `${CUR.course}:${dayId(CUR.course, di)}:${i}`; }));
 }
 const dayData = d => CUR && CUR.data && CUR.data.days[d];
 // Un curso puede estar a medio escribir: los días que faltan se muestran como "Próximamente".
@@ -823,14 +827,14 @@ function buildLevel(d, k, replay) {
 const fresh = (d, count) => (window.NibblePractice ? window.NibblePractice.generate(CUR.course, d + 1, count, Math.random, t, P.weak(S, CUR.course).map(w => w.day)) : []);
 // Fallos pendientes de repaso (del temario) de los días ya vistos, sin el ejercicio propio del nivel.
 function dueExercises(d, skip) {
-  return P.pending(S, CUR.course).map(ref => { const [, dd, i] = ref.split(':').map(Number); return dd <= d && CUR.data.days[dd] ? CUR.data.days[dd].x[i] : null; })
+  return P.pending(S, CUR.course).map(ref => { const [c, id, i] = ref.split(':'), dd = dayPos(c, id); return dd >= 0 && dd <= d && CUR.data.days[dd] ? CUR.data.days[dd].x[+i] : null; })
     .filter(x => x && x !== skip);
 }
 // Tema de un ejercicio: el día del temario en que se enseña ('curso:día', día de 1 a 30).
-const conceptOf = ex => ex.ref ? `${L.course}:${+ex.ref.split(':')[1] + 1}`
-  : ex.fam && window.NibblePractice && NibblePractice.UNLOCK[L.course][ex.fam] ? `${L.course}:${NibblePractice.UNLOCK[L.course][ex.fam]}` : null;
+const conceptOf = ex => ex.ref ? `${L.course}:${ex.ref.split(':')[1]}`
+  : ex.fam && window.NibblePractice && NibblePractice.UNLOCK_ID[L.course][ex.fam] ? `${L.course}:${NibblePractice.UNLOCK_ID[L.course][ex.fam]}` : null;
 function startNode(key) {
-  const [, d, k] = key.split(':').map((v, i) => i ? +v : v), replay = !!S.done[key];
+  const [c, id, kk] = key.split(':'), d = dayPos(c, id), k = +kk, replay = !!S.done[key];
   startLesson({ mode: k === RETO ? 'reto' : 'practice', d, k, key, replay, ex: buildLevel(d, k, replay) });
 }
 function startExtra() {
@@ -1001,7 +1005,7 @@ function finish() {
   checkAch().forEach(id => rewards.push(`<p class="reward gold">${I.trophy}${t('done.ach', { a: t('ach.' + id) })}</p>`));
   Store.save();
   const acc = Math.round(L.firstOk / L.total * 100);
-  Store.logResult({ course: c, locale: S.locale, mode: L.mode, day: L.d === undefined ? null : L.d + 1, level: L.k === undefined ? null : L.k + 1,
+  Store.logResult({ course: c, locale: S.locale, mode: L.mode, day: L.d === undefined ? null : L.d + 1, day_id: L.d === undefined ? null : dayId(c, L.d), level: L.k === undefined ? null : L.k + 1,
     sections: L.total, correct: L.firstOk, mistakes: L.mistakes, xp, seconds: secs });
   if (L.mode === 'practice' || L.mode === 'reto') Store.track('level', { course: c, day: L.d + 1, locale: S.locale });
   // Día desbloqueado: al superar el reto por primera vez o al aprobar la prueba de nivel.

@@ -18,8 +18,16 @@ const locales = onlyLocale ? [onlyLocale] : LOCALES;
 
 const ctx = vm.createContext({});
 vm.runInContext(fs.readFileSync(path.join(root, 'assets/js/content-api.js'), 'utf8'), ctx);
+vm.runInContext(fs.readFileSync(path.join(root, 'assets/js/order.js'), 'utf8'), ctx);
+const ORDER = ctx.NibbleOrder;
 
 const errors = [];
+for (const c of COURSES) {
+  const ids = ORDER[c] || [];
+  if (ids.length !== 30) errors.push(`order.js: ${c} tiene ${ids.length} días`);
+  if (new Set(ids).size !== ids.length) errors.push(`order.js: ${c} tiene ids repetidos`);
+}
+if (new Set(COURSES.flatMap(c => ORDER[c] || [])).size !== COURSES.reduce((n, c) => n + (ORDER[c] || []).length, 0)) errors.push('order.js: un id se repite entre cursos');
 const missing = [];
 let exercises = 0;
 const err = (where, msg) => errors.push(`${where}: ${msg}`);
@@ -41,6 +49,9 @@ for (const course of courses) {
     }
     data.days.forEach((d, i) => {
       const w = `${course}/${loc} día ${i + 1}`;
+      // Identificador estable del día: el de order.js en esa posición (igual en los 4 idiomas).
+      if (!/^[a-z]+(-[a-z]+)*$/.test(d.id || '')) err(w, `id no válido: ${d.id}`);
+      else if (d.id !== ORDER[course]?.[i]) err(w, `id ${d.id}, pero order.js tiene ${ORDER[course]?.[i]} en esa posición`);
       if (!d.t || !d.d) err(w, 'falta título (t) o descripción (d)');
       const g = d.guide;
       if (!Array.isArray(g) || g.length < 4) err(w, 'la guía necesita al menos 4 secciones');

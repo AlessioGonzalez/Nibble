@@ -4,6 +4,7 @@
   days: [
     // ───────────── Giorno 1 ─────────────
     {
+      id: 'py-intro',
       t: 'Introduzione',
       d: 'Che cos’è Python, il tuo primo programma, l’indentazione e i commenti.',
       guide: [
@@ -42,6 +43,7 @@
     },
     // ───────────── Giorno 2 ─────────────
     {
+      id: 'py-vars',
       t: 'Variabili e funzioni integrate',
       d: 'Salvare dati in variabili, dare loro un buon nome e usare input(), len() e le conversioni di tipo.',
       guide: [
@@ -83,6 +85,7 @@
     },
     // ───────────── Giorno 3 ─────────────
     {
+      id: 'py-operators',
       t: 'Operatori',
       d: 'Operatori aritmetici, di confronto, logici e di assegnazione, e il loro ordine di esecuzione.',
       guide: [
@@ -122,6 +125,7 @@
     },
     // ───────────── Giorno 4 ─────────────
     {
+      id: 'py-strings',
       t: 'Stringhe',
       d: 'Il testo in Python: virgolette, indici, slicing, f-string e i metodi più utili.',
       guide: [
@@ -160,6 +164,7 @@
     },
     // ───────────── Giorno 5 ─────────────
     {
+      id: 'py-lists',
       t: 'Liste',
       d: 'Creare, percorrere, modificare, tagliare e ordinare liste, e la trappola delle copie.',
       guide: [
@@ -197,6 +202,7 @@
     },
     // ───────────── Giorno 6 ─────────────
     {
+      id: 'py-tuples',
       t: 'Tuple',
       d: 'Collezioni immutabili, spacchettamento e quando preferire una tupla a una lista.',
       guide: [
@@ -233,6 +239,7 @@
     },
     // ───────────── Giorno 7 ─────────────
     {
+      id: 'py-sets',
       t: 'Insiemi',
       d: 'Collezioni senza duplicati: crearli, modificarli e combinarli con unione, intersezione e differenza.',
       guide: [
@@ -269,6 +276,7 @@
     },
     // ───────────── Giorno 8 ─────────────
     {
+      id: 'py-dicts',
       t: 'Dizionari',
       d: 'Coppie chiave-valore: accedere, aggiungere, eliminare, percorrere e annidare dati.',
       guide: [
@@ -305,6 +313,7 @@
     },
     // ───────────── Giorno 9 ─────────────
     {
+      id: 'py-conditionals',
       t: 'Condizioni',
       d: 'Prendere decisioni con if, elif ed else, i valori veri e falsi, e l’operatore ternario.',
       guide: [
@@ -342,6 +351,7 @@
     },
     // ───────────── Giorno 10 ─────────────
     {
+      id: 'py-loops',
       t: 'Cicli',
       d: 'Ripetere compiti con for e while, range(), enumerate(), break e continue.',
       guide: [
@@ -378,6 +388,7 @@
     },
     // ───────────── Giorno 11 ─────────────
     {
+      id: 'py-functions',
       t: 'Funzioni',
       d: 'Definire funzioni con def, restituire risultati, parametri predefiniti, *args, **kwargs e visibilità.',
       guide: [
@@ -418,6 +429,7 @@
     },
     // ───────────── Giorno 12 ─────────────
     {
+      id: 'py-modules',
       t: 'Moduli',
       d: 'Organizzare il codice in moduli, i modi di importare e la libreria standard: math, random e altro.',
       guide: [
@@ -454,6 +466,7 @@
     },
     // ───────────── Giorno 13 ─────────────
     {
+      id: 'py-comprehensions',
       t: 'List comprehension',
       d: 'Creare liste, dizionari e insiemi in una riga, con filtri e trasformazioni.',
       guide: [
@@ -490,6 +503,7 @@
     },
     // ───────────── Giorno 14 ─────────────
     {
+      id: 'py-higher-order',
       t: 'Funzioni di ordine superiore',
       d: 'Le funzioni come valori: lambda, map, filter, sorted con key, closure e decoratori.',
       guide: [
@@ -530,6 +544,7 @@
     },
     // ───────────── Giorno 15 ─────────────
     {
+      id: 'py-type-errors',
       t: 'Errori di tipo',
       d: 'Leggere un traceback e riconoscere gli errori più comuni: SyntaxError, NameError, TypeError, ValueError...',
       guide: [
@@ -566,6 +581,7 @@
     },
     // ───────────── Giorno 16 ─────────────
     {
+      id: 'py-datetime',
       t: 'Data e ora',
       d: 'Il modulo datetime: creare date, formattarle, leggere testo e calcolare differenze.',
       guide: [
@@ -603,6 +619,7 @@
     },
     // ───────────── Giorno 17 ─────────────
     {
+      id: 'py-exceptions',
       t: 'Gestione delle eccezioni',
       d: 'Gestire gli errori con try, except, else e finally, e sollevare i tuoi con raise.',
       guide: [
@@ -639,6 +656,7 @@
     },
     // ───────────── Giorno 18 ─────────────
     {
+      id: 'py-regex',
       t: 'Espressioni regolari',
       d: 'Cercare, validare e sostituire schemi di testo con il modulo re.',
       guide: [
@@ -677,6 +695,7 @@
     },
     // ───────────── Giorno 19 ─────────────
     {
+      id: 'py-files',
       t: 'Gestione dei file',
       d: 'Leggere e scrivere file di testo con open() e with, e lavorare con CSV e JSON.',
       guide: [
@@ -714,6 +733,7 @@
     },
     // ───────────── Giorno 20 ─────────────
     {
+      id: 'py-pip',
       t: 'Il gestore di pacchetti pip',
       d: 'Installare, aggiornare e fissare librerie di PyPI con pip e requirements.txt.',
       guide: [
@@ -750,6 +770,7 @@
     },
     // ───────────── Giorno 21 ─────────────
     {
+      id: 'py-classes',
       t: 'Classi e oggetti',
       d: 'class, __init__, self, attributi, ereditarietà, super() e dataclass.',
       guide: [
@@ -786,6 +807,7 @@
     },
     // ───────────── Giorno 22 ─────────────
     {
+      id: 'py-scraping',
       t: 'Web scraping',
       d: 'Scaricare pagine con requests ed estrarre dati con BeautifulSoup.',
       guide: [
@@ -820,6 +842,7 @@
     },
     // ───────────── Giorno 23 ─────────────
     {
+      id: 'py-venv',
       t: 'Ambienti virtuali',
       d: 'venv: isolare le dipendenze di ogni progetto.',
       guide: [
@@ -854,6 +877,7 @@
     },
     // ───────────── Giorno 24 ─────────────
     {
+      id: 'py-statistics',
       t: 'Statistica',
       d: 'statistics e NumPy: media, mediana, moda, dispersione e array.',
       guide: [
@@ -890,6 +914,7 @@
     },
     // ───────────── Giorno 25 ─────────────
     {
+      id: 'py-pandas',
       t: 'Pandas',
       d: 'Series, DataFrame, leggere CSV, filtrare, creare colonne e raggruppare.',
       guide: [
@@ -924,6 +949,7 @@
     },
     // ───────────── Giorno 26 ─────────────
     {
+      id: 'py-web',
       t: 'Python per il web',
       d: 'Flask: rotte, parametri, template e moduli.',
       guide: [
@@ -959,6 +985,7 @@
     },
     // ───────────── Giorno 27 ─────────────
     {
+      id: 'py-mongodb',
       t: 'Python con MongoDB',
       d: 'pymongo: inserire, cercare, aggiornare ed eliminare documenti.',
       guide: [
@@ -994,6 +1021,7 @@
     },
     // ───────────── Giorno 28 ─────────────
     {
+      id: 'py-apis',
       t: 'API',
       d: 'HTTP, metodi, codici di stato e usare le API con requests.',
       guide: [
@@ -1029,6 +1057,7 @@
     },
     // ───────────── Giorno 29 ─────────────
     {
+      id: 'py-build-api',
       t: 'Costruire un’API',
       d: 'Un’API REST con Flask: rotte, jsonify, codici di stato e validazione.',
       guide: [
@@ -1063,6 +1092,7 @@
     },
     // ───────────── Giorno 30 ─────────────
     {
+      id: 'py-wrapup',
       t: 'Conclusioni',
       d: 'Ripasso finale della sfida, buone pratiche e come continuare a imparare.',
       guide: [

@@ -12,12 +12,17 @@
    - Conceptos (dev[].k): aciertos y respuestas por tema, con clave 'curso:día' (el día que enseña el tema).
    - Repaso (state.review): ejercicios del temario fallados, { 'curso:día:índice': [fallado, arreglado] }
      con las fechas de cada cosa; está pendiente mientras la última vez fue un fallo.
-   - Logros (state.ach): fecha en que se consiguió cada uno. */
+   - Logros (state.ach): fecha en que se consiguió cada uno.
+   - v4: las claves usan el identificador del día (order.js), no su número: 'python:py-loops:3' en lugar de
+     'python:9:3'. Así reordenar el temario no mueve el progreso. upgrade() convierte las copias v3 con el
+     orden actual, y merge() acepta copias v3 y v4 (un dispositivo sin actualizar puede subir una v3). */
 (function (g) {
   'use strict';
   const MAXH = 10;
   const STATS = ['answered', 'correct', 'lessons', 'perfect', 'extras', 'retos'];
   const KEEP_DAYS = 120; // días de actividad que se guardan por dispositivo
+  const V = 4;
+  const order = c => (g.NibbleOrder && g.NibbleOrder[c]) || [];
 
   const clone = o => JSON.parse(JSON.stringify(o));
   const zeroStats = () => Object.fromEntries(STATS.map(k => [k, 0]));
@@ -26,12 +31,23 @@
   const today = () => dayStr(new Date());
 
   const fresh = () => ({
-    v: 3, course: 'python', locale: null, theme: 'auto', xp: 0, hearts: MAXH, heartsTs: 0,
+    v: V, course: 'python', locale: null, theme: 'auto', xp: 0, hearts: MAXH, heartsTs: 0,
     streak: 0, maxStreak: 0, lastDay: null, daily: { day: null, xp: 0 }, goal: 30,
     done: {}, courseXp: {}, sound: true, savedAt: 0, resetAt: 0,
     stats: zeroStats(), dev: {}, run: { cur: 0, best: 0, at: 0 }, passed: {}, review: {}, ach: {}, skill: {},
   });
 
+  // v3 → v4: cambia el número de día de cada clave ('curso:número:...') por su identificador. off: 0 si el
+  // número empieza en 0 (done, passed, review) y 1 si empieza en 1 (aciertos por tema, dev[].k).
+  function rekey(map, off) {
+    const out = {};
+    for (const k in map) {
+      const p = k.split(':');
+      if (p.length >= 2 && /^\d+$/.test(p[1])) { const id = order(p[0])[+p[1] - off]; if (id) p[1] = id; }
+      out[p.join(':')] = map[k];
+    }
+    return out;
+  }
   // Completa una copia del estado (de cualquier versión anterior) con los campos que falten.
   function upgrade(s) {
     const st = Object.assign(fresh(), s ? clone(s) : {});
@@ -48,6 +64,11 @@
         if (st.daily && st.daily.day) b.d[st.daily.day] = { xp: st.daily.xp || 0 };
         st.dev.base = b;
       }
+    }
+    if (!s || s.v !== V) {
+      st.done = rekey(st.done || {}, 0); st.passed = rekey(st.passed, 0); st.review = rekey(st.review, 0);
+      for (const id in st.dev) if (st.dev[id] && st.dev[id].k) st.dev[id].k = rekey(st.dev[id].k, 1);
+      st.v = V;
     }
     return st;
   }
@@ -84,7 +105,7 @@
 
   // Une dos copias del progreso del mismo usuario (la local y la de la nube) sin perder nada.
   function merge(a, b) {
-    if (!b || b.v !== 3) return a;
+    if (!b || (b.v !== 3 && b.v !== V)) return a;
     if (!a || !a.savedAt) return totals(upgrade(b));
     const A = upgrade(a), B = upgrade(b);
     // Si una copia es de antes del último "Borrar progreso", no se une: se queda la borrada.
@@ -153,10 +174,12 @@
     .sort((a, b) => s.review[a][0] - s.review[b][0]);
   const fixedCount = s => Object.values(s.review).filter(r => r[1] > r[0]).length;
 
-  // Temas con menos aciertos de un curso: [{ day, ok, n, acc }], solo con al menos `min` respuestas.
+  // Temas con menos aciertos de un curso: [{ id, day, ok, n, acc }] (day: su número actual, de 1 a 30),
+  // solo con al menos `min` respuestas. Un tema que ya no está en el temario no sale.
   function weak(s, course, min = 4, below = 0.7) {
     return Object.entries(s.skill).filter(([k, v]) => k.startsWith(course + ':') && v[1] >= min && v[0] / v[1] < below)
-      .map(([k, v]) => ({ day: +k.split(':')[1], ok: v[0], n: v[1], acc: v[0] / v[1] })).sort((a, b) => a.acc - b.acc);
+      .map(([k, v]) => { const id = k.split(':')[1]; return { id, day: order(course).indexOf(id) + 1, ok: v[0], n: v[1], acc: v[0] / v[1] }; })
+      .filter(w => w.day > 0).sort((a, b) => a.acc - b.acc);
   }
   // Actividad de los últimos n días (suma de todos los dispositivos), del más antiguo a hoy.
   function history(s, n = 14, end = new Date()) {
@@ -173,6 +196,6 @@
   // Guarda la fecha de los logros que se cumplen ahora y no tenían fecha. Devuelve los nuevos.
   function unlock(s, ids, now = Date.now()) { const fresh = ids.filter(id => !s.ach[id]); fresh.forEach(id => { s.ach[id] = now; }); return fresh; }
 
-  g.NibbleProgress = { MAXH, STATS, fresh, upgrade, totals, merge, add, section, levelDone, dayStr, today,
+  g.NibbleProgress = { MAXH, STATS, V, fresh, upgrade, totals, merge, add, section, levelDone, dayStr, today,
     miss, fix, pending, fixedCount, weak, history, studySeconds, unlock };
 })(typeof window !== 'undefined' ? window : globalThis);

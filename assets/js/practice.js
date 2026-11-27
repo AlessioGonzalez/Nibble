@@ -38,18 +38,43 @@
     },
   };
 
-  // Día (1-30) desde el que se usa cada familia de ejercicios, según el temario de cada curso
-  // (por eso strmul solo existe en Python: los otros cursos no enseñan a repetir texto).
-  const UNLOCK = {
-    python: { print: 1, arith: 1, chain: 1, strmul: 1, concat: 2, vars: 2, varw: 2, arith2: 3, cmp: 3, str: 4, list: 5, appendw: 5, setf: 7, dict: 8, dictw: 8,
-      cond: 9, ifw: 9, cond3: 10, loop: 10, loopw: 10, loopif: 11, func: 11, callw: 11, retw: 11, hof: 13, exc: 17, cls: 21, inh: 22 },
-    javascript: { print: 1, arith: 1, chain: 1, concat: 2, vars: 2, varw: 2, str: 2, arith2: 3, cmp: 3, cond: 4, ifw: 4, cond3: 5, list: 5, appendw: 5,
-      loop: 6, loopw: 6, loopif: 7, func: 7, callw: 7, retw: 7, dict: 8, dictw: 8, hof: 9, setf: 10, exc: 14, cls: 15, inh: 15 },
-    java: { print: 1, arith: 1, chain: 1, concat: 1, vars: 2, varw: 2, arith2: 3, cmp: 3, str: 4, list: 5, appendw: 6, setf: 7, dict: 8, dictw: 8,
-      cond: 9, ifw: 9, cond3: 10, loop: 10, loopw: 10, loopif: 11, func: 11, callw: 11, retw: 11, cls: 13, inh: 16, exc: 17, hof: 23 },
-    cpp: { print: 1, arith: 1, chain: 1, concat: 2, vars: 2, varw: 2, arith2: 3, cmp: 3, str: 4, list: 5, appendw: 6, setf: 7, dict: 8, dictw: 8,
-      cond: 9, ifw: 9, cond3: 10, loop: 10, loopw: 10, loopif: 11, func: 11, callw: 11, retw: 11, ref: 13, ptr: 14, cls: 17, inh: 20, exc: 23, hof: 25 },
+  // Día del temario desde el que se usa cada familia de ejercicios (por eso strmul solo existe en Python: los otros
+  // cursos no enseñan a repetir texto). Se escribe por identificador de día (order.js) y UNLOCK lo convierte a su
+  // número actual (1-30): si el temario se reordena, cada familia sigue al día que la enseña.
+  const UNLOCK_ID = {
+    python: {
+      print: 'py-intro', arith: 'py-intro', chain: 'py-intro', strmul: 'py-intro', concat: 'py-vars', vars: 'py-vars',
+      varw: 'py-vars', arith2: 'py-operators', cmp: 'py-operators', str: 'py-strings', list: 'py-lists', appendw: 'py-lists',
+      setf: 'py-sets', dict: 'py-dicts', dictw: 'py-dicts', cond: 'py-conditionals', ifw: 'py-conditionals', cond3: 'py-loops',
+      loop: 'py-loops', loopw: 'py-loops', loopif: 'py-functions', func: 'py-functions', callw: 'py-functions', retw: 'py-functions',
+      hof: 'py-comprehensions', exc: 'py-exceptions', cls: 'py-classes', inh: 'py-scraping',
+    },
+    javascript: {
+      print: 'js-intro', arith: 'js-intro', chain: 'js-intro', concat: 'js-types', vars: 'js-types', varw: 'js-types',
+      str: 'js-types', arith2: 'js-booleans', cmp: 'js-booleans', cond: 'js-conditionals', ifw: 'js-conditionals', cond3: 'js-arrays',
+      list: 'js-arrays', appendw: 'js-arrays', loop: 'js-loops', loopw: 'js-loops', loopif: 'js-functions', func: 'js-functions',
+      callw: 'js-functions', retw: 'js-functions', dict: 'js-objects', dictw: 'js-objects', hof: 'js-higher-order', setf: 'js-sets-maps',
+      exc: 'js-errors', cls: 'js-classes', inh: 'js-classes',
+    },
+    java: {
+      print: 'java-intro', arith: 'java-intro', chain: 'java-intro', concat: 'java-intro', vars: 'java-vars', varw: 'java-vars',
+      arith2: 'java-operators', cmp: 'java-operators', str: 'java-strings', list: 'java-arrays', appendw: 'java-arraylist', setf: 'java-sets',
+      dict: 'java-maps', dictw: 'java-maps', cond: 'java-conditionals', ifw: 'java-conditionals', cond3: 'java-loops', loop: 'java-loops',
+      loopw: 'java-loops', loopif: 'java-methods', func: 'java-methods', callw: 'java-methods', retw: 'java-methods', cls: 'java-classes',
+      inh: 'java-polymorphism', exc: 'java-exceptions', hof: 'java-streams',
+    },
+    cpp: {
+      print: 'cpp-intro', arith: 'cpp-intro', chain: 'cpp-intro', concat: 'cpp-vars', vars: 'cpp-vars', varw: 'cpp-vars',
+      arith2: 'cpp-operators', cmp: 'cpp-operators', str: 'cpp-strings', list: 'cpp-arrays', appendw: 'cpp-vectors', setf: 'cpp-sets',
+      dict: 'cpp-maps', dictw: 'cpp-maps', cond: 'cpp-conditionals', ifw: 'cpp-conditionals', cond3: 'cpp-loops', loop: 'cpp-loops',
+      loopw: 'cpp-loops', loopif: 'cpp-functions', func: 'cpp-functions', callw: 'cpp-functions', retw: 'cpp-functions', ref: 'cpp-references',
+      ptr: 'cpp-pointers', cls: 'cpp-classes', inh: 'cpp-polymorphism', exc: 'cpp-exceptions', hof: 'cpp-iterators',
+    },
   };
+  // Número actual (1-30) del día de cada familia, según order.js.
+  const ORDER = g.NibbleOrder || {};
+  const UNLOCK = {};
+  for (const c in UNLOCK_ID) { UNLOCK[c] = {}; for (const f in UNLOCK_ID[c]) UNLOCK[c][f] = ORDER[c].indexOf(UNLOCK_ID[c][f]) + 1; }
 
   const TEXTS = ['Kibi', 'Nibble', 'bits', 'byte', 'OK', 'Kibi 2.0', 'debug', 'code', 'A1', 'x = 5', 'loop', 'Game over', 'Level up!',
     'v1.0.3', '3 + 4', 'Error 404', 'Hi, Kibi', 'Score: 100', 'ON', 'OFF', 'Ready', 'Bot-7', 'Unit 42', '#1', '50%', 'start', 'stop', 'pause'];
@@ -475,5 +500,5 @@
     return res;
   }
 
-  g.NibblePractice = { generate, UNLOCK, families: course => Object.keys(UNLOCK[course] || {}) };
+  g.NibblePractice = { generate, UNLOCK, UNLOCK_ID, families: course => Object.keys(UNLOCK[course] || {}) };
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -78,6 +78,13 @@ test('sin CDN: las páginas, el service worker y la app solo cargan archivos pro
   assert.ok(!/cdn\.|jsdelivr|unpkg|googleapis/.test(read('assets/js/store.js') + APP), 'store.js o app.js cargan algo de un CDN');
 });
 
+test('todos los scripts de la web son JavaScript válido', () => {
+  for (const f of ['theme.js', 'config.js', 'content-api.js', 'i18n.js', 'order.js', 'progress.js', 'store.js', 'practice.js', 'app.js']) {
+    assert.doesNotThrow(() => new Function(read('assets/js/' + f)), `assets/js/${f} tiene un error de sintaxis`);
+  }
+  assert.doesNotThrow(() => new Function(read('sw.js')), 'sw.js tiene un error de sintaxis');
+});
+
 test('la caché del service worker lleva la misma versión que la app', () => {
   const v = f => (read(f).match(/const VERSION = '([^']+)'/) || [])[1];
   assert.ok(v('assets/js/app.js'), 'falta VERSION en app.js');

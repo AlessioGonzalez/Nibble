@@ -24,6 +24,7 @@ node scripts/validate.mjs <curso> <idioma>   # un solo archivo
   tag: 'Una frase que describe el curso.',
   days: [
     {
+      id: 'py-intro',            // identificador fijo del día (ver assets/js/order.js)
       t: 'Título del día',
       d: 'Resumen de una línea de lo que se aprende.',
       guide: [ /* 4 a 6 secciones */ ],
@@ -34,7 +35,17 @@ node scripts/validate.mjs <curso> <idioma>   # un solo archivo
 }))(Sintaxis);
 ```
 
-El orden y los temas de los 30 días siguen el reto *30 Days Of Python* de Asabeneh adaptado a cada lenguaje. La lista de días de cada curso está en `.legacy/<curso>.js` (la versión anterior del proyecto): mantén esos títulos y ese orden.
+### Identificadores y orden de los días
+
+Cada día tiene un `id` fijo (`py-loops`, `java-maps`…), igual en los 4 idiomas. El orden del curso está en `assets/js/order.js`: la posición de cada id es su número de día. El progreso de los usuarios se guarda por id, así que para reordenar el temario:
+
+1. Cambia el orden en `order.js` y en los 4 archivos de idioma del curso (el validador comprueba que coinciden).
+2. Un día nuevo lleva un id nuevo. Un id nunca se reutiliza para otro tema.
+3. Revisa `UNLOCK_ID` en `assets/js/practice.js`: cada familia de ejercicios apunta al id del día que la enseña.
+
+### Temario y textos propios
+
+El formato de reto de 30 días se inspira en retos de la comunidad como *30 Days Of Python* de Asabeneh, pero el temario, las lecciones y los ejercicios de Nibble tienen que ser propios: no copies ni traduzcas textos, ejercicios ni el orden de temas de otros cursos. Si algo se inspira en otra fuente, cítala como inspiración.
 
 ## La guía de cada día
 
@@ -109,6 +120,7 @@ Reglas:
 
 ```js
 {
+  id: 'py-intro',
   t: 'Introducción',
   d: 'Qué es Python, tu primer programa, la sangría y los comentarios.',
   guide: [

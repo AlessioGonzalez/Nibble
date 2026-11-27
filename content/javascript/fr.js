@@ -4,6 +4,7 @@
   days: [
     // Jour 1
     {
+      id: 'js-intro',
       t: 'Introduction',
       d: 'Ce qu’est JavaScript, où il s’exécute, la console et ton premier script.',
       guide: [
@@ -43,6 +44,7 @@
     },
     // Jour 2
     {
+      id: 'js-types',
       t: 'Types de données',
       d: 'Primitifs, typeof, textes, nombres et conversions entre types.',
       guide: [
@@ -81,6 +83,7 @@
     },
     // Jour 3
     {
+      id: 'js-booleans',
       t: 'Booléens, opérateurs et dates',
       d: '=== contre ==, truthy et falsy, opérateurs arithmétiques et logiques, et Date.',
       guide: [
@@ -121,6 +124,7 @@
     },
     // Jour 4
     {
+      id: 'js-conditionals',
       t: 'Conditions',
       d: 'if, else if, l’opérateur ternaire, switch, ?? et ?.',
       guide: [
@@ -157,6 +161,7 @@
     },
     // Jour 5
     {
+      id: 'js-arrays',
       t: 'Tableaux',
       d: 'Créer, lire, modifier, chercher et trier des listes de valeurs.',
       guide: [
@@ -193,6 +198,7 @@
     },
     // Jour 6
     {
+      id: 'js-loops',
       t: 'Boucles',
       d: 'for, while, do...while, for...of, for...in, break et continue.',
       guide: [
@@ -229,6 +235,7 @@
     },
     // Jour 7
     {
+      id: 'js-functions',
       t: 'Fonctions',
       d: 'Déclarations, fonctions fléchées, paramètres, return, portée et hoisting.',
       guide: [
@@ -266,6 +273,7 @@
     },
     // Jour 8
     {
+      id: 'js-objects',
       t: 'Objets',
       d: 'Propriétés, méthodes, this, parcourir des objets et les copier.',
       guide: [
@@ -302,6 +310,7 @@
     },
     // Jour 9
     {
+      id: 'js-higher-order',
       t: 'Fonctions d’ordre supérieur',
       d: 'Callbacks, forEach, map, filter, reduce, find, some, every et sort.',
       guide: [
@@ -339,6 +348,7 @@
     },
     // Jour 10
     {
+      id: 'js-sets-maps',
       t: 'Set et Map',
       d: 'Des valeurs uniques avec Set et des dictionnaires aux clés de tout type avec Map.',
       guide: [
@@ -375,6 +385,7 @@
     },
     // Jour 11
     {
+      id: 'js-destructuring',
       t: 'Déstructuration et spread',
       d: 'Extraire des valeurs de tableaux et d’objets, valeurs par défaut, spread et rest.',
       guide: [
@@ -411,6 +422,7 @@
     },
     // Jour 12
     {
+      id: 'js-regex',
       t: 'Expressions régulières',
       d: 'Littéraux /.../, classes de caractères, test, match, replace et drapeaux.',
       guide: [
@@ -448,6 +460,7 @@
     },
     // Jour 13
     {
+      id: 'js-console',
       t: 'Méthodes de console',
       d: 'log, error, warn, table, time, count, group et assert pour déboguer.',
       guide: [
@@ -484,6 +497,7 @@
     },
     // Jour 14
     {
+      id: 'js-errors',
       t: 'Gestion des erreurs',
       d: 'try, catch, finally, throw, types d’erreurs et erreurs personnalisées.',
       guide: [
@@ -520,6 +534,7 @@
     },
     // Jour 15
     {
+      id: 'js-classes',
       t: 'Classes',
       d: 'class, constructor, méthodes, getters, extends, super, static et champs privés.',
       guide: [
@@ -556,6 +571,7 @@
     },
     // Jour 16
     {
+      id: 'js-json',
       t: 'JSON',
       d: 'JSON.stringify, JSON.parse, les règles du format et les copies de données.',
       guide: [
@@ -592,6 +608,7 @@
     },
     // Jour 17
     {
+      id: 'js-storage',
       t: 'Web Storage',
       d: 'Enregistrer des données dans le navigateur avec localStorage et sessionStorage.',
       guide: [
@@ -628,6 +645,7 @@
     },
     // Jour 18
     {
+      id: 'js-promises',
       t: 'Promesses',
       d: 'Code asynchrone, Promise, then, catch, Promise.all et l’ordre d’exécution.',
       guide: [
@@ -664,6 +682,7 @@
     },
     // Jour 19
     {
+      id: 'js-closures',
       t: 'Closures',
       d: 'Des fonctions qui se souviennent de leur portée, des fabriques de fonctions et des données privées.',
       guide: [
@@ -700,6 +719,7 @@
     },
     // Jour 20
     {
+      id: 'js-clean-code',
       t: 'Code propre',
       d: 'Des noms clairs, de petites fonctions, des constantes et des outils de qualité.',
       guide: [
@@ -736,6 +756,7 @@
     },
     // Jour 21
     {
+      id: 'js-dom',
       t: 'DOM',
       d: 'L’arbre de la page, sélectionner des éléments et lire leur contenu.',
       guide: [
@@ -772,6 +793,7 @@
     },
     // Jour 22
     {
+      id: 'js-dom-edit',
       t: 'Modifier le DOM',
       d: 'Changer le texte, créer et insérer des éléments, classes, styles et attributs.',
       guide: [
@@ -808,6 +830,7 @@
     },
     // Jour 23
     {
+      id: 'js-events',
       t: 'Événements',
       d: 'addEventListener, l’objet événement, preventDefault, propagation et délégation.',
       guide: [
@@ -844,6 +867,7 @@
     },
     // Jour 24
     {
+      id: 'js-async',
       t: 'Async/await et fetch',
       d: 'Fonctions async, await, erreurs avec try...catch et requêtes vers des API avec fetch.',
       guide: [
@@ -880,6 +904,7 @@
     },
     // Jour 25
     {
+      id: 'js-modules',
       t: 'Modules ES',
       d: 'export, import, exports par défaut, type="module" et import dynamique.',
       guide: [
@@ -915,6 +940,7 @@
     },
     // Jour 26
     {
+      id: 'js-iterators',
       t: 'Itérateurs et générateurs',
       d: 'Le protocole itérable, Symbol.iterator, function*, yield et next().',
       guide: [
@@ -951,6 +977,7 @@
     },
     // Jour 27
     {
+      id: 'js-node',
       t: 'Node.js',
       d: 'JavaScript côté serveur : process, modules de Node, npm et Express.',
       guide: [
@@ -987,6 +1014,7 @@
     },
     // Jour 28
     {
+      id: 'js-testing',
       t: 'Tests',
       d: 'Des tests automatiques avec Vitest ou Jest : test, expect, cas limites et mocks.',
       guide: [
@@ -1022,6 +1050,7 @@
     },
     // Jour 29
     {
+      id: 'js-performance',
       t: 'Performance et patterns',
       d: 'Mesurer, debounce, throttle, mémoïsation, un DOM efficace et Web Workers.',
       guide: [
@@ -1058,6 +1087,7 @@
     },
     // Jour 30
     {
+      id: 'js-wrapup',
       t: 'Conclusions',
       d: 'Révision finale, outils du quotidien et prochaines étapes.',
       guide: [

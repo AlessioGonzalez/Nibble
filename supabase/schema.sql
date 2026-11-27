@@ -102,6 +102,10 @@ create index if not exists level_results_user_time on public.level_results (user
 alter table public.level_results add column if not exists client_id uuid;
 create unique index if not exists level_results_client_id on public.level_results (client_id);
 
+-- Identificador estable del día (assets/js/order.js), además de su número: si el temario se reordena,
+-- el historial sigue diciendo qué tema se practicó. Las filas antiguas lo tienen vacío.
+alter table public.level_results add column if not exists day_id text check (day_id ~ '^[a-z]+(-[a-z]+)*$');
+
 alter table public.level_results enable row level security;
 
 drop policy if exists "level_results: leer las propias" on public.level_results;

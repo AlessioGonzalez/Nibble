@@ -4,6 +4,7 @@
   days: [
     // ───────────── Day 1 ─────────────
     {
+      id: 'py-intro',
       t: 'Introduction',
       d: 'What Python is, your first program, indentation and comments.',
       guide: [
@@ -42,6 +43,7 @@
     },
     // ───────────── Day 2 ─────────────
     {
+      id: 'py-vars',
       t: 'Variables and built-in functions',
       d: 'Storing data in variables, naming them well and using input(), len() and type conversions.',
       guide: [
@@ -83,6 +85,7 @@
     },
     // ───────────── Day 3 ─────────────
     {
+      id: 'py-operators',
       t: 'Operators',
       d: 'Arithmetic, comparison, logical and assignment operators, and the order they run in.',
       guide: [
@@ -122,6 +125,7 @@
     },
     // ───────────── Day 4 ─────────────
     {
+      id: 'py-strings',
       t: 'Strings',
       d: 'Text in Python: quotes, indexes, slicing, f-strings and the most useful methods.',
       guide: [
@@ -160,6 +164,7 @@
     },
     // ───────────── Day 5 ─────────────
     {
+      id: 'py-lists',
       t: 'Lists',
       d: 'Creating, looping over, changing, slicing and sorting lists, and the trap of copies.',
       guide: [
@@ -197,6 +202,7 @@
     },
     // ───────────── Day 6 ─────────────
     {
+      id: 'py-tuples',
       t: 'Tuples',
       d: 'Immutable collections, unpacking and when to prefer a tuple over a list.',
       guide: [
@@ -233,6 +239,7 @@
     },
     // ───────────── Day 7 ─────────────
     {
+      id: 'py-sets',
       t: 'Sets',
       d: 'Collections without duplicates: creating, changing and combining them with union, intersection and difference.',
       guide: [
@@ -269,6 +276,7 @@
     },
     // ───────────── Day 8 ─────────────
     {
+      id: 'py-dicts',
       t: 'Dictionaries',
       d: 'Key-value pairs: accessing, adding, deleting, looping and nesting data.',
       guide: [
@@ -305,6 +313,7 @@
     },
     // ───────────── Day 9 ─────────────
     {
+      id: 'py-conditionals',
       t: 'Conditionals',
       d: 'Making decisions with if, elif and else, truthy and falsy values, and the ternary operator.',
       guide: [
@@ -342,6 +351,7 @@
     },
     // ───────────── Day 10 ─────────────
     {
+      id: 'py-loops',
       t: 'Loops',
       d: 'Repeating tasks with for and while, range(), enumerate(), break and continue.',
       guide: [
@@ -378,6 +388,7 @@
     },
     // ───────────── Day 11 ─────────────
     {
+      id: 'py-functions',
       t: 'Functions',
       d: 'Define functions with def, return results, default parameters, *args, **kwargs and scope.',
       guide: [
@@ -418,6 +429,7 @@
     },
     // ───────────── Day 12 ─────────────
     {
+      id: 'py-modules',
       t: 'Modules',
       d: 'Organize code into modules, the ways to import, and the standard library: math, random and more.',
       guide: [
@@ -454,6 +466,7 @@
     },
     // ───────────── Day 13 ─────────────
     {
+      id: 'py-comprehensions',
       t: 'List comprehension',
       d: 'Build lists, dictionaries and sets in one line, with filters and transformations.',
       guide: [
@@ -490,6 +503,7 @@
     },
     // ───────────── Day 14 ─────────────
     {
+      id: 'py-higher-order',
       t: 'Higher-order functions',
       d: 'Functions as values: lambda, map, filter, sorted with key, closures and decorators.',
       guide: [
@@ -530,6 +544,7 @@
     },
     // ───────────── Day 15 ─────────────
     {
+      id: 'py-type-errors',
       t: 'Type errors',
       d: 'Read a traceback and recognize the most common errors: SyntaxError, NameError, TypeError, ValueError...',
       guide: [
@@ -566,6 +581,7 @@
     },
     // ───────────── Day 16 ─────────────
     {
+      id: 'py-datetime',
       t: 'Date and time',
       d: 'The datetime module: create dates, format them, parse text and work out differences.',
       guide: [
@@ -603,6 +619,7 @@
     },
     // ───────────── Day 17 ─────────────
     {
+      id: 'py-exceptions',
       t: 'Exception handling',
       d: 'Handle errors with try, except, else and finally, and raise your own with raise.',
       guide: [
@@ -639,6 +656,7 @@
     },
     // ───────────── Day 18 ─────────────
     {
+      id: 'py-regex',
       t: 'Regular expressions',
       d: 'Search, validate and replace text patterns with the re module.',
       guide: [
@@ -677,6 +695,7 @@
     },
     // ───────────── Day 19 ─────────────
     {
+      id: 'py-files',
       t: 'File handling',
       d: 'Read and write text files with open() and with, and work with CSV and JSON.',
       guide: [
@@ -714,6 +733,7 @@
     },
     // ───────────── Day 20 ─────────────
     {
+      id: 'py-pip',
       t: 'The pip package manager',
       d: 'Install, upgrade and pin PyPI libraries with pip and requirements.txt.',
       guide: [
@@ -750,6 +770,7 @@
     },
     // ───────────── Day 21 ─────────────
     {
+      id: 'py-classes',
       t: 'Classes and objects',
       d: 'class, __init__, self, attributes, inheritance, super() and dataclasses.',
       guide: [
@@ -786,6 +807,7 @@
     },
     // ───────────── Day 22 ─────────────
     {
+      id: 'py-scraping',
       t: 'Web scraping',
       d: 'Download pages with requests and extract data with BeautifulSoup.',
       guide: [
@@ -820,6 +842,7 @@
     },
     // ───────────── Day 23 ─────────────
     {
+      id: 'py-venv',
       t: 'Virtual environments',
       d: 'venv: keep each project’s dependencies isolated.',
       guide: [
@@ -854,6 +877,7 @@
     },
     // ───────────── Day 24 ─────────────
     {
+      id: 'py-statistics',
       t: 'Statistics',
       d: 'statistics and NumPy: mean, median, mode, spread and arrays.',
       guide: [
@@ -890,6 +914,7 @@
     },
     // ───────────── Day 25 ─────────────
     {
+      id: 'py-pandas',
       t: 'Pandas',
       d: 'Series, DataFrames, reading CSV, filtering, creating columns and grouping.',
       guide: [
@@ -924,6 +949,7 @@
     },
     // ───────────── Day 26 ─────────────
     {
+      id: 'py-web',
       t: 'Python for the web',
       d: 'Flask: routes, parameters, templates and forms.',
       guide: [
@@ -959,6 +985,7 @@
     },
     // ───────────── Day 27 ─────────────
     {
+      id: 'py-mongodb',
       t: 'Python with MongoDB',
       d: 'pymongo: insert, find, update and delete documents.',
       guide: [
@@ -994,6 +1021,7 @@
     },
     // ───────────── Day 28 ─────────────
     {
+      id: 'py-apis',
       t: 'APIs',
       d: 'HTTP, methods, status codes and consuming APIs with requests.',
       guide: [
@@ -1029,6 +1057,7 @@
     },
     // ───────────── Day 29 ─────────────
     {
+      id: 'py-build-api',
       t: 'Building an API',
       d: 'A REST API with Flask: routes, jsonify, status codes and validation.',
       guide: [
@@ -1063,6 +1092,7 @@
     },
     // ───────────── Day 30 ─────────────
     {
+      id: 'py-wrapup',
       t: 'Wrapping up',
       d: 'Final review of the challenge, good practices and how to keep learning.',
       guide: [

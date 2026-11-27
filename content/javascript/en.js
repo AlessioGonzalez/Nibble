@@ -4,6 +4,7 @@
   days: [
     // Day 1
     {
+      id: 'js-intro',
       t: 'Introduction',
       d: 'What JavaScript is, where it runs, the console and your first script.',
       guide: [
@@ -43,6 +44,7 @@
     },
     // Day 2
     {
+      id: 'js-types',
       t: 'Data types',
       d: 'Primitives, typeof, strings, numbers and conversions between types.',
       guide: [
@@ -81,6 +83,7 @@
     },
     // Day 3
     {
+      id: 'js-booleans',
       t: 'Booleans, operators and dates',
       d: '=== versus ==, truthy and falsy, arithmetic and logical operators, and Date.',
       guide: [
@@ -121,6 +124,7 @@
     },
     // Day 4
     {
+      id: 'js-conditionals',
       t: 'Conditionals',
       d: 'if, else if, the ternary operator, switch, ?? and ?.',
       guide: [
@@ -157,6 +161,7 @@
     },
     // Day 5
     {
+      id: 'js-arrays',
       t: 'Arrays',
       d: 'Creating, reading, changing, searching and sorting lists of values.',
       guide: [
@@ -193,6 +198,7 @@
     },
     // Day 6
     {
+      id: 'js-loops',
       t: 'Loops',
       d: 'for, while, do...while, for...of, for...in, break and continue.',
       guide: [
@@ -229,6 +235,7 @@
     },
     // Day 7
     {
+      id: 'js-functions',
       t: 'Functions',
       d: 'Declarations, arrow functions, parameters, return, scope and hoisting.',
       guide: [
@@ -266,6 +273,7 @@
     },
     // Day 8
     {
+      id: 'js-objects',
       t: 'Objects',
       d: 'Properties, methods, this, going through objects and copying them.',
       guide: [
@@ -302,6 +310,7 @@
     },
     // Day 9
     {
+      id: 'js-higher-order',
       t: 'Higher-order functions',
       d: 'Callbacks, forEach, map, filter, reduce, find, some, every and sort.',
       guide: [
@@ -339,6 +348,7 @@
     },
     // Day 10
     {
+      id: 'js-sets-maps',
       t: 'Sets and Maps',
       d: 'Unique values with Set and dictionaries with keys of any type with Map.',
       guide: [
@@ -375,6 +385,7 @@
     },
     // Day 11
     {
+      id: 'js-destructuring',
       t: 'Destructuring and spread',
       d: 'Pulling values out of arrays and objects, default values, spread and rest.',
       guide: [
@@ -411,6 +422,7 @@
     },
     // Day 12
     {
+      id: 'js-regex',
       t: 'Regular expressions',
       d: '/.../ literals, character classes, test, match, replace and flags.',
       guide: [
@@ -448,6 +460,7 @@
     },
     // Day 13
     {
+      id: 'js-console',
       t: 'Console methods',
       d: 'log, error, warn, table, time, count, group and assert for debugging.',
       guide: [
@@ -484,6 +497,7 @@
     },
     // Day 14
     {
+      id: 'js-errors',
       t: 'Error handling',
       d: 'try, catch, finally, throw, error types and your own errors.',
       guide: [
@@ -520,6 +534,7 @@
     },
     // Day 15
     {
+      id: 'js-classes',
       t: 'Classes',
       d: 'class, constructor, methods, getters, extends, super, static and private fields.',
       guide: [
@@ -556,6 +571,7 @@
     },
     // Day 16
     {
+      id: 'js-json',
       t: 'JSON',
       d: 'JSON.stringify, JSON.parse, the rules of the format and copying data.',
       guide: [
@@ -592,6 +608,7 @@
     },
     // Day 17
     {
+      id: 'js-storage',
       t: 'Web Storage',
       d: 'Saving data in the browser with localStorage and sessionStorage.',
       guide: [
@@ -628,6 +645,7 @@
     },
     // Day 18
     {
+      id: 'js-promises',
       t: 'Promises',
       d: 'Asynchronous code, Promise, then, catch, Promise.all and the order of execution.',
       guide: [
@@ -664,6 +682,7 @@
     },
     // Day 19
     {
+      id: 'js-closures',
       t: 'Closures',
       d: 'Functions that remember their scope, function factories and private data.',
       guide: [
@@ -700,6 +719,7 @@
     },
     // Day 20
     {
+      id: 'js-clean-code',
       t: 'Clean code',
       d: 'Clear names, small functions, constants and quality tools.',
       guide: [
@@ -736,6 +756,7 @@
     },
     // Day 21
     {
+      id: 'js-dom',
       t: 'DOM',
       d: 'The page tree, selecting elements and reading their content.',
       guide: [
@@ -772,6 +793,7 @@
     },
     // Day 22
     {
+      id: 'js-dom-edit',
       t: 'Changing the DOM',
       d: 'Changing text, creating and inserting elements, classes, styles and attributes.',
       guide: [
@@ -808,6 +830,7 @@
     },
     // Day 23
     {
+      id: 'js-events',
       t: 'Events',
       d: 'addEventListener, the event object, preventDefault, propagation and delegation.',
       guide: [
@@ -844,6 +867,7 @@
     },
     // Day 24
     {
+      id: 'js-async',
       t: 'Async/await and fetch',
       d: 'async functions, await, errors with try...catch and API requests with fetch.',
       guide: [
@@ -880,6 +904,7 @@
     },
     // Day 25
     {
+      id: 'js-modules',
       t: 'ES modules',
       d: 'export, import, default exports, type="module" and dynamic import.',
       guide: [
@@ -915,6 +940,7 @@
     },
     // Day 26
     {
+      id: 'js-iterators',
       t: 'Iterators and generators',
       d: 'The iterable protocol, Symbol.iterator, function*, yield and next().',
       guide: [
@@ -951,6 +977,7 @@
     },
     // Day 27
     {
+      id: 'js-node',
       t: 'Node.js',
       d: 'JavaScript on the server: process, Node modules, npm and Express.',
       guide: [
@@ -987,6 +1014,7 @@
     },
     // Day 28
     {
+      id: 'js-testing',
       t: 'Testing',
       d: 'Automated tests with Vitest or Jest: test, expect, edge cases and mocks.',
       guide: [
@@ -1022,6 +1050,7 @@
     },
     // Day 29
     {
+      id: 'js-performance',
       t: 'Performance and patterns',
       d: 'Measuring, debounce, throttle, memoization, an efficient DOM and Web Workers.',
       guide: [
@@ -1058,6 +1087,7 @@
     },
     // Day 30
     {
+      id: 'js-wrapup',
       t: 'Wrap-up',
       d: 'Final review, everyday tools and next steps.',
       guide: [
