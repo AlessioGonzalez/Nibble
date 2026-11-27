@@ -1,21 +1,52 @@
-MIT License
+Copyright (c) 2026 [NOMBRE COMPLETO DEL TITULAR]. Todos los derechos reservados.
 
-Copyright (c) 2026 Nibble contributors
+Nibble (también publicado como NibbleBytes) es propiedad de su titular. Esto incluye
+el código fuente, las lecciones, los ejercicios, los textos, las traducciones, las
+ilustraciones, el personaje Kibi, el nombre y los logotipos.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Salvo autorización previa y por escrito del titular, queda prohibido copiar,
+reproducir, modificar, traducir, distribuir, publicar, sublicenciar, vender o crear
+obras derivadas de este repositorio o de la web, en todo o en parte, con o sin fines
+comerciales.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+Se permite:
+- Usar la web y la app para aprender, según sus Términos y condiciones.
+- Ver este repositorio y hacer un fork dentro de GitHub, solo en la medida en que lo
+  exigen los Términos de servicio de GitHub mientras el repositorio sea público.
+  Esto no concede ningún otro derecho.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+Componentes de terceros: las bibliotecas, fuentes y herramientas de terceros que se
+usan o se incluyen conservan sus propias licencias.
+
+Versiones anteriores: hasta el [FECHA DEL CAMBIO], este repositorio se publicó con
+licencia MIT. Las copias obtenidas antes de esa fecha conservan esa licencia; todo
+lo publicado desde entonces se rige por este texto.
+
+Permisos y contacto: [CORREO DE CONTACTO]
+
+----------------------------------------------------------------------------------
+
+Copyright (c) 2026 [FULL NAME OF THE OWNER]. All rights reserved.
+
+Nibble (also published as NibbleBytes) is the property of its owner. This includes
+the source code, lessons, exercises, texts, translations, illustrations, the Kibi
+character, the name and the logos.
+
+Except with the owner's prior written permission, you may not copy, reproduce,
+modify, translate, distribute, publish, sublicense, sell or create derivative works
+from this repository or the website, in whole or in part, whether or not for
+commercial purposes.
+
+You may:
+- Use the website and the app to learn, under its Terms and Conditions.
+- View this repository and fork it within GitHub, only to the extent required by the
+  GitHub Terms of Service while the repository is public. This grants no other right.
+
+Third-party components: third-party libraries, fonts and tools that are used or
+included keep their own licences.
+
+Earlier versions: until [DATE OF THE CHANGE], this repository was published under the
+MIT licence. Copies obtained before that date keep that licence; everything published
+since then is governed by this text.
+
+Permissions and contact: [CONTACT EMAIL]

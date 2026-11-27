@@ -1,0 +1,177 @@
+diff --git a/LICENSE b/LICENSE
+index aa3db36..ae356ed 100644
+--- a/LICENSE
++++ b/LICENSE
+@@ -1,21 +1,52 @@
+-MIT License
+-
+-Copyright (c) 2026 Nibble contributors
+-
+-Permission is hereby granted, free of charge, to any person obtaining a copy
+-of this software and associated documentation files (the "Software"), to deal
+-in the Software without restriction, including without limitation the rights
+-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+-copies of the Software, and to permit persons to whom the Software is
+-furnished to do so, subject to the following conditions:
+-
+-The above copyright notice and this permission notice shall be included in all
+-copies or substantial portions of the Software.
+-
+-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+-SOFTWARE.
++Copyright (c) 2026 [NOMBRE COMPLETO DEL TITULAR]. Todos los derechos reservados.
++
++Nibble (también publicado como NibbleBytes) es propiedad de su titular. Esto incluye
++el código fuente, las lecciones, los ejercicios, los textos, las traducciones, las
++ilustraciones, el personaje Kibi, el nombre y los logotipos.
++
++Salvo autorización previa y por escrito del titular, queda prohibido copiar,
++reproducir, modificar, traducir, distribuir, publicar, sublicenciar, vender o crear
++obras derivadas de este repositorio o de la web, en todo o en parte, con o sin fines
++comerciales.
++
++Se permite:
++- Usar la web y la app para aprender, según sus Términos y condiciones.
++- Ver este repositorio y hacer un fork dentro de GitHub, solo en la medida en que lo
++  exigen los Términos de servicio de GitHub mientras el repositorio sea público.
++  Esto no concede ningún otro derecho.
++
++Componentes de terceros: las bibliotecas, fuentes y herramientas de terceros que se
++usan o se incluyen conservan sus propias licencias.
++
++Versiones anteriores: hasta el [FECHA DEL CAMBIO], este repositorio se publicó con
++licencia MIT. Las copias obtenidas antes de esa fecha conservan esa licencia; todo
++lo publicado desde entonces se rige por este texto.
++
++Permisos y contacto: [CORREO DE CONTACTO]
++
++----------------------------------------------------------------------------------
++
++Copyright (c) 2026 [FULL NAME OF THE OWNER]. All rights reserved.
++
++Nibble (also published as NibbleBytes) is the property of its owner. This includes
++the source code, lessons, exercises, texts, translations, illustrations, the Kibi
++character, the name and the logos.
++
++Except with the owner's prior written permission, you may not copy, reproduce,
++modify, translate, distribute, publish, sublicense, sell or create derivative works
++from this repository or the website, in whole or in part, whether or not for
++commercial purposes.
++
++You may:
++- Use the website and the app to learn, under its Terms and Conditions.
++- View this repository and fork it within GitHub, only to the extent required by the
++  GitHub Terms of Service while the repository is public. This grants no other right.
++
++Third-party components: third-party libraries, fonts and tools that are used or
++included keep their own licences.
++
++Earlier versions: until [DATE OF THE CHANGE], this repository was published under the
++MIT licence. Copies obtained before that date keep that licence; everything published
++since then is governed by this text.
++
++Permissions and contact: [CONTACT EMAIL]
+diff --git a/README.md b/README.md
+index 0e5e658..3baa21c 100644
+--- a/README.md
++++ b/README.md
+@@ -9,4 +9,4 @@ Si falta la traducción de un curso, la app muestra la versión en español.
+ 
+ ## Licencia
+ 
+-[MIT](LICENSE)
++Todos los derechos reservados. El código y el contenido no se pueden copiar, distribuir ni reutilizar sin permiso por escrito: consulta [LICENSE](LICENSE).
+diff --git a/assets/js/i18n.js b/assets/js/i18n.js
+index 0fe7084..6d07b22 100644
+--- a/assets/js/i18n.js
++++ b/assets/js/i18n.js
+@@ -107,7 +107,7 @@
+     'ex.hintOut': 'Escribe la salida exacta y pulsa Intro para comprobar.', 'ex.hintWrite': 'Escribe el código en una línea y pulsa Intro para comprobar.',
+     'act.home': 'Pantalla de inicio',
+     'land.title': 'Aprende a programar a bocados.', 'land.lead': '30 días por lenguaje con lecciones cortas y ejercicios en los que eliges la respuesta o escribes el código. Kibi te acompaña en cada nivel.',
+-    'land.start': 'Empezar ahora', 'land.signin': 'Ya tengo cuenta', 'land.free': 'Gratis, sin anuncios y de código abierto.', 'land.output': 'Salida',
++    'land.start': 'Empezar ahora', 'land.signin': 'Ya tengo cuenta', 'land.free': 'Gratis para aprender y sin anuncios.', 'land.output': 'Salida',
+     'land.coursesTitle': 'Cuatro lenguajes, el mismo camino', 'land.days': '30 días · 240 niveles', 'land.featTitle': 'Hecho para practicar de verdad',
+     'land.f1': 'Elige y escribe', 'land.f1.d': 'Cada nivel mezcla preguntas de opciones con ejercicios en los que escribes el código tú.',
+     'land.f2': 'Guías con ejemplos reales', 'land.f2.d': 'Antes de practicar, una guía corta explica el tema del día con código que funciona.',
+@@ -117,7 +117,7 @@
+     'land.s1': 'Lee la guía', 'land.s1.d': 'Un tema nuevo con ejemplos que puedes copiar y probar.',
+     'land.s2': 'Supera 7 niveles', 'land.s2.d': 'De 7 u 8 secciones cada uno: eliges respuestas y escribes código.',
+     'land.s3': 'Gana el reto', 'land.s3.d': 'Un reto final con un fallo como máximo desbloquea el día siguiente.',
+-    'land.finalTitle': '¿Le damos el primer mordisco?', 'land.foot': 'Nibble es un proyecto de código abierto con licencia MIT.',
++    'land.finalTitle': '¿Le damos el primer mordisco?', 'land.foot': '© 2026 Nibble. Todos los derechos reservados.',
+     'ex.check': 'Comprobar', 'ex.skip': 'Saltar', 'ex.continue': 'Continuar', 'ex.ok': ['¡Correcto!', '¡Muy bien!', 'Compila a la primera', '¡Exacto!', 'Perfecto'],
+     'ex.combo': '¡{n} seguidas!', 'ex.comboTag': '{n} seguidas', 'ex.wrong': 'No es correcto', 'ex.skipped': 'Pregunta saltada', 'ex.solution': 'Solución:',
+     'ex.mistakes': 'Fallos {n}/{m}', 'ex.extraTag': 'Nivel extra, +{n} vidas',
+@@ -234,7 +234,7 @@
+     'ex.hintOut': 'Type the exact output and press Enter to check.', 'ex.hintWrite': 'Write the code on one line and press Enter to check.',
+     'act.home': 'Home screen',
+     'land.title': 'Learn to code, one bite at a time.', 'land.lead': '30 days per language with short lessons and exercises where you choose the answer or write the code yourself. Kibi keeps you company on every level.',
+-    'land.start': 'Start now', 'land.signin': 'I already have an account', 'land.free': 'Free, ad-free and open source.', 'land.output': 'Output',
++    'land.start': 'Start now', 'land.signin': 'I already have an account', 'land.free': 'Free to learn, with no ads.', 'land.output': 'Output',
+     'land.coursesTitle': 'Four languages, one path', 'land.days': '30 days · 240 levels', 'land.featTitle': 'Built for real practice',
+     'land.f1': 'Choose and write', 'land.f1.d': 'Every level mixes multiple-choice questions with exercises where you write the code yourself.',
+     'land.f2': 'Guides with real examples', 'land.f2.d': 'Before you practise, a short guide explains the topic of the day with code that works.',
+@@ -244,7 +244,7 @@
+     'land.s1': 'Read the guide', 'land.s1.d': 'A new topic with examples you can copy and try.',
+     'land.s2': 'Clear 7 levels', 'land.s2.d': '7 or 8 sections each: you choose answers and write code.',
+     'land.s3': 'Win the challenge', 'land.s3.d': 'A final challenge with at most one mistake unlocks the next day.',
+-    'land.finalTitle': 'Ready for the first bite?', 'land.foot': 'Nibble is an open-source project under the MIT licence.',
++    'land.finalTitle': 'Ready for the first bite?', 'land.foot': '© 2026 Nibble. All rights reserved.',
+     'ex.check': 'Check', 'ex.skip': 'Skip', 'ex.continue': 'Continue', 'ex.ok': ['Correct!', 'Well done!', 'Compiles first time', 'Exactly!', 'Perfect'],
+     'ex.combo': '{n} in a row!', 'ex.comboTag': '{n} in a row', 'ex.wrong': 'Not quite', 'ex.skipped': 'Question skipped', 'ex.solution': 'Solution:',
+     'ex.mistakes': 'Mistakes {n}/{m}', 'ex.extraTag': 'Bonus level, +{n} lives',
+@@ -361,7 +361,7 @@
+     'ex.hintOut': 'Écris la sortie exacte et appuie sur Entrée pour vérifier.', 'ex.hintWrite': 'Écris le code sur une ligne et appuie sur Entrée pour vérifier.',
+     'act.home': 'Écran d’accueil',
+     'land.title': 'Apprends à programmer, bouchée par bouchée.', 'land.lead': '30 jours par langage, avec des leçons courtes et des exercices où tu choisis la réponse ou écris le code toi-même. Kibi t’accompagne à chaque niveau.',
+-    'land.start': 'Commencer', 'land.signin': 'J’ai déjà un compte', 'land.free': 'Gratuit, sans publicité et open source.', 'land.output': 'Sortie',
++    'land.start': 'Commencer', 'land.signin': 'J’ai déjà un compte', 'land.free': 'Gratuit pour apprendre et sans publicité.', 'land.output': 'Sortie',
+     'land.coursesTitle': 'Quatre langages, un même parcours', 'land.days': '30 jours · 240 niveaux', 'land.featTitle': 'Pensé pour pratiquer pour de vrai',
+     'land.f1': 'Choisis et écris', 'land.f1.d': 'Chaque niveau mélange des QCM et des exercices où tu écris le code toi-même.',
+     'land.f2': 'Des guides avec des exemples réels', 'land.f2.d': 'Avant de pratiquer, un guide court explique le thème du jour avec du code qui fonctionne.',
+@@ -371,7 +371,7 @@
+     'land.s1': 'Lis le guide', 'land.s1.d': 'Un nouveau thème avec des exemples à copier et à essayer.',
+     'land.s2': 'Réussis 7 niveaux', 'land.s2.d': '7 ou 8 sections chacun : tu choisis des réponses et tu écris du code.',
+     'land.s3': 'Relève le défi', 'land.s3.d': 'Un défi final, avec une erreur au maximum, débloque le jour suivant.',
+-    'land.finalTitle': 'Prêt pour la première bouchée ?', 'land.foot': 'Nibble est un projet open source sous licence MIT.',
++    'land.finalTitle': 'Prêt pour la première bouchée ?', 'land.foot': '© 2026 Nibble. Tous droits réservés.',
+     'ex.check': 'Vérifier', 'ex.skip': 'Passer', 'ex.continue': 'Continuer', 'ex.ok': ['Correct !', 'Très bien !', 'Ça compile du premier coup', 'Exactement !', 'Parfait'],
+     'ex.combo': '{n} d’affilée !', 'ex.comboTag': '{n} d’affilée', 'ex.wrong': 'Pas tout à fait', 'ex.skipped': 'Question passée', 'ex.solution': 'Solution :',
+     'ex.mistakes': 'Erreurs {n}/{m}', 'ex.extraTag': 'Niveau bonus, +{n} vies',
+@@ -488,7 +488,7 @@
+     'ex.hintOut': 'Scrivi l’output esatto e premi Invio per controllare.', 'ex.hintWrite': 'Scrivi il codice su una riga e premi Invio per controllare.',
+     'act.home': 'Schermata iniziale',
+     'land.title': 'Impara a programmare un morso alla volta.', 'land.lead': '30 giorni per linguaggio, con lezioni brevi ed esercizi in cui scegli la risposta o scrivi tu il codice. Kibi ti accompagna in ogni livello.',
+-    'land.start': 'Inizia ora', 'land.signin': 'Ho già un account', 'land.free': 'Gratis, senza pubblicità e open source.', 'land.output': 'Output',
++    'land.start': 'Inizia ora', 'land.signin': 'Ho già un account', 'land.free': 'Gratis per imparare e senza pubblicità.', 'land.output': 'Output',
+     'land.coursesTitle': 'Quattro linguaggi, un solo percorso', 'land.days': '30 giorni · 240 livelli', 'land.featTitle': 'Fatto per esercitarsi davvero',
+     'land.f1': 'Scegli e scrivi', 'land.f1.d': 'Ogni livello alterna domande a scelta multipla ed esercizi in cui scrivi tu il codice.',
+     'land.f2': 'Guide con esempi reali', 'land.f2.d': 'Prima di esercitarti, una breve guida spiega l’argomento del giorno con codice funzionante.',
+@@ -498,7 +498,7 @@
+     'land.s1': 'Leggi la guida', 'land.s1.d': 'Un nuovo argomento con esempi da copiare e provare.',
+     'land.s2': 'Supera 7 livelli', 'land.s2.d': '7 o 8 sezioni ciascuno: scegli risposte e scrivi codice.',
+     'land.s3': 'Vinci la sfida', 'land.s3.d': 'Una sfida finale con al massimo un errore sblocca il giorno successivo.',
+-    'land.finalTitle': 'Pronti per il primo morso?', 'land.foot': 'Nibble è un progetto open source con licenza MIT.',
++    'land.finalTitle': 'Pronti per il primo morso?', 'land.foot': '© 2026 Nibble. Tutti i diritti riservati.',
+     'ex.check': 'Controlla', 'ex.skip': 'Salta', 'ex.continue': 'Continua', 'ex.ok': ['Giusto!', 'Molto bene!', 'Compila al primo colpo', 'Esatto!', 'Perfetto'],
+     'ex.combo': '{n} di fila!', 'ex.comboTag': '{n} di fila', 'ex.wrong': 'Non proprio', 'ex.skipped': 'Domanda saltata', 'ex.solution': 'Soluzione:',
+     'ex.mistakes': 'Errori {n}/{m}', 'ex.extraTag': 'Livello extra, +{n} vite',
+diff --git a/terminos.html b/terminos.html
+index ddb672e..8309205 100644
+--- a/terminos.html
++++ b/terminos.html
+@@ -45,7 +45,7 @@
+     <p>Las lecciones y los ejercicios se preparan con cuidado y se comprueban automáticamente, pero pueden contener errores o quedarse desactualizados. Nibble es una ayuda para aprender: no garantiza resultados concretos ni sustituye a la documentación oficial de cada lenguaje. Si encuentras un error, cuéntanoslo desde la página de sugerencias.</p>
+ 
+     <h2>5. Propiedad intelectual</h2>
+-    <p>El código y el contenido de Nibble se publican con licencia MIT (consulta el archivo LICENSE del repositorio). Python, Java, JavaScript, C++, Google, GitHub y Supabase son marcas de sus respectivos titulares; Nibble no está afiliado a ellos.</p>
++    <p>El código, las lecciones, los ejercicios, las traducciones, el personaje Kibi y la marca Nibble pertenecen a su titular: todos los derechos reservados. Puedes usar Nibble para aprender, pero no copiar, distribuir, publicar ni reutilizar su código o su contenido sin permiso por escrito (consulta el archivo LICENSE del repositorio). Python, Java, JavaScript, C++, Google, GitHub y Supabase son marcas de sus respectivos titulares; Nibble no está afiliado a ellos.</p>
+ 
+     <h2>6. Sugerencias</h2>
+     <p>Si nos envías una sugerencia, nos permites usarla libremente para mejorar Nibble, sin obligación de pago ni de citarte.</p>
