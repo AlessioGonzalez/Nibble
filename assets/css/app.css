@@ -255,8 +255,8 @@ main.swap > *{animation:swapIn .28s var(--ease)}
   box-shadow:inset 0 2px 3px rgba(0,0,0,.6),0 0 0 2px #141A17,0 1px 0 2px rgba(255,255,255,.06)}
 .led i::after{content:"";position:absolute;inset:0;border-radius:50%;opacity:0;transition:opacity .4s var(--ease);
   background:radial-gradient(circle at 36% 30%,#fff 0 8%,color-mix(in srgb, var(--lang) 45%, #fff) 20%,var(--lang) 58%,color-mix(in srgb, var(--lang) 65%, #000) 100%);
-  box-shadow:0 0 12px 1px color-mix(in srgb, var(--lang) 55%, transparent)}
-.led.reto i::after{background:radial-gradient(circle at 36% 30%,#fff 0 8%,#FFE2A0 20%,#F0B429 58%,#9A6A00 100%);box-shadow:0 0 12px 1px rgba(240,180,41,.55)}
+  box-shadow:inset 0 -2px 3px rgba(0,0,0,.25)}
+.led.reto i::after{background:radial-gradient(circle at 36% 30%,#fff 0 8%,#FFE2A0 20%,#F0B429 58%,#9A6A00 100%)}
 .led.on i::after{opacity:1}
 .led.just i::after{animation:ledOn .8s var(--ease) .45s both}
 @keyframes ledOn{from{opacity:0}}
