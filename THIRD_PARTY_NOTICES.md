@@ -5,7 +5,8 @@ Nibble incluye estos componentes, que conservan sus propias licencias. La licenc
 | Componente | Archivo | Licencia |
 |---|---|---|
 | [supabase-js](https://github.com/supabase/supabase-js) 2.45.4 | `assets/vendor/supabase-js-2.45.4.min.js` | MIT, © Supabase |
-| [Geist y Geist Mono](https://github.com/vercel/geist-font) | `assets/fonts/geist-latin.woff2`, `assets/fonts/geist-mono-latin.woff2` | SIL Open Font License 1.1 (texto completo en `assets/fonts/OFL.txt`), © The Geist Project Authors |
+| [Figtree](https://github.com/erikdkennedy/figtree) | `assets/fonts/figtree-latin.woff2` | SIL Open Font License 1.1 (texto completo en `assets/fonts/OFL-Figtree.txt`), © The Figtree Project Authors |
+| [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono) | `assets/fonts/jetbrains-mono-latin.woff2` | SIL Open Font License 1.1 (texto completo en `assets/fonts/OFL-JetBrainsMono.txt`), © The JetBrains Mono Project Authors |
 
 ## supabase-js: licencia MIT
 

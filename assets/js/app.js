@@ -1,7 +1,7 @@
 /* Nibble: interfaz. Depende de content-api.js, i18n.js y store.js. */
 (function () {
 'use strict';
-const VERSION = '4.1.0';
+const VERSION = '4.2.0';
 const Store = window.SintaxisStore;
 const P = window.NibbleProgress;
 const t = (k, v) => window.I18N.t(k, v);
@@ -274,6 +274,20 @@ function bitsHTML(c, d, cur = -1) {
   for (let k = 0; k < PER_DAY; k++) h += `<i class="${S.done[nodeKey(c, d, k)] ? 'on' : ''}${k === cur ? ' cur' : ''}${k === RETO ? ' reto' : ''}"></i>`;
   return `<span class="bits" role="img" aria-label="${t('bits.aria', { n: dayDone(c, d), m: PER_DAY })}">${h}</span>`;
 }
+// Registro de 8 bits: el día como una placa con 8 luces (una por nivel, la 7 a la izquierda) y un visor con su byte.
+// cur: nivel que toca ahora; just: nivel recién completado (su luz se enciende con una transición).
+function registerHTML(c, d, o = {}) {
+  const v = byteOf(c, d), bin = v.toString(2).padStart(8, '0');
+  let leds = '';
+  for (let k = 0; k < PER_DAY; k++) {
+    const on = S.done[nodeKey(c, d, k)];
+    leds += `<span class="led${on ? ' on' : ''}${k === RETO ? ' reto' : ''}${k === o.cur ? ' cur' : ''}${k === o.just ? ' just' : ''}"><i></i><small>${7 - k}</small></span>`;
+  }
+  return `<div class="register" role="img" aria-label="${t('bits.aria', { n: dayDone(c, d), m: PER_DAY })} · ${hex(v)}">
+    <div class="reg-top"><span>${esc(META[c].short)}·${String(d + 1).padStart(2, '0')}</span><span class="screw"></span><span class="screw"></span><span>8 bit</span></div>
+    <div class="reg-leds">${leds}</div>
+    <div class="reg-lcd"><b>${hex(v)}</b><span>${bin.slice(0, 4)} ${bin.slice(4)}</span></div></div>`;
+}
 // Los 30 días de un curso en una tira: lleno, a medias o vacío.
 function stripHTML(c) {
   let h = ''; for (let d = 0; d < DAYS; d++) { const n = dayDone(c, d); h += `<i class="${n === PER_DAY ? 'on' : n ? 'half' : ''}"></i>`; }
@@ -374,9 +388,8 @@ function renderMap() {
   h += `<section class="hero"><div class="hero-copy"><p class="eyebrow">${META[c].name} · ${t('map.dayOf2', { d: cd + 1 })}</p>
     <h1>${all ? t('map.allDone') : esc(dayTitle(cd))}</h1>
     <p class="lead">${all ? t('map.allDoneDesc') : esc(dayData(cd) ? dayData(cd).d : '')}</p>
-    <div class="hero-byte">${bitsHTML(c, cd, all ? -1 : cur % PER_DAY)}<code class="hex">${hex(byteOf(c, cd))}</code></div>
     <div class="row"><button class="btn primary" data-go="${dayHash(cd)}">${I.play}${dn ? t('map.continue', { d: cd + 1 }) : t('map.start')}</button><small class="mono">${t('map.levels', { n: dn, m: DAYS * PER_DAY })}</small></div></div>
-    <div class="hero-kibi">${kibi('idle', 112, 'float')}</div>
+    <div class="hero-visual"><div class="hero-kibi">${kibi('idle', 76)}</div>${registerHTML(c, cd, { cur: all ? -1 : cur % PER_DAY })}</div>
     <span class="meter course" role="progressbar" aria-label="${t('map.title', { c: META[c].name })}" aria-valuemin="0" aria-valuemax="${DAYS * PER_DAY}" aria-valuenow="${dn}"><i style="width:${dn / (DAYS * PER_DAY) * 100}%"></i></span></section>`;
   if (S.stats.lessons === 0) h += `<div class="welcome">${kibi('idle', 52)}<div><b>${t('map.welcomeTitle')}</b><p>${t('map.welcome')}</p></div></div>`;
   for (let p = 0; p < 3; p++) {
@@ -507,12 +520,12 @@ function renderProfile() {
   let h = `<div class="page"><header class="phead">${kibi('idle', 72)}<div><p class="eyebrow">${t('nav.profile')}</p><h1>${t('profile.title')}</h1>
     <p class="lead">${Store.user ? esc(Store.user.email || '') : t('profile.localTitle')}</p></div></header>
    <div class="ptiles">
-    <div class="ptile flame">${I.flame}<b>${S.streak}</b><span>${t('profile.streak', { n: S.streak })}</span></div>
-    <div class="ptile gold">${I.bolt}<b>${S.xp}</b><span>${t('profile.xp')}</span></div>
-    <div class="ptile ok">${I.check}<b>${S.stats.lessons}</b><span>${t('profile.levels')}</span></div>
-    <div class="ptile gem">${I.target}<b>${acc}%</b><span>${t('profile.acc')}</span></div>
-    <div class="ptile ok">${I.chain}<b>${S.run.cur}</b><span>${t('profile.run')}</span></div>
-    <div class="ptile gold">${I.trophy}<b>${S.run.best}</b><span>${t('profile.runBest')}</span></div>
+    <div class="ptile"><span>${t('profile.streak', { n: S.streak })}</span><b>${S.streak}</b></div>
+    <div class="ptile"><span>${t('profile.xp')}</span><b>${S.xp}</b></div>
+    <div class="ptile"><span>${t('profile.levels')}</span><b>${S.stats.lessons}</b></div>
+    <div class="ptile"><span>${t('profile.acc')}</span><b>${acc}%</b></div>
+    <div class="ptile"><span>${t('profile.run')}</span><b>${S.run.cur}</b></div>
+    <div class="ptile"><span>${t('profile.runBest')}</span><b>${S.run.best}</b></div>
    </div>${statsSection()}<h2>${t('profile.courses')}</h2><div class="plist">`;
   for (const c of COURSES) {
     const p = Math.round(doneCount(c) / (DAYS * PER_DAY) * 100);
@@ -1013,7 +1026,8 @@ function finish() {
   if (reached) Store.track('day', { course: c, day: reached, locale: S.locale });
   sfx('win');
   LS.querySelector('.ls-top').innerHTML = `<button class="iconbtn" data-act="quit" aria-label="${t('common.close')}">${I.x}</button><div class="barwrap"><div class="bar ${L.mode === 'reto' ? 'reto' : ''}"><i style="width:100%"></i></div></div>`;
-  LS.querySelector('.ls-body').innerHTML = `<div class="done-screen"><div class="halo">${kibi('happy', 130)}</div><h2>${title}</h2>
+  const art = (L.mode === 'practice' || L.mode === 'reto') ? `<div class="done-reg"><div class="done-kibi">${kibi('happy', 92)}</div>${registerHTML(c, L.d, { just: L.replay ? -1 : L.k })}</div>` : `<div class="halo">${kibi('happy', 130)}</div>`;
+  LS.querySelector('.ls-body').innerHTML = `<div class="done-screen">${art}<h2>${title}</h2>
     <span class="exitcode">${t('done.exit0')}</span>
     <div class="dtiles">
       <div class="dtile" style="--tc:var(--gold);--tink:var(--gold-ink)"><span>${t('done.xp')}</span><b data-count="${xp}" data-pre="+" data-post="">+0</b></div>
@@ -1104,7 +1118,7 @@ function renderLanding() {
        <div class="top">${badge(c)}<b>${m.name}</b></div><p>${t('course.' + c)}</p><small class="mono">${t('land.days')}</small>
        <details class="syl" data-syl="${c}"><summary>${t('land.syllabus')}</summary><ol class="syl-list"><li class="note">${t('land.loading')}</li></ol></details>
        <button class="btn small ghost" data-land="start" data-lc="${c}">${t('land.startCourse', { c: m.name })}</button></article>`; }).join('')}</div></section>
-   <section class="lsec reveal"><p class="eyebrow">${t('land.featTag')}</p><h2>${t('land.featTitle')}</h2><div class="lfeat">${[[I.code, 1], [I.book, 2], [I.flame, 3], [I.globe, 4]].map(([ic, n]) => `<div class="fcard" style="--i:${n}">${ic}<b>${t('land.f' + n)}</b><p>${t('land.f' + n + '.d')}</p></div>`).join('')}</div></section>
+   <section class="lsec reveal"><p class="eyebrow">${t('land.featTag')}</p><h2>${t('land.featTitle')}</h2><div class="lhow">${dayPreview()}<ol class="lpoints">${[1, 2, 3, 4].map(n => `<li><span class="mono">0${n}</span><div><b>${t('land.f' + n)}</b><p>${t('land.f' + n + '.d')}</p></div></li>`).join('')}</ol></div></section>
    <section class="lsec reveal"><p class="eyebrow">${t('land.faqTag')}</p><h2>${t('land.faqTitle')}</h2><div class="faq">${[1, 2, 3, 4, 5, 6].map(n => `<details><summary>${t('faq.q' + n)}</summary><p>${t('faq.a' + n)}</p></details>`).join('')}</div></section>
    <section class="lsec lfinal reveal">${kibi('happy', 96)}<h2>${t('land.finalTitle')}</h2>${startBtn}</section>
    </main>
@@ -1112,6 +1126,16 @@ function renderLanding() {
   const io = 'IntersectionObserver' in window && new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .12 });
   document.querySelectorAll('#landing .reveal').forEach(el => (io ? io.observe(el) : el.classList.add('in')));
   startTyper();
+}
+// Vista de un día tal como se ve en la app (guía y niveles), con los componentes de la propia app.
+function dayPreview() {
+  const lv = (k, st, label) => `<li class="level ${st} ${k === RETO ? 'reto' : ''}"><span class="lbit">${st === 'done' ? 1 : 0}</span>
+    <div class="linfo"><span class="lk">${k === RETO ? I.crown : ''}${t('level.bit', { n: k + 1 })}</span><b>${label}</b></div>
+    ${st === 'current' ? `<span class="btn small primary">${t('node.go', { xp: 5 })}</span>` : st === 'locked' ? `<span class="lstate">${I.lock}</span>` : `<span class="lstate ok">${I.check}</span>`}</li>`;
+  return `<div class="lpreview" aria-hidden="true" style="--lang:${META.python.color};--lang-btn:${META.python.btn};--lang-ink:#fff">
+    <div class="lp-head">${badge('python')}<div><small class="mono">${t('day.nOf', { d: 1 })}</small><b>${t('day.guide')} · ${t('day.practice')}</b></div></div>
+    ${codeBlock(SNIPS.python.join('\n'), 'python')}
+    <ol class="levels">${lv(0, 'done', t('node.practice', { n: 1 }))}${lv(1, 'current', t('node.practice', { n: 2 }))}${lv(2, 'locked', t('node.practice', { n: 3 }))}${lv(RETO, 'locked', t('node.reto'))}</ol></div>`;
 }
 // Temario de un curso en la portada: se carga el contenido del curso solo al abrir su desplegable.
 async function fillSyllabus(det) {

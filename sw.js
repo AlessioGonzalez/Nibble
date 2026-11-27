@@ -4,10 +4,10 @@
    - La caché lleva la versión de la app (VERSION en app.js): al publicar una versión nueva, cambia el nombre
      y la caché anterior se borra al activarse.
    - Todo lo demás (la API de Supabase, inicio de sesión, envíos) va siempre a la red y nunca se guarda. */
-const VERSION = '4.1.0';
+const VERSION = '4.2.0';
 const CACHE = 'nibble-' + VERSION;
 const CORE = ['./', 'index.html', 'manifest.webmanifest', 'assets/css/app.css', 'assets/icon.svg',
-  'assets/fonts/geist-latin.woff2', 'assets/fonts/geist-mono-latin.woff2',
+  'assets/fonts/figtree-latin.woff2', 'assets/fonts/jetbrains-mono-latin.woff2',
   'assets/js/theme.js', 'assets/js/config.js', 'assets/js/content-api.js', 'assets/js/i18n.js', 'assets/js/order.js', 'assets/js/progress.js',
   'assets/js/store.js', 'assets/js/practice.js', 'assets/js/app.js', 'assets/vendor/supabase-js-2.45.4.min.js'];
 

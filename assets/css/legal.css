@@ -1,11 +1,11 @@
 /* Nibble: páginas legales (privacidad.html y terminos.html). Mismos colores y letras que la app, claro y oscuro. */
-@font-face{font-family:"Geist";font-style:normal;font-weight:400 800;font-display:swap;src:url(../fonts/geist-latin.woff2) format("woff2")}
-@font-face{font-family:"Geist Mono";font-style:normal;font-weight:400 700;font-display:swap;src:url(../fonts/geist-mono-latin.woff2) format("woff2")}
+@font-face{font-family:"Figtree";font-style:normal;font-weight:400 800;font-display:swap;src:url(../fonts/figtree-latin.woff2) format("woff2")}
+@font-face{font-family:"JetBrains Mono";font-style:normal;font-weight:400 700;font-display:swap;src:url(../fonts/jetbrains-mono-latin.woff2) format("woff2")}
 :root{
   --bg:#F4F2EC; --surface:#FFFFFF; --ink:#16181D; --muted:#626874; --line:#E2DFD6; --accent:#2B5E95; --code-bg:#ECE9E1;
-  --f-display:"Geist",system-ui,sans-serif;
-  --f-body:"Geist",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --f-code:"Geist Mono",ui-monospace,Consolas,monospace;
+  --f-display:"Figtree",system-ui,sans-serif;
+  --f-body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-code:"JetBrains Mono",ui-monospace,Consolas,monospace;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){ --bg:#0F1014; --surface:#17191F; --ink:#ECEDF0; --muted:#979CA9; --line:#262932; --accent:#8CC8FF; --code-bg:#1C1F26; color-scheme:dark }
