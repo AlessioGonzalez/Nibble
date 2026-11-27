@@ -162,6 +162,8 @@
     'faq.a5': 'Sí, con los cursos que ya hayas abierto: tras la primera visita la web queda guardada en tu navegador. Con cuenta, el progreso se sincroniza al volver la conexión.', 'faq.q6': '¿Cuánto tiempo necesito al día?', 'faq.a6': 'Un nivel dura unos 3 minutos. Tú eliges la meta diaria, de 5 a 20 minutos.',
     'land.credit': 'El formato de reto de 30 días se inspira en retos de la comunidad como 30 Days Of Python, de Asabeneh.', 'land.free': 'Gratis y sin anuncios.', 'land.foot': '© 2026 Nibble. Todos los derechos reservados.',
     'auth.err.short': 'La contraseña debe tener al menos 8 caracteres.',
+    'profile.signoutAll': 'Cerrar sesión en todos los dispositivos', 'profile.signoutAllDesc': 'Si usaste Nibble en un ordenador ajeno o perdiste el móvil, cierra la sesión en todos a la vez.', 'profile.signoutAllBtn': 'Cerrar todas',
+    'auth.captcha': 'Marca la casilla de verificación antes de continuar.',
   };
 
   D.en = {
@@ -323,6 +325,8 @@
     'faq.a5': 'Yes, with the courses you have already opened: after the first visit the site is saved in your browser. With an account, your progress syncs when you\'re back online.', 'faq.q6': 'How much time do I need a day?', 'faq.a6': 'A level takes about 3 minutes. You choose your daily goal, from 5 to 20 minutes.',
     'land.credit': 'The 30-day challenge format is inspired by community challenges such as Asabeneh\'s 30 Days Of Python.', 'land.free': 'Free and ad-free.', 'land.foot': '© 2026 Nibble. All rights reserved.',
     'auth.err.short': 'The password must be at least 8 characters long.',
+    'profile.signoutAll': 'Sign out on all devices', 'profile.signoutAllDesc': 'If you used Nibble on someone else’s computer or lost your phone, sign out everywhere at once.', 'profile.signoutAllBtn': 'Sign out all',
+    'auth.captcha': 'Tick the verification box before continuing.',
   };
 
   D.fr = {
@@ -484,6 +488,8 @@
     'faq.a5': 'Oui, avec les cours déjà ouverts : après la première visite, le site reste enregistré dans ton navigateur. Avec un compte, la progression se synchronise au retour de la connexion.', 'faq.q6': 'Combien de temps par jour ?', 'faq.a6': 'Un niveau dure environ 3 minutes. Tu choisis ton objectif quotidien, de 5 à 20 minutes.',
     'land.credit': 'Le format de défi de 30 jours s’inspire de défis de la communauté comme 30 Days Of Python, d’Asabeneh.', 'land.free': 'Gratuit et sans publicité.', 'land.foot': '© 2026 Nibble. Tous droits réservés.',
     'auth.err.short': 'Le mot de passe doit contenir au moins 8 caractères.',
+    'profile.signoutAll': 'Se déconnecter de tous les appareils', 'profile.signoutAllDesc': 'Si tu as utilisé Nibble sur un ordinateur qui n’est pas le tien ou perdu ton téléphone, déconnecte-toi partout d’un coup.', 'profile.signoutAllBtn': 'Tout déconnecter',
+    'auth.captcha': 'Coche la case de vérification avant de continuer.',
   };
 
   D.it = {
@@ -645,6 +651,8 @@
     'faq.a5': 'Sì, con i corsi che hai già aperto: dopo la prima visita il sito resta salvato nel browser. Con un account, i progressi si sincronizzano quando torna la connessione.', 'faq.q6': 'Quanto tempo serve al giorno?', 'faq.a6': 'Un livello dura circa 3 minuti. Scegli tu l’obiettivo giornaliero, da 5 a 20 minuti.',
     'land.credit': 'Il formato della sfida di 30 giorni si ispira a sfide della community come 30 Days Of Python, di Asabeneh.', 'land.free': 'Gratis e senza pubblicità.', 'land.foot': '© 2026 Nibble. Tutti i diritti riservati.',
     'auth.err.short': 'La password deve avere almeno 8 caratteri.',
+    'profile.signoutAll': 'Esci da tutti i dispositivi', 'profile.signoutAllDesc': 'Se hai usato Nibble su un computer non tuo o hai perso il telefono, esci ovunque in una volta.', 'profile.signoutAllBtn': 'Esci da tutti',
+    'auth.captcha': 'Spunta la casella di verifica prima di continuare.',
   };
 
   let cur = 'es';

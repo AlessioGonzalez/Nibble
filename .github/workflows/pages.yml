@@ -46,6 +46,14 @@ jobs:
       - name: Probar la lógica del progreso
         run: node --test scripts/test-progress.mjs scripts/test-app.mjs scripts/test-security.mjs
 
+      # Pruebas de interfaz con Playwright (5 recorridos a 375 y 1280 px), antes de poner la configuración
+      # de Supabase: la app se prueba en modo local.
+      - name: Instalar Playwright
+        run: npm ci && npx playwright install --with-deps chromium
+
+      - name: Pruebas de interfaz
+        run: npm run e2e
+
       - name: Configurar Supabase
         if: ${{ vars.SUPABASE_URL != '' && vars.SUPABASE_ANON_KEY != '' }}
         env:
@@ -53,8 +61,10 @@ jobs:
           SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
           # Opcional: la variable SUPABASE_GOOGLE=false quita el botón de Google.
           SUPABASE_GOOGLE: ${{ vars.SUPABASE_GOOGLE }}
+          # Opcional: clave pública (site key) de Cloudflare Turnstile para el CAPTCHA de registro y acceso.
+          TURNSTILE_SITE_KEY: ${{ vars.TURNSTILE_SITE_KEY }}
         run: |
-          node -e "require('fs').writeFileSync('assets/js/config.js', 'window.SINTAXIS_CONFIG = ' + JSON.stringify({ supabaseUrl: process.env.SUPABASE_URL, supabaseAnonKey: process.env.SUPABASE_ANON_KEY, google: process.env.SUPABASE_GOOGLE !== 'false' }) + ';\n')"
+          node -e "require('fs').writeFileSync('assets/js/config.js', 'window.SINTAXIS_CONFIG = ' + JSON.stringify({ supabaseUrl: process.env.SUPABASE_URL, supabaseAnonKey: process.env.SUPABASE_ANON_KEY, google: process.env.SUPABASE_GOOGLE !== 'false', captchaSiteKey: process.env.TURNSTILE_SITE_KEY || '' }) + ';\n')"
 
       # Sin Supabase, las sugerencias se envían como incidencias (issues) de este repositorio.
       - name: Enlace de sugerencias

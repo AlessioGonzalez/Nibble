@@ -494,6 +494,7 @@ main.swap > *{animation:swapIn .28s var(--ease)}
 .or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
 .legal-note{font-size:.8125rem;color:var(--muted);text-align:center}
 .authcard .linkbtn{align-self:center}
+.captcha{min-height:65px;display:flex;justify-content:center}
 .authcard .langpick{align-self:center}
 
 /* ---------- Lección ---------- */

@@ -536,7 +536,8 @@ function renderProfile() {
     <div class="prow"><span class="medal">${I.chat}</span><div><b>${t('nav.suggest')}</b><p>${t('sug.lead')}</p></div><button class="btn small ghost" data-go="sugerencias">${t('sug.send')}</button></div>
     <div class="prow"><span class="medal">${I.book}</span><div><b>${t('legal.title')}</b><p>${legalLinks()}</p></div><span></span></div>
    </div><h2>${t('profile.account')}</h2><div class="plist">
-    ${Store.user ? `<div class="prow"><span class="medal">${I.user}</span><div><b>${esc(Store.user.email || '')}</b>${syncHTML()}</div><button class="btn small ghost" data-act="signout">${t('profile.signout')}</button></div>`
+    ${Store.user ? `<div class="prow"><span class="medal">${I.user}</span><div><b>${esc(Store.user.email || '')}</b>${syncHTML()}</div><button class="btn small ghost" data-act="signout">${t('profile.signout')}</button></div>
+      <div class="prow"><span class="medal">${I.logout}</span><div><b>${t('profile.signoutAll')}</b><p>${t('profile.signoutAllDesc')}</p></div><button class="btn small ghost" data-act="signout-all">${t('profile.signoutAllBtn')}</button></div>`
       : `<div class="prow"><span class="medal">${I.user}</span><div><b>${t('profile.localTitle')}</b><p>${t('profile.localMode')}</p>${syncHTML()}</div><span></span></div>`}
    </div></div>`;
   return h;
@@ -875,8 +876,13 @@ function exHTML(ex) {
   if (write) h += `<p class="hint">${t(ex.line === 'out' ? 'ex.hintOut' : ex.line ? 'ex.hintWrite' : 'ex.hintType')}</p>`;
   return h;
 }
+// Modo de pruebas (?e2e=1, scripts/e2e): la lección deja la solución en data-sol para que Playwright la conteste.
+// No da ninguna ventaja real: el progreso y la XP ya viven en el navegador de cada uno.
+const E2E = /[?&]e2e=1\b/.test(location.search);
+const solutionOf = ex => ex.opts ? ex.opts.findIndex(o => o.ok) : ex.t === 'order' ? ex.w : ex.a[0];
 function renderEx() {
   const ex = L.queue[0]; L.sel = null; L.phase = 'answer';
+  if (E2E) LS.dataset.sol = JSON.stringify({ t: ex.t, sol: solutionOf(ex) });
   LS.innerHTML = `<div class="ls-top">${topHTML()}</div><div class="ls-body"><div class="ex">${exHTML(ex)}</div></div>
    <div class="ls-foot" id="foot"><div class="foot-in"><button class="btn ghost" data-act="skip">${t('ex.skip')}</button><div class="fb" id="fb" role="status" aria-live="polite"></div><button class="btn primary" id="checkBtn" data-act="check" disabled>${t('ex.check')}</button></div></div>`;
   setBar(false);
@@ -997,6 +1003,10 @@ function finish() {
   const acc = Math.round(L.firstOk / L.total * 100);
   Store.logResult({ course: c, locale: S.locale, mode: L.mode, day: L.d === undefined ? null : L.d + 1, level: L.k === undefined ? null : L.k + 1,
     sections: L.total, correct: L.firstOk, mistakes: L.mistakes, xp, seconds: secs });
+  if (L.mode === 'practice' || L.mode === 'reto') Store.track('level', { course: c, day: L.d + 1, locale: S.locale });
+  // Día desbloqueado: al superar el reto por primera vez o al aprobar la prueba de nivel.
+  const reached = L.mode === 'reto' && !L.replay && L.d < DAYS - 1 ? L.d + 2 : L.mode === 'test' ? L.d + 1 : 0;
+  if (reached) Store.track('day', { course: c, day: reached, locale: S.locale });
   sfx('win');
   LS.querySelector('.ls-top').innerHTML = `<button class="iconbtn" data-act="quit" aria-label="${t('common.close')}">${I.x}</button><div class="barwrap"><div class="bar ${L.mode === 'reto' ? 'reto' : ''}"><i style="width:100%"></i></div></div>`;
   LS.querySelector('.ls-body').innerHTML = `<div class="done-screen"><div class="halo">${kibi('happy', 130)}</div><h2>${title}</h2>
@@ -1147,6 +1157,7 @@ function authError(err) {
   if (/already registered/i.test(m)) return t('auth.err.exists');
   if (/password should be|at least \d|weak_password/i.test(m)) return t('auth.err.short');
   if (/email not confirmed/i.test(m)) return t('auth.confirm');
+  if (/captcha/i.test(m)) return t('auth.captcha');
   return t('auth.err.generic', { m });
 }
 // Logotipo de Google para su botón de acceso (los colores oficiales de la "G").
@@ -1160,6 +1171,7 @@ function renderAuth() {
     <form id="authForm" style="display:flex;flex-direction:column;gap:14px">
       <div class="field"><label for="aemail">${t('auth.email')}</label><input id="aemail" type="email" autocomplete="email" required></div>
       ${reset ? '' : `<div class="field"><label for="apw">${t('auth.password')}</label><input id="apw" type="password" minlength="8" autocomplete="${authMode === 'signup' ? 'new-password' : 'current-password'}" required></div>`}
+      ${Store.cfg.captchaSiteKey ? '<div id="captcha" class="captcha"></div>' : ''}
       <div id="authMsg">${authMsg}</div>
       <button class="btn primary block" type="submit">${reset ? t('auth.sendReset') : authMode === 'signup' ? t('auth.signup') : t('auth.signin')}</button>
     </form>
@@ -1170,14 +1182,32 @@ function renderAuth() {
   $('#authForm').addEventListener('submit', async e => {
     e.preventDefault();
     const email = $('#aemail').value.trim(), pw = $('#apw') ? $('#apw').value : '', btn = e.target.querySelector('button[type="submit"]');
-    if (authMode !== 'reset' && pw.length < 8) { authMsg = `<p class="msg err">${t('auth.err.short')}</p>`; renderAuth(); $('#aemail').value = email; $('#apw').focus(); return; }
+    if (authMode === 'signup' && pw.length < 8) { authMsg = `<p class="msg err">${t('auth.err.short')}</p>`; renderAuth(); $('#aemail').value = email; $('#apw').focus(); return; }
+    if (Store.cfg.captchaSiteKey && !Store.captcha) { $('#authMsg').innerHTML = `<p class="msg err">${t('auth.captcha')}</p>`; return; }
     btn.disabled = true; btn.textContent = t('auth.loading');
     try {
       if (authMode === 'reset') { await Store.sendReset(email); authMsg = `<p class="msg ok">${t('auth.resetSent')}</p>`; renderAuth(); return; }
-      if (authMode === 'signup') { const r = await Store.signUp(email, pw); if (r === 'confirm') { authMsg = `<p class="msg ok">${t('auth.confirm')}</p>`; authMode = 'signin'; renderAuth(); return; } }
+      if (authMode === 'signup') { const r = await Store.signUp(email, pw); Store.track('signup', { locale: S.locale || window.I18N.get() }); if (r === 'confirm') { authMsg = `<p class="msg ok">${t('auth.confirm')}</p>`; authMode = 'signin'; renderAuth(); return; } }
       else await Store.signIn(email, pw);
       authMsg = ''; await enterApp();
     } catch (err) { authMsg = `<p class="msg err">${esc(authError(err))}</p>`; renderAuth(); $('#aemail').value = email; }
+  });
+  mountCaptcha();
+}
+/* CAPTCHA (Cloudflare Turnstile) en registro, acceso y recuperación de contraseña. Solo si config.js trae
+   captchaSiteKey (variable TURNSTILE_SITE_KEY del repositorio) y está activado en Supabase con la clave secreta.
+   Es la única carga de otro dominio que permite la CSP. */
+const TURNSTILE = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+let captchaLoad = null;
+function mountCaptcha() {
+  const key = Store.cfg.captchaSiteKey, box = $('#captcha');
+  Store.captcha = null;
+  if (!key || !box) return;
+  captchaLoad = captchaLoad || loadScript(TURNSTILE).catch(() => { captchaLoad = null; });
+  captchaLoad.then(() => {
+    if (!window.turnstile || !document.contains(box)) return;
+    window.turnstile.render(box, { sitekey: key, language: S.locale || window.I18N.get(), theme: 'auto',
+      callback: tok => { Store.captcha = tok; }, 'expired-callback': () => { Store.captcha = null; }, 'error-callback': () => { Store.captcha = null; } });
   });
 }
 function showAuth() { $('#landing').hidden = true; $('#shell').hidden = true; $('#bottomnav').hidden = true; $('#auth').hidden = false; renderAuth(); }
@@ -1250,10 +1280,10 @@ document.addEventListener('click', async e => {
   if (d.obgoal) { ob.goal = +d.obgoal; openOnboard(`[data-obgoal="${d.obgoal}"]`); return; }
   if (d.oblevel !== undefined) { ob.level = +d.oblevel; openOnboard(`[data-oblevel="${d.oblevel}"]`); return; }
   if (d.ob) { obAction(d.ob); return; }
-  if (d.trial !== undefined) { if (trialSel === null) { trialSel = TRIAL.opts[+d.trial]; sfx(trialSel === TRIAL.ok ? 'ok' : 'bad'); $('#trial').outerHTML = trialHTML(); const f = $('#trial .trial-fb'); f && f.scrollIntoView({ block: 'nearest', behavior: reduceMotion() ? 'auto' : 'smooth' }); } return; }
+  if (d.trial !== undefined) { if (trialSel === null) { trialSel = TRIAL.opts[+d.trial]; Store.track('trial', { course: 'python', locale: window.I18N.get() }); sfx(trialSel === TRIAL.ok ? 'ok' : 'bad'); $('#trial').outerHTML = trialHTML(); const f = $('#trial .trial-fb'); f && f.scrollIntoView({ block: 'nearest', behavior: reduceMotion() ? 'auto' : 'smooth' }); } return; }
   if (d.pal !== undefined) { const it = palItems[+d.pal]; closeModal(); it && it.run(); return; }
   if (d.auth) { authMode = d.auth; authMsg = ''; renderAuth(); return; }
-  if (d.land) { await leaveLanding(d.land, d.lc); return; }
+  if (d.land) { if (d.land === 'start') Store.track('start', { course: COURSES.includes(d.lc) ? d.lc : null, locale: window.I18N.get() }); await leaveLanding(d.land, d.lc); return; }
   if (d.sugkind) { sug.kind = d.sugkind; sug.msg = $('#sugMsg').value; sug.ctx = $('#sugCtx').checked; render(); return; }
   if (d.act === 'sug-again') { sug.state = ''; render(); return; }
   if (d.copy) {
@@ -1283,6 +1313,7 @@ document.addEventListener('click', async e => {
     case 'reset-cancel': confirmReset = false; render(); break;
     case 'reset-yes': confirmReset = false; Store.reset(); S = Store.state; go('map'); break;
     case 'signout': await doSignOut(); break;
+    case 'signout-all': b.disabled = true; try { await Store.signOut('global'); S = Store.state; showAuth(); } catch (err) { b.disabled = false; toast(t('sync.err')); } break;
     case 'google': b.disabled = true; try { await Store.signInGoogle(); } catch (err) { authMsg = `<p class="msg err">${esc(authError(err))}</p>`; renderAuth(); } break;
   }
 });

@@ -1,7 +1,11 @@
-# Avisa de actualizaciones de las acciones de GitHub que usa el CI.
+# Avisa de actualizaciones de las acciones de GitHub del CI y de Playwright (npm).
 version: 2
 updates:
   - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: npm
     directory: /
     schedule:
       interval: weekly

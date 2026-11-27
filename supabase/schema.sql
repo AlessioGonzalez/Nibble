@@ -197,3 +197,92 @@ revoke all on function public.suggestions_rate_limit() from public, anon, authen
 drop trigger if exists suggestions_rate on public.suggestions;
 create trigger suggestions_rate before insert on public.suggestions
   for each row execute function public.suggestions_rate_limit();
+-- =====================================================================
+-- 4. Medición sin datos personales: tabla events y vistas en el esquema analytics.
+--    Cada evento guarda solo el tipo, el curso, el día, el idioma y la fecha: sin usuario, sin
+--    identificador del navegador y sin cookies, así que no se puede asociar a nadie.
+--    Tipos: trial (respondió el ejercicio de la portada), start (pulsó Empezar), signup (creó cuenta),
+--    level (terminó un nivel) y day (desbloqueó un día).
+--    Se envían desde la app (anon o con sesión) y nadie puede leerlos desde la app: se consultan en
+--    Supabase > SQL Editor, p. ej. select * from analytics.retention;
+-- =====================================================================
+create table if not exists public.events (
+  id         bigint generated always as identity primary key,
+  type       text        not null,
+  course     text        check (course in ('python', 'java', 'javascript', 'cpp')),
+  day        smallint    check (day between 1 and 30),
+  locale     text        check (locale in ('es', 'en', 'fr', 'it')),
+  created_at timestamptz not null default now()
+);
+alter table public.events drop constraint if exists events_type_ok;
+alter table public.events add constraint events_type_ok check (type in ('trial', 'start', 'signup', 'level', 'day'));
+create index if not exists events_time on public.events (created_at desc);
+
+alter table public.events enable row level security;
+drop policy if exists "events: enviar" on public.events;
+create policy "events: enviar"
+  on public.events for insert
+  to anon, authenticated
+  with check (true);
+-- Sin política de lectura: desde la app no se puede leer ningún evento.
+
+-- La fecha la pone el servidor. Como mucho 600 eventos por minuto entre todos (el resto se descarta
+-- sin error) y, de vez en cuando, se borran los eventos de hace más de 24 meses.
+create or replace function public.events_guard()
+returns trigger language plpgsql security definer set search_path = '' as $$
+begin
+  new.created_at := now();
+  if (select count(*) from public.events e where e.created_at > now() - interval '1 minute') >= 600 then
+    return null;
+  end if;
+  if random() < 0.01 then
+    delete from public.events where created_at < now() - interval '24 months';
+  end if;
+  return new;
+end $$;
+revoke all on function public.events_guard() from public, anon, authenticated;
+drop trigger if exists events_guard on public.events;
+create trigger events_guard before insert on public.events
+  for each row execute function public.events_guard();
+
+-- Vistas para el titular (no se publican por la API: el esquema analytics no está expuesto).
+create schema if not exists analytics;
+revoke all on schema analytics from public, anon, authenticated;
+
+-- Retención de las cuentas: de los registrados hace al menos N días, cuántos terminaron un nivel
+-- N días o más después de registrarse.
+create or replace view analytics.retention as
+select n.days,
+  count(u.id) filter (where u.created_at <= now() - make_interval(days => n.days)) as cohort,
+  count(u.id) filter (where u.created_at <= now() - make_interval(days => n.days) and exists (
+    select 1 from public.level_results r
+    where r.user_id = u.id and r.created_at >= u.created_at + make_interval(days => n.days))) as returned
+from (values (1), (7), (30)) as n(days) cross join auth.users u
+group by n.days order by n.days;
+
+-- Embudo por curso: cuántas cuentas han llegado a cada día (su día más alto con un nivel terminado).
+create or replace view analytics.funnel as
+with reach as (
+  select user_id, course, max(day) as day from public.level_results where day is not null group by user_id, course
+)
+select c.course, d.day, count(r.user_id) as users
+from (select distinct course from reach) c cross join generate_series(1, 30) as d(day)
+left join reach r on r.course = c.course and r.day >= d.day
+group by c.course, d.day order by c.course, d.day;
+
+-- Precisión por día de curso (primeros intentos acertados sobre respuestas), para revisar los días difíciles.
+create or replace view analytics.accuracy as
+select course, day, count(*) as levels,
+  round(100.0 * sum(correct) / nullif(sum(correct + mistakes), 0), 1) as accuracy
+from public.level_results
+where mode in ('practice', 'reto') and day is not null
+group by course, day order by course, day;
+
+-- Eventos por día y tipo (incluye a quien aún no tiene cuenta: portada, ejercicio de prueba, registro).
+create or replace view analytics.events_daily as
+select created_at::date as day, type, count(*) as events
+from public.events group by 1, 2 order by 1 desc, 2;
+
+-- Días desbloqueados por curso según los eventos (cuentas y portada juntas, sin identificar a nadie).
+create or replace view analytics.days_reached as
+select course, day, count(*) as times from public.events where type = 'day' group by course, day order by course, day;

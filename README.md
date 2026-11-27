@@ -9,6 +9,17 @@ Te acompaña **Kibi**, un hámster programador que mordisquea código. Lleva una
 
 Si falta la traducción de un curso, la app muestra la versión en español.
 
+## Pruebas
+
+```
+npm test                          # progreso, textos, generador y seguridad
+npm install && npx playwright install chromium
+npm run e2e                       # 5 recorridos en el navegador, a 375 y 1280 px
+node scripts/validate.mjs         # contenido de los 4 cursos
+```
+
+En Supabase: `supabase/test-rls.sql` (seguridad por filas, límites y medición). Copias de seguridad y qué hacer ante un incidente: [docs/INCIDENTES.md](docs/INCIDENTES.md).
+
 ## Licencia
 
 Todos los derechos reservados (ver [LICENSE](LICENSE)). Hasta el 27 de noviembre de 2026 el proyecto se publicó con licencia MIT; esas copias anteriores conservan esa licencia. Los componentes de terceros mantienen las suyas: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

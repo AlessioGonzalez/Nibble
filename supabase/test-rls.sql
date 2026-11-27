@@ -117,5 +117,26 @@ begin
   end;
 end $$;
 
+-- 6. events: anon puede enviar eventos válidos, no leerlos, ni poner otra fecha o un tipo desconocido.
+do $$
+begin
+  insert into public.events (type, course, day, locale, created_at) values ('level', 'python', 1, 'es', '2000-01-01');
+  begin
+    insert into public.events (type) values ('hack');
+    raise exception 'events: se ha aceptado un tipo desconocido';
+  exception when check_violation then null;
+  end;
+  assert (select count(*) from public.events) = 0, 'RLS events: anon puede leer los eventos';
+end $$;
+reset role;
+do $$
+begin
+  assert (select count(*) from public.events where created_at > now() - interval '1 minute' and type = 'level') = 1,
+    'events_guard: la fecha del evento no la ha puesto el servidor';
+  assert not has_schema_privilege('anon', 'analytics', 'usage'), 'analytics: anon puede usar el esquema';
+  assert not has_schema_privilege('authenticated', 'analytics', 'usage'), 'analytics: authenticated puede usar el esquema';
+  perform * from analytics.retention; perform * from analytics.funnel; perform * from analytics.accuracy;
+end $$;
+
 do $$ begin raise notice 'Nibble: todas las pruebas de la base de datos han pasado'; end $$;
 rollback;

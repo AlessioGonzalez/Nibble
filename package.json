@@ -1,0 +1,13 @@
+{
+  "name": "nibble",
+  "private": true,
+  "description": "Herramientas de desarrollo de Nibble. La web no tiene paso de compilación: esto solo sirve para las pruebas.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test scripts/test-progress.mjs scripts/test-app.mjs scripts/test-security.mjs",
+    "e2e": "playwright test --config scripts/e2e/playwright.config.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.1"
+  }
+}

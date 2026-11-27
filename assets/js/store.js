@@ -168,6 +168,14 @@
       try { localStorage.setItem(key, JSON.stringify(JSON.parse(localStorage.getItem(key) || '[]').slice(q.length))); } catch (e) { /* */ }
     },
 
+    /* Medición sin datos personales (tabla events, ver schema.sql): solo tipo, curso, día e idioma.
+       Sin usuario, sin identificador y sin cookies. Si falla (sin red, sin la tabla), el evento se pierde. */
+    track(type, r = {}) {
+      if (!this.client) return;
+      this.client.from('events').insert({ type, course: r.course || null, day: r.day || null, locale: r.locale || null })
+        .then(() => {}, () => {});
+    },
+
     /* Sugerencias. Con sesión iniciada se guardan en la tabla `suggestions` (schema.sql).
        Sin Supabase, o si esa tabla aún no existe, devuelve un enlace para abrirla como incidencia
        en GitHub (config.feedbackUrl, que el workflow rellena solo). Sin ninguno de los dos: Error('off'). */
@@ -192,30 +200,34 @@
       const { error } = await this.client.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: location.origin + location.pathname } });
       if (error) throw error;
     },
+    // captcha: token de Cloudflare Turnstile (solo si config.js trae captchaSiteKey). Cada token sirve una vez.
+    captcha: null,
+    takeCaptcha() { const c = this.captcha; this.captcha = null; return c || undefined; },
     async signIn(email, password) {
-      const { data, error } = await this.client.auth.signInWithPassword({ email, password });
+      const { data, error } = await this.client.auth.signInWithPassword({ email, password, options: { captchaToken: this.takeCaptcha() } });
       if (error) throw error;
       await this.startUser(data.user);
     },
     async signUp(email, password) {
       const { data, error } = await this.client.auth.signUp({
-        email, password, options: { emailRedirectTo: location.origin + location.pathname },
+        email, password, options: { emailRedirectTo: location.origin + location.pathname, captchaToken: this.takeCaptcha() },
       });
       if (error) throw error;
       if (data.session) { await this.startUser(data.user); return 'in'; }
       return 'confirm';
     },
     async sendReset(email) {
-      const { error } = await this.client.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
+      const { error } = await this.client.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname, captchaToken: this.takeCaptcha() });
       if (error) throw error;
     },
     async updatePassword(password) {
       const { error } = await this.client.auth.updateUser({ password });
       if (error) throw error;
     },
-    async signOut() {
+    // scope 'global' cierra la sesión en todos los dispositivos (invalida todas las sesiones de la cuenta).
+    async signOut(scope = 'local') {
       if (this._timer) { clearTimeout(this._timer); await this.push(); }
-      await this.client.auth.signOut();
+      await this.client.auth.signOut({ scope });
       this.user = null;
       try { localStorage.removeItem(LAST_USER); } catch (e) { /* */ }
     },

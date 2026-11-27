@@ -89,7 +89,8 @@ test('index.html tiene una CSP estricta para scripts', () => {
   assert.ok(m, 'falta la meta Content-Security-Policy');
   const csp = m[1];
   assert.match(csp, /default-src 'self'/);
-  assert.match(csp, /script-src 'self'(;|$)/, "script-src debe ser solo 'self'");
+  // Solo la propia web y el CAPTCHA (Cloudflare Turnstile): ningún otro dominio puede ejecutar código.
+  assert.match(csp, /script-src 'self'( https:\/\/challenges\.cloudflare\.com)?(;|$)/, "script-src debe ser 'self' (y como mucho el CAPTCHA)");
   assert.doesNotMatch(csp, /unsafe-eval/);
   assert.match(csp, /object-src 'none'/);
   assert.match(csp, /base-uri 'self'/);
