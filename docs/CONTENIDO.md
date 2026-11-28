@@ -90,6 +90,7 @@ Cada nivel junta tres fuentes de ejercicios:
 El reto final junta 3 prácticas del día, 3 ejercicios generados y la pregunta del reto (`x[7]`).
 
 - El nivel 1 tiene 8 secciones, el 2 tiene 7, el 3 otra vez 8, y así sucesivamente.
+- En Python y JavaScript, cada nivel lleva además 2 o 3 **programas** (`NibblePractice.programs`, t: 'run'): se escriben en un cuadro de código y se corrigen ejecutándolos y comparando la salida. De cada tres secciones restantes, una es de elegir y dos de escribir; ordenar solo sale si no queda otra de elegir. `node scripts/check-practice.mjs` ejecuta la solución de cada programa.
 - Para añadir una familia al generador, escribe su función en `make()` y su día en `UNLOCK` para los 4 lenguajes, añade sus textos `gen.*` en los 4 idiomas de `assets/js/i18n.js` y ejecuta `node scripts/check-practice.mjs`.
 - Las secciones alternan **elegir** (`mc`, `out`, `fill`, `ord`) y **escribir código**. Para las de escribir, la app convierte los ejercicios:
   - `fill`: escribes en el hueco lo que antes elegías.

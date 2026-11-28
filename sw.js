@@ -6,7 +6,7 @@
    - assets/vendor/ (CodeMirror, Pyodide: unos 13 MB) va a otra caché que no se borra al cambiar de versión: sus archivos
      llevan la versión en el nombre y no cambian. Se guardan la primera vez que se piden; después funcionan sin conexión.
    - Todo lo demás (la API de Supabase, inicio de sesión, envíos) va siempre a la red y nunca se guarda. */
-const VERSION = '4.10.0';
+const VERSION = '4.11.0';
 const CACHE = 'nibble-' + VERSION;
 // shortcut: las versiones viejas de assets/vendor/ se quedan en esta caché; si se actualiza Pyodide a menudo, borrar las que no usa la app.
 const VENDOR = 'nibble-vendor';

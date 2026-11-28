@@ -500,5 +500,93 @@
     return res;
   }
 
-  g.NibblePractice = { generate, UNLOCK, UNLOCK_ID, families: course => Object.keys(UNLOCK[course] || {}) };
+
+  /* ---------- programas: escribir código que se ejecuta de verdad (Python y JavaScript) ----------
+     Cada uno pide un programa corto y se corrige por su salida, así que vale cualquier forma de escribirlo.
+     { t: 'run', q, start, in, out, sol, e }: in es la entrada (input() o prompt()), out la salida exacta y
+     sol una solución, que scripts/check-practice.mjs ejecuta para comprobar que out es correcta. */
+  const RUN_UNLOCK_ID = {
+    python: { show: 'py-intro', vars: 'py-vars', greet: 'py-strings', word: 'py-strings', parity: 'py-conditionals', count: 'py-loops',
+      sum: 'py-loops', list: 'py-lists', dict: 'py-dicts', area: 'py-functions', max: 'py-functions' },
+    javascript: { show: 'js-intro', vars: 'js-types', word: 'js-types', parity: 'js-conditionals', count: 'js-loops', sum: 'js-loops',
+      list: 'js-arrays', area: 'js-functions', max: 'js-functions', dict: 'js-objects' },
+  };
+  const RUN_UNLOCK = {};
+  for (const c in RUN_UNLOCK_ID) { RUN_UNLOCK[c] = {}; for (const f in RUN_UNLOCK_ID[c]) RUN_UNLOCK[c][f] = (ORDER[c] || []).indexOf(RUN_UNLOCK_ID[c][f]) + 1; }
+  const NAMES = ['Ana', 'Leo', 'Mia', 'Hugo', 'Sara', 'Iker', 'Noa', 'Teo'];
+
+  function programs(course, day, count, rnd = Math.random, t = k => k) {
+    const un = RUN_UNLOCK[course]; if (!un) return [];
+    const ri = (a, b) => a + Math.floor(rnd() * (b - a + 1)), pick = a => a[Math.floor(rnd() * a.length)];
+    const py = course === 'python', start = (py ? '# ' : '// ') + t('gen.run.start') + '\n';
+    const run = (q, out, sol, e, input = '') => ({ t: 'run', q, start, in: input, out, sol, e, gen: 1 });
+    const T = {
+      show() {
+        const s = pick(TEXTS), a = ri(2, 12), b = ri(2, 12);
+        return run(t('gen.run.show', { s, a, b }), `${s}\n${a + b}`,
+          py ? `print("${s}")\nprint(${a} + ${b})` : `console.log("${s}");\nconsole.log(${a} + ${b});`, t('gen.run.e.show'));
+      },
+      vars() {
+        const a = ri(2, 15), b = ri(2, 9);
+        return run(t('gen.run.vars', { a, b }), String(a * b),
+          py ? `price = ${a}\nqty = ${b}\nprint(price * qty)` : `const price = ${a};\nconst qty = ${b};\nconsole.log(price * qty);`, t('gen.run.e.vars'));
+      },
+      greet() {
+        const n = pick(NAMES), hi = t('gen.run.hi');
+        return run(t('gen.run.greet', { hi }), `${hi}, ${n}`, `name = input()\nprint("${hi}, " + name)`, t('gen.run.e.greet'), n + '\n');
+      },
+      word() {
+        const w = pick(WORDS);
+        return run(t('gen.run.word', { w }), `${w.length}\n${w.toUpperCase()}`,
+          py ? `w = "${w}"\nprint(len(w))\nprint(w.upper())` : `const w = "${w}";\nconsole.log(w.length);\nconsole.log(w.toUpperCase());`, t('gen.run.e.word'));
+      },
+      parity() {
+        const n = ri(3, 99), even = t('gen.run.even'), odd = t('gen.run.odd');
+        return run(t('gen.run.parity', { n, even, odd }), n % 2 ? odd : even,
+          py ? `n = ${n}\nif n % 2 == 0:\n    print("${even}")\nelse:\n    print("${odd}")` : `const n = ${n};\nif (n % 2 === 0) {\n  console.log("${even}");\n} else {\n  console.log("${odd}");\n}`, t('gen.run.e.parity'));
+      },
+      count() {
+        const n = ri(3, 6);
+        return run(t('gen.run.count', { n }), Array.from({ length: n }, (_, i) => i + 1).join('\n'),
+          py ? `for i in range(1, ${n + 1}):\n    print(i)` : `for (let i = 1; i <= ${n}; i++) {\n  console.log(i);\n}`, t('gen.run.e.count'));
+      },
+      sum() {
+        const n = ri(4, 20);
+        return run(t('gen.run.sum', { n }), String(n * (n + 1) / 2),
+          py ? `total = 0\nfor i in range(1, ${n + 1}):\n    total += i\nprint(total)` : `let total = 0;\nfor (let i = 1; i <= ${n}; i++) {\n  total += i;\n}\nconsole.log(total);`, t('gen.run.e.sum'));
+      },
+      list() {
+        const v = [ri(1, 20), ri(1, 20), ri(1, 20)];
+        return run(t('gen.run.list', { a: v[0], b: v[1], c: v[2] }), `${v[0] + v[1] + v[2]}\n3`,
+          py ? `nums = [${v.join(', ')}]\nprint(sum(nums))\nprint(len(nums))` : `const nums = [${v.join(', ')}];\nconsole.log(nums.reduce((s, x) => s + x, 0));\nconsole.log(nums.length);`, t('gen.run.e.list'));
+      },
+      dict() {
+        const a = ri(1, 9), b = ri(10, 30);
+        return run(t('gen.run.dict', { a, b }), String(b),
+          py ? `prices = {"seed": ${a}, "nut": ${b}}\nprint(prices["nut"])` : `const prices = { seed: ${a}, nut: ${b} };\nconsole.log(prices.nut);`, t('gen.run.e.dict'));
+      },
+      area() {
+        const a = ri(2, 12), b = ri(2, 12);
+        return run(t('gen.run.area', { a, b }), String(a * b),
+          py ? `def area(w, h):\n    return w * h\n\nprint(area(${a}, ${b}))` : `function area(w, h) {\n  return w * h;\n}\nconsole.log(area(${a}, ${b}));`, t('gen.run.e.area'));
+      },
+      max() {
+        const a = ri(1, 50), b = ri(1, 50);
+        return run(t('gen.run.max', { a, b }), String(Math.max(a, b)),
+          py ? `def bigger(a, b):\n    if a > b:\n        return a\n    return b\n\nprint(bigger(${a}, ${b}))` : `function bigger(a, b) {\n  return a > b ? a : b;\n}\nconsole.log(bigger(${a}, ${b}));`, t('gen.run.e.max'));
+      },
+    };
+    // Los temas recientes salen más; nunca dos iguales seguidos.
+    const fams = Object.keys(un).filter(f => un[f] > 0 && un[f] <= day && T[f]);
+    if (!fams.length) return [];
+    const res = [];
+    for (let i = 0, last = ''; res.length < count && i < count * 10; i++) {
+      const recent = fams.filter(f => day - un[f] <= 4), f = rnd() < 0.6 && recent.length ? pick(recent) : pick(fams);
+      if (f === last && fams.length > 1) continue;
+      const ex = T[f](); ex.fam = f; res.push(ex); last = f;
+    }
+    return res;
+  }
+
+  g.NibblePractice = { generate, programs, UNLOCK, UNLOCK_ID, RUN_UNLOCK_ID, families: course => Object.keys(UNLOCK[course] || {}) };
 })(typeof window !== 'undefined' ? window : globalThis);

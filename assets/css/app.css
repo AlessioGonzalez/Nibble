@@ -980,3 +980,26 @@ main.swap > *{animation:swapIn .28s var(--ease)}
 .diff{display:grid;gap:4px}
 .diff span{font:500 .75rem var(--f-mono);color:var(--muted)}
 .code-actions .btn svg{width:18px;height:18px}
+
+/* ---------- Programas en las lecciones ---------- */
+.runin{display:block;width:100%;min-height:9.5em;margin-top:4px;padding:12px 14px;border-radius:var(--r);border:1.5px solid var(--code-border);background:var(--code-bg);color:var(--code-fg);
+  font:450 .9375rem/1.6 var(--f-mono);tab-size:4;resize:vertical;caret-color:var(--lang);outline:none}
+.runin:focus{border-color:var(--lang);box-shadow:0 0 0 3px color-mix(in srgb, var(--lang) 25%, transparent)}
+.runin.wrong{border-color:var(--bad)}
+.runin[readonly]{opacity:.85}
+.ex-kind.run{background:color-mix(in srgb, var(--ok) 14%, transparent);color:var(--ok-ink)}
+.ex-kind.run svg{width:14px;height:14px}
+.fb-pre{margin:4px 0 6px;padding:8px 10px;border-radius:8px;background:var(--code-bg);color:var(--code-fg);font:450 .8125rem/1.5 var(--f-mono);white-space:pre-wrap;max-height:9em;overflow:auto}
+
+/* Kibi en las estadísticas del perfil */
+.kibistat{grid-column:1/-1;display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:center;
+  background:radial-gradient(90% 120% at 0% 50%, color-mix(in srgb, var(--kibi) 18%, transparent), transparent 60%),var(--surface);border-color:var(--kibi-line)}
+.ks-kibi{display:grid;place-items:center;padding:14px 6px 0}
+.ks-body{display:flex;flex-direction:column;gap:10px;min-width:0;align-items:flex-start}
+.ks-next{display:flex;gap:10px;align-items:center;width:100%;padding:8px 10px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line)}
+.ks-next > div{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
+.ks-next small{color:var(--muted);font-size:.8125rem}
+.ks-next .meter{height:6px}
+.ks-next .meter i{background:var(--kibi)}
+@media (max-width:520px){ .kibistat{grid-template-columns:1fr;justify-items:center;text-align:center} .ks-body{align-items:center} }
+.fb-lbl{font-weight:600;margin-top:2px}

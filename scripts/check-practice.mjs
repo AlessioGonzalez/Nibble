@@ -65,10 +65,22 @@ for (const course of ['python', 'javascript', 'java', 'cpp']) {
   }
 }
 
+// Programas (t: 'run'): la solución tiene que dar exactamente la salida pedida, con la entrada del caso.
+let progs = 0;
+for (const course of ['python', 'javascript']) for (let day = 1; day <= 30; day++) for (const ex of P.programs(course, day, 12, Math.random, t)) {
+  progs++;
+  const where = `${course} día ${day} programa ${ex.fam}`;
+  if (/undefined|NaN/.test(JSON.stringify(ex))) err(where, 'contiene undefined o NaN');
+  if (!ex.q || !ex.out || !ex.sol || !ex.start) err(where, 'le falta q, out, sol o start');
+  (course === 'python' ? py : js).push({ where, code: ex.sol, want: ex.out, stdin: ex.in || '' });
+}
+if (!progs) err('programas', 'no se ha generado ninguno');
+
 // JavaScript: se ejecuta aquí mismo, capturando console.log.
 for (const c of js) {
   let outp = [];
-  const ctx = vm.createContext({ console: { log: (...a) => outp.push(a.map(x => (typeof x === 'string' ? x : String(x))).join(' ')) } });
+  const lines = (c.stdin || '').split('\n');
+  const ctx = vm.createContext({ prompt: () => (lines.length ? lines.shift() : null), console: { log: (...a) => outp.push(a.map(x => (typeof x === 'string' ? x : String(x))).join(' ')) } });
   // Una opción incorrecta de fill puede dar error al ejecutarse: también vale, no da el resultado pedido.
   try { vm.runInContext(c.code, ctx, { timeout: 2000 }); } catch (e) { if (!(c.fill && !c.first)) err(c.where, `error al ejecutar: ${e.message}\n${c.code}`); continue; }
   if (c.syntax) continue;
@@ -87,6 +99,7 @@ for item in json.load(sys.stdin):
         if item.get('syntax'):
             compile(item['code'], '<x>', 'exec')
         else:
+            sys.stdin = io.StringIO(item.get('stdin', ''))
             with contextlib.redirect_stdout(buf):
                 exec(item['code'], {})
         res.append({'ok': True, 'out': buf.getvalue()})
@@ -110,4 +123,4 @@ else {
 }
 
 if (errors.length) { console.error(errors.join('\n\n')); console.error(`\n${errors.length}+ errores en ${total} ejercicios generados.`); process.exit(1); }
-console.log(`OK: ${total} ejercicios generados; ${py.length} fragmentos de Python y ${js.length} de JavaScript ejecutados.`);
+console.log(`OK: ${total} ejercicios generados y ${progs} programas; ${py.length} fragmentos de Python y ${js.length} de JavaScript ejecutados.`);

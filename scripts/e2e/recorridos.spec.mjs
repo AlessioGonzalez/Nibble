@@ -22,6 +22,8 @@ async function answer(page, right) {
   if (t === 'order') {
     if (right) for (const w of sol) await page.locator('#bank .chip:not(.used)').filter({ hasText: exact(w) }).first().click();
     else await page.locator('[data-act="skip"]').click();
+  } else if (t === 'run') {
+    await page.locator('#runIn').fill(right ? sol : 'x = (');
   } else if (t === 'type') {
     await page.locator('#typeIn').fill(right ? sol : 'respuesta_equivocada_123');
   } else {
@@ -30,7 +32,8 @@ async function answer(page, right) {
   }
   const btn = page.locator('#checkBtn');
   if (await btn.getAttribute('data-act') === 'check') await btn.click();
-  await expect(btn).toHaveAttribute('data-act', 'next');
+  // Un programa se ejecuta de verdad: la primera vez, Python tarda unos segundos en cargarse.
+  await expect(btn).toHaveAttribute('data-act', 'next', { timeout: t === 'run' ? 30000 : 5000 });
   await btn.click();
   // Espera a que cambie la sección o a que aparezca la pantalla final.
   await expect.poll(async () => (await page.locator('.done-screen').count()) > 0 || (await lesson.getAttribute('data-sol')) !== raw
@@ -128,7 +131,7 @@ test('6. el editor se carga solo al abrirlo y el borrador sigue tras recargar', 
 test('7. vestir a Kibi: lo libre se pone, lo bloqueado no, y se guarda al recargar', async ({ page }) => {
   await start(page);
   await page.locator('.kibistrip [data-go="kibi"]').click();
-  await expect(page.locator('.wtile')).toHaveCount(14);
+  await expect(page.locator('.wtile')).toHaveCount(43);
   await page.locator('[data-outfit="cap"]').click();
   await expect(page.locator('[data-outfit="cap"]')).toHaveAttribute('aria-pressed', 'true');
   await page.locator('[data-outfit="crown"]').click();
@@ -212,7 +215,10 @@ test('10. @motores JavaScript en el editor: Comprobar y un bucle infinito cortad
   await start(page);
   await page.goto('/?e2e=1#courses');
   await page.locator('[data-course="javascript"][data-open]').click();
+  // El cambio de curso termina en el mapa: se espera a que acabe antes de ir al editor.
+  await expect(page.locator('.hero .eyebrow')).toContainText('JavaScript');
   await page.goto('/?e2e=1#day-1-code-0');
+  await expect(page.locator('.expect pre')).toBeVisible();
   const editor = page.locator('#editor .cm-content'), out = page.locator('#outpanel');
   const write = async code => { await editor.click(); await page.keyboard.press('Control+A'); await page.keyboard.press('Delete'); await page.keyboard.insertText(code); };
   const greet = (await page.locator('.expect pre').innerText()).split('\n')[0];

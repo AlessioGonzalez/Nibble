@@ -1,7 +1,7 @@
 /* Nibble: interfaz. Depende de content-api.js, i18n.js y store.js. */
 (function () {
 'use strict';
-const VERSION = '4.10.0';
+const VERSION = '4.11.0';
 const Store = window.SintaxisStore;
 const P = window.NibbleProgress;
 const t = (k, v) => window.I18N.t(k, v);
@@ -139,7 +139,7 @@ function kibi(mood = 'idle', size = 64, extra = '', fit) {
     <g class="eye"><circle cx="50" cy="40" r="4.4" fill="${KB.ink}"/><circle cx="51.5" cy="38.5" r="1.4" fill="#fff"/></g>
     <path d="M36.5 50.5q3.5 3 3.5 0q0 3 3.5 0" stroke="${KB.nose}" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="38.4" y="51.6" width="3.2" height="3.2" rx=".8" fill="#fff"/>`;
   return `<svg class="kibi ${mood} ${extra}" width="${size}" height="${size}" viewBox="0 0 80 80" aria-hidden="true">
-    <ellipse cx="40" cy="76" rx="21" ry="3" fill="#000" opacity=".12"/>${o.neck === 'cape' ? KIT.cape : ''}
+    <ellipse cx="40" cy="76" rx="21" ry="3" fill="#000" opacity=".12"/>${BACK.has(o.neck) ? KIT[o.neck] : ''}
     <g class="ears"><circle cx="21" cy="21" r="9" fill="${KB.fur}" stroke="${KB.line}" stroke-width="1.6"/><circle cx="21" cy="21" r="4.8" fill="${KB.pink}"/>
     <circle cx="59" cy="21" r="9" fill="${KB.fur}" stroke="${KB.line}" stroke-width="1.6"/><circle cx="59" cy="21" r="4.8" fill="${KB.pink}"/></g>
     <g class="body"><ellipse cx="28" cy="73" rx="6.5" ry="3.4" fill="${KB.cream}" stroke="${KB.line}" stroke-width="1.4"/><ellipse cx="52" cy="73" rx="6.5" ry="3.4" fill="${KB.cream}" stroke="${KB.line}" stroke-width="1.4"/>
@@ -147,7 +147,7 @@ function kibi(mood = 'idle', size = 64, extra = '', fit) {
     <path d="M40 34c13 0 21 8 21 19s-9 19-21 19-21-8-21-19 8-19 21-19z" fill="${KB.cream}"/>
     <path d="M36 17q4 7 8 0" stroke="${KB.line}" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".7"/>
     <ellipse cx="22" cy="50" rx="5.5" ry="3.4" fill="${KB.pink}" opacity=".75"/><ellipse cx="58" cy="50" rx="5.5" ry="3.4" fill="${KB.pink}" opacity=".75"/>
-    <ellipse cx="40" cy="46.5" rx="2.8" ry="2" fill="${KB.nose}"/>${face}${o.neck !== 'cape' ? on('neck') : ''}
+    <ellipse cx="40" cy="46.5" rx="2.8" ry="2" fill="${KB.nose}"/>${face}${BACK.has(o.neck) ? '' : on('neck')}
     <g class="card"><rect x="29" y="58" width="22" height="13" rx="3.5" fill="var(--lang)" stroke="var(--lang-dark)" stroke-width="1.6"/>
     <path d="M36 62l-3 2.5 3 2.5M44 62l3 2.5-3 2.5M41.5 61l-3 7" stroke="var(--lang-ink)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
     <ellipse cx="29" cy="63" rx="4.2" ry="3.6" fill="${KB.cream}" stroke="${KB.line}" stroke-width="1.4"/><ellipse cx="51" cy="63" rx="4.2" ry="3.6" fill="${KB.cream}" stroke="${KB.line}" stroke-width="1.4"/>${on('face')}${on('head')}</g></svg>`;
@@ -160,9 +160,21 @@ const OUTFITS = [
   ['headphones', 'head', 'poly'], ['wizard', 'head', 'xp1000'], ['crown', 'head', 'course'],
   ['glasses', 'face', null], ['hearts', 'face', 'extra'], ['shades', 'face', 'run50'],
   ['scarf', 'neck', 'half'], ['chain', 'neck', 'run10'], ['cape', 'neck', 'reto'],
+  // Disfraces de nivel: llegan al completar N niveles en total (todos los cursos).
+  ['bow', 'head', 'lv:3'], ['nerd', 'face', 'lv:5'], ['sprout', 'head', 'lv:8'], ['pearls', 'neck', 'lv:10'], ['chef', 'head', 'lv:12'],
+  ['monocle', 'face', 'lv:15'], ['bandana', 'neck', 'lv:18'], ['cowboy', 'head', 'lv:20'], ['helmet', 'head', 'lv:25'], ['goggles', 'face', 'lv:30'],
+  ['pirate', 'head', 'lv:35'], ['stripes', 'neck', 'lv:40'], ['mask', 'face', 'lv:45'], ['viking', 'head', 'lv:50'], ['lei', 'neck', 'lv:55'],
+  ['propeller', 'head', 'lv:60'], ['antenna', 'head', 'lv:70'], ['halo', 'head', 'lv:80'], ['tophat', 'head', 'lv:90'], ['visor', 'face', 'lv:100'],
+  ['santa', 'head', 'lv:110'], ['bunny', 'head', 'lv:120'], ['cloak', 'neck', 'lv:130'], ['astro', 'head', 'lv:140'], ['stars', 'face', 'lv:150'],
+  ['wings', 'neck', 'lv:160'], ['unicorn', 'head', 'lv:180'], ['jetpack', 'neck', 'lv:200'], ['dragon', 'head', 'lv:240'],
 ];
+const BACK = new Set(['cape', 'cloak', 'wings', 'jetpack']);
+// Requisito: un logro ('first', 'streak3'…) o 'lv:N' (N niveles completados).
+const lvOf = r => (r && r.startsWith('lv:') ? +r.slice(3) : 0);
+const reqMet = r => !r || (lvOf(r) ? (S.stats.lessons || 0) >= lvOf(r) : !!S.ach[r]);
+const reqText = r => (lvOf(r) ? t('kibi.lockLv', { n: lvOf(r) }) : t('ach.' + r));
 const SLOTS = ['head', 'face', 'neck'];
-const outfitOpen = id => { const r = OUTFITS.find(([k]) => k === id); return !!r && (!r[2] || !!S.ach[r[2]]); };
+const outfitOpen = id => { const r = OUTFITS.find(([k]) => k === id); return !!r && reqMet(r[2]); };
 // Lo que lleva puesto: solo piezas que existen, en su hueco y ya desbloqueadas (el estado puede venir de otra versión).
 function wearing() {
   const o = (S && S.outfit) || {};
@@ -184,6 +196,36 @@ const KIT = {
   scarf: `<path d="M15.5 52.5Q40 64 64.5 52.5l1.5 6Q40 71 14 58.5z" fill="${RED}" stroke="${RED_D}" stroke-width="1.4" stroke-linejoin="round"/><path d="M55 59.5l2 13h6.5L62 58z" fill="#E8716D" stroke="${RED_D}" stroke-width="1.4" stroke-linejoin="round"/>`,
   chain: `<path d="M20 53.5Q40 66 60 53.5" stroke="#E0A100" stroke-width="2.6" fill="none" stroke-dasharray="2.6 1.4" stroke-linecap="round"/>`,
   cape: `<path d="M24 26Q8 48 5 73.5h70Q72 48 56 26z" fill="#C8323C" stroke="#8E1F27" stroke-width="1.5" stroke-linejoin="round"/>`,
+  // Disfraces de nivel (dibujados igual: encima de Kibi, sin tocar su forma, cara ni colores).
+  bow: `<g transform="translate(60 12.5) rotate(15)"><path d="M0 0-7-4.5v9zM0 0l7-4.5v9z" fill="#E0445A" stroke="#A82A3D" stroke-width="1.2" stroke-linejoin="round"/><circle r="2" fill="#F06E80" stroke="#A82A3D"/></g>`,
+  sprout: `<path d="M40 15.5V6" stroke="#3F8F3A" stroke-width="2" stroke-linecap="round"/><path d="M40 8c-1-5-6-6-9-5 0 4 4 6 9 5zM40 6c1-5 6-6 9-5 0 4-4 6-9 5z" fill="#6CC04A" stroke="#3F8F3A" stroke-width="1.2" stroke-linejoin="round"/>`,
+  chef: `<g fill="#fff" stroke="#CFC8BC" stroke-width="1.3"><circle cx="32" cy="8" r="6"/><circle cx="48" cy="8" r="6"/><circle cx="40" cy="5" r="7"/><rect x="29" y="10" width="22" height="8" rx="2"/></g><path d="M34 12v5M40 12v5M46 12v5" stroke="#E4DED4" stroke-width="1.2"/>`,
+  cowboy: `<ellipse cx="40" cy="17" rx="22" ry="4" fill="#A0673A" stroke="#6E4423" stroke-width="1.4"/><path d="M30 17Q29 4 40 6q11-2 10 11z" fill="#B57A45" stroke="#6E4423" stroke-width="1.4" stroke-linejoin="round"/><path d="M30.5 13h19" stroke="#6E4423" stroke-width="3"/>`,
+  helmet: `<path d="M24 19Q24 5 40 5t16 14z" fill="#F5B700" stroke="#B88600" stroke-width="1.4"/><rect x="20" y="16.5" width="40" height="3.6" rx="1.8" fill="#F5B700" stroke="#B88600" stroke-width="1.2"/><rect x="38" y="5" width="4" height="12" rx="2" fill="#FFD34D"/>`,
+  pirate: `<path d="M18 17C24 5 56 5 62 17c-8-3-14 2-22 2s-14-5-22-2z" fill="#22252D" stroke="#0E0F12" stroke-width="1.2" stroke-linejoin="round"/><circle cx="40" cy="10.5" r="2.6" fill="#fff"/><path d="M36.5 14l7 2.4M43.5 14l-7 2.4" stroke="#fff" stroke-width="1.2" stroke-linecap="round"/>`,
+  viking: `<path d="M26 13q-8-2-9-11 5 5 11 7zM54 13q8-2 9-11-5 5-11 7z" fill="#F3E9D2" stroke="#B8A98A" stroke-width="1.2" stroke-linejoin="round"/><path d="M25 19Q25 5 40 5t15 14z" fill="#A9B0BB" stroke="#6B7380" stroke-width="1.4"/><rect x="24" y="15" width="32" height="4.5" rx="2" fill="#8A919D"/><path d="M40 5v10" stroke="#8A919D" stroke-width="2.4"/>`,
+  propeller: `<path d="M27 18Q27 7 40 7t13 11z" fill="#3672B0" stroke="#244F7D" stroke-width="1.4"/><path d="M40 7v11M33 9.5 35 18M47 9.5 45 18" stroke="#FFD54A" stroke-width="2.2"/><path d="M40 7V3" stroke="#2B2F3A" stroke-width="1.6"/><ellipse cx="34.5" cy="2.6" rx="5.5" ry="1.7" fill="#E0445A"/><ellipse cx="45.5" cy="2.6" rx="5.5" ry="1.7" fill="#3DBE74"/><circle cx="40" cy="2.6" r="1.4" fill="#2B2F3A"/>`,
+  antenna: `<path d="M34 16 30 5M46 16l4-11" stroke="#2B2F3A" stroke-width="2" stroke-linecap="round"/><circle cx="30" cy="4" r="2.8" fill="#7CF2B0" stroke="#2E7A52"/><circle cx="50" cy="4" r="2.8" fill="#FF8F8F" stroke="#9A3B3B"/>`,
+  halo: `<ellipse cx="40" cy="4.5" rx="13" ry="3.6" fill="none" stroke="#FFD54A" stroke-width="2.8"/><ellipse cx="40" cy="4.5" rx="13" ry="3.6" fill="none" stroke="#FFF2B0" stroke-width="1"/>`,
+  tophat: `<rect x="31" y="-4" width="18" height="20" rx="1.5" fill="#1E2129" stroke="#0E0F12"/><rect x="31" y="10.5" width="18" height="3.6" fill="#C8323C"/><ellipse cx="40" cy="16.5" rx="16" ry="3" fill="#1E2129" stroke="#0E0F12"/>`,
+  santa: `<path d="M26 18Q30 3 46 5q9 2 13 13l-5 1q-3-7-9-8-12-1-13 7z" fill="#D9534F" stroke="#A23431" stroke-width="1.2" stroke-linejoin="round"/><rect x="24" y="15" width="32" height="6" rx="3" fill="#fff" stroke="#E4DED4"/><circle cx="58.5" cy="19" r="3.4" fill="#fff" stroke="#E4DED4"/>`,
+  bunny: `<g fill="#fff" stroke="#D8C6B0" stroke-width="1.2"><ellipse cx="33" cy="1" rx="4.5" ry="12" transform="rotate(-12 33 1)"/><ellipse cx="47" cy="1" rx="4.5" ry="12" transform="rotate(12 47 1)"/></g><ellipse cx="33" cy="1" rx="2" ry="8" transform="rotate(-12 33 1)" fill="#F3A9C4"/><ellipse cx="47" cy="1" rx="2" ry="8" transform="rotate(12 47 1)" fill="#F3A9C4"/><path d="M24 18q16-12 32 0" stroke="#E0445A" stroke-width="2.4" fill="none" stroke-linecap="round"/>`,
+  astro: `<circle cx="40" cy="38" r="31" fill="rgba(170,215,255,.16)" stroke="#CFE6FF" stroke-width="2.2"/><path d="M20 24q6-10 18-12" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" opacity=".7"/><path d="M15 58q25 12 50 0" stroke="#9FB3C8" stroke-width="3" fill="none" stroke-linecap="round"/>`,
+  unicorn: `<path d="M36 16 40-4l4 20z" fill="#F7D774" stroke="#C9A227" stroke-width="1.2" stroke-linejoin="round"/><path d="M37.2 11 42.6 9M38 6.5l3.8-1.3M38.8 2l2.4-.8" stroke="#C9A227" stroke-width="1"/><path d="M47 14q6-3 10 1-5 0-6 4z" fill="#F06EAA"/>`,
+  dragon: `<path d="M30 15q-6-6-3-14 3 7 7 11zM50 15q6-6 3-14-3 7-7 11z" fill="#8E5BD9" stroke="#5E3A99" stroke-width="1.2" stroke-linejoin="round"/>`,
+  nerd: `<g fill="rgba(255,255,255,.18)" stroke="#2B2F3A" stroke-width="2.4"><rect x="22" y="34" width="15" height="11.5" rx="2.5"/><rect x="43" y="34" width="15" height="11.5" rx="2.5"/></g><path d="M37 38.5h6" stroke="#2B2F3A" stroke-width="2.4"/><rect x="38.2" y="36.6" width="3.6" height="4" rx=".6" fill="#fff" stroke="#BDB6AA" stroke-width=".7"/>`,
+  monocle: `<circle cx="50" cy="40" r="6.6" fill="rgba(255,255,255,.18)" stroke="#C9A227" stroke-width="1.9"/><path d="M56.3 42q4 8 2 16" stroke="#C9A227" stroke-width="1.1" fill="none"/>`,
+  goggles: `<path d="M12 38.5h56" stroke="#6E4423" stroke-width="3.2"/><g fill="rgba(120,200,255,.38)" stroke="#8A6A43" stroke-width="2.6"><circle cx="30" cy="39.5" r="7"/><circle cx="50" cy="39.5" r="7"/></g><path d="M26 36.5q2-2 4-2M46 36.5q2-2 4-2" stroke="#fff" stroke-width="1.2" fill="none" opacity=".8"/>`,
+  mask: `<path fill-rule="evenodd" d="M17 36q12-6 23-1 11-5 23 1-1 9-9 10-8 1-14-4-6 5-14 4-8-1-9-10zM25.5 40a4.5 3.8 0 1 0 9 0a4.5 3.8 0 1 0-9 0zM45.5 40a4.5 3.8 0 1 0 9 0a4.5 3.8 0 1 0-9 0z" fill="#22252D"/>`,
+  visor: `<path d="M18 34h44a3 3 0 0 1 3 3v4a3 3 0 0 1-3 3H18a3 3 0 0 1-3-3v-4a3 3 0 0 1 3-3z" fill="rgba(80,230,255,.5)" stroke="#2BB3D6" stroke-width="1.4"/><path d="M20 36.5h14" stroke="#fff" stroke-width="1.4" stroke-linecap="round" opacity=".8"/>`,
+  stars: `<g fill="#FFD54A" fill-opacity=".6" stroke="#C9A227" stroke-width="1.3" stroke-linejoin="round"><path transform="translate(30 40)" d="M0-8l2.4 4.9 5.2.8-3.8 3.7.9 5.3L0 4.2l-4.7 2.5.9-5.3-3.8-3.7 5.2-.8z"/><path transform="translate(50 40)" d="M0-8l2.4 4.9 5.2.8-3.8 3.7.9 5.3L0 4.2l-4.7 2.5.9-5.3-3.8-3.7 5.2-.8z"/></g><path d="M37.5 39h5" stroke="#C9A227" stroke-width="1.4"/>`,
+  pearls: `<circle cx="20.0" cy="53.5" r="1.7" fill="#FBF7EE" stroke="#CFC4B0" stroke-width=".6"/><circle cx="24.0" cy="55.8" r="1.7" fill="#FBF7EE" stroke="#CFC4B0" stroke-width=".6"/><circle cx="28.0" cy="57.5" r="1.7" fill="#FBF7EE" stroke="#CFC4B0" stroke-width=".6"/><circle cx="32.0" cy="58.7" r="1.7" fill="#FBF7EE" stroke="#CFC4B0" stroke-width=".6"/><circle cx="36.0" cy="59.5" r="1.7" fill="#FBF7EE" stroke="#CFC4B0" stroke-width=".6"/><circle cx="40.0" cy="59.8" r="1.7" fill="#FBF7EE" stroke="#CFC4B0" stroke-width=".6"/><circle cx="44.0" cy="59.5" r="1.7" fill="#FBF7EE" stroke="#CFC4B0" stroke-width=".6"/><circle cx="48.0" cy="58.8" r="1.7" fill="#FBF7EE" stroke="#CFC4B0" stroke-width=".6"/><circle cx="52.0" cy="57.5" r="1.7" fill="#FBF7EE" stroke="#CFC4B0" stroke-width=".6"/><circle cx="56.0" cy="55.8" r="1.7" fill="#FBF7EE" stroke="#CFC4B0" stroke-width=".6"/><circle cx="60.0" cy="53.5" r="1.7" fill="#FBF7EE" stroke="#CFC4B0" stroke-width=".6"/>`,
+  bandana: `<path d="M16 52Q40 62 64 52l1.5 5Q40 69 14.5 57z" fill="#2F7DD1" stroke="#1F5A99" stroke-width="1.3" stroke-linejoin="round"/><circle cx="19.0" cy="55.7" r=".9" fill="#fff"/><circle cx="27.4" cy="58.7" r=".9" fill="#fff"/><circle cx="35.8" cy="60.3" r=".9" fill="#fff"/><circle cx="44.2" cy="60.3" r=".9" fill="#fff"/><circle cx="52.6" cy="58.7" r=".9" fill="#fff"/><circle cx="61.0" cy="55.7" r=".9" fill="#fff"/>`,
+  stripes: `<path d="M15.5 52.5Q40 64 64.5 52.5l1.5 6Q40 71 14 58.5z" fill="#2E9E6A" stroke="#1E6E49" stroke-width="1.4" stroke-linejoin="round"/><path d="M55 59.5l2 13h6.5L62 58z" fill="#2E9E6A" stroke="#1E6E49" stroke-width="1.4" stroke-linejoin="round"/><path d="M56 63h6.6M56.6 67h6.6M57.1 70.6h6.2" stroke="#fff" stroke-width="1.5"/>`,
+  lei: `<circle cx="18.0" cy="52.5" r="2.9" fill="#F06EAA" stroke="#fff" stroke-width=".8"/><circle cx="24.3" cy="55.8" r="2.9" fill="#FFC83D" stroke="#fff" stroke-width=".8"/><circle cx="30.6" cy="58.0" r="2.9" fill="#FF8A3D" stroke="#fff" stroke-width=".8"/><circle cx="36.9" cy="59.1" r="2.9" fill="#F06EAA" stroke="#fff" stroke-width=".8"/><circle cx="43.1" cy="59.1" r="2.9" fill="#FFC83D" stroke="#fff" stroke-width=".8"/><circle cx="49.4" cy="58.0" r="2.9" fill="#FF8A3D" stroke="#fff" stroke-width=".8"/><circle cx="55.7" cy="55.8" r="2.9" fill="#F06EAA" stroke="#fff" stroke-width=".8"/><circle cx="62.0" cy="52.5" r="2.9" fill="#FFC83D" stroke="#fff" stroke-width=".8"/>`,
+  cloak: `<path d="M24 26Q8 48 5 73.5h70Q72 48 56 26z" fill="#6B4FBB" stroke="#47317F" stroke-width="1.5" stroke-linejoin="round"/><path transform="translate(9 62) scale(.45)" d="M0-8l2.4 4.9 5.2.8-3.8 3.7.9 5.3L0 4.2l-4.7 2.5.9-5.3-3.8-3.7 5.2-.8z" fill="#FFD54A"/><path transform="translate(71 56) scale(.35)" d="M0-8l2.4 4.9 5.2.8-3.8 3.7.9 5.3L0 4.2l-4.7 2.5.9-5.3-3.8-3.7 5.2-.8z" fill="#FFD54A"/>`,
+  wings: `<g fill="#fff" stroke="#CFC8BC" stroke-width="1.3" stroke-linejoin="round"><path d="M16 42C4 30-2 44 4 52c-4 4 0 10 8 8 4 4 10 0 10-4z"/><path transform="translate(80 0) scale(-1 1)" d="M16 42C4 30-2 44 4 52c-4 4 0 10 8 8 4 4 10 0 10-4z"/></g>`,
+  jetpack: `<g fill="#A9B0BB" stroke="#6B7380" stroke-width="1.3"><rect x="5" y="32" width="9" height="27" rx="4.5"/><rect x="66" y="32" width="9" height="27" rx="4.5"/></g><path d="M7 59.5q2.5 9 2.5 11 0-2 2.5-11zM68 59.5q2.5 9 2.5 11 0-2 2.5-11z" fill="#FF8A3D"/>`,
 };
 // Lo que dice Kibi: primero lo que importa ahora (vidas, meta, racha); si no, un saludo según la hora. poke: una frase al azar.
 function kibiSays(poke) {
@@ -623,6 +665,11 @@ async function jsRun(code, input) {
 const JSERR = ['ReferenceError', 'TypeError', 'SyntaxError', 'RangeError'];
 // Lo que el entorno aislado no tiene (página, almacenamiento, cookies, red) se explica aparte.
 const SANDBOXED = /localStorage|sessionStorage|indexedDB|document|window|cookie|fetch|XMLHttpRequest|NetworkError|Content Security Policy|SecurityError/i;
+function errText(r) {
+  const js = S.course === 'javascript';
+  const k = r.type === 'Timeout' ? 'Timeout' : js && SANDBOXED.test(r.err || '') ? 'Sandbox' : (js ? JSERR : PYERR).includes(r.type) ? r.type : 'other';
+  return (r.line ? t('run.line', { n: r.line }) + ' ' : '') + t((js ? 'jserr.' : 'pyerr.') + k, { type: r.type });
+}
 function errHelp(r) {
   const js = S.course === 'javascript';
   const k = r.type === 'Timeout' ? 'Timeout' : js && SANDBOXED.test(r.err || '') ? 'Sandbox' : (js ? JSERR : PYERR).includes(r.type) ? r.type : 'other';
@@ -694,7 +741,7 @@ function renderWardrobe() {
     for (const [k, , a] of OUTFITS.filter(r => r[1] === sl)) {
       const on = w[sl] === k, op = outfitOpen(k);
       h += `<button class="wtile ${on ? 'on' : ''} ${op ? '' : 'locked'}" data-outfit="${k}" aria-pressed="${on}">
-        ${kibi('idle', 76, 'still', { [sl]: k })}<b>${t('outfit.' + k)}</b><small>${op ? t(on ? 'kibi.wearing' : 'kibi.wear') : I.lock + esc(t('ach.' + a))}</small></button>`;
+        ${kibi('idle', 76, 'still', { [sl]: k })}<b>${t('outfit.' + k)}</b><small>${op ? t(on ? 'kibi.wearing' : 'kibi.wear') : I.lock + esc(reqText(a))}</small></button>`;
     }
     h += `</div>`;
   }
@@ -703,7 +750,7 @@ function renderWardrobe() {
 // Ponerse o quitarse una pieza. Bloqueada: dice qué logro la trae.
 function wearOutfit(id) {
   const r = OUTFITS.find(([k]) => k === id); if (!r) return;
-  if (!outfitOpen(id)) { toast(t('kibi.locked', { a: t('ach.' + r[2]), d: t('ach.' + r[2] + '.d') })); return; }
+  if (!outfitOpen(id)) { toast(lvOf(r[2]) ? t('kibi.lockedLv', { n: lvOf(r[2]), k: lvOf(r[2]) - (S.stats.lessons || 0) }) : t('kibi.locked', { a: t('ach.' + r[2]), d: t('ach.' + r[2] + '.d') })); return; }
   const o = Object.assign({}, wearing()); o[r[1]] = o[r[1]] === id ? null : id;
   S.outfit = o; Store.save(); render();
   const k = document.querySelector('.stage .kibi'); if (k) bounce(k);
@@ -765,9 +812,21 @@ function hexdumpHTML(c) {
   return `<div class="card wide"><div class="card-h"><h3>${t('profile.bytes', { c: META[c].name })}</h3><span class="mono">${full}/30</span></div>
     <div class="hexdump" role="img" aria-label="${t('profile.bytesAria', { n: full })}">${rows}</div><p class="note">${t('profile.bytesDesc')}</p></div>`;
 }
+// Tarjeta de Kibi en las estadísticas: con lo que lleva puesto, sus disfraces y cuánto falta para el siguiente de nivel.
+function kibiStatsHTML() {
+  const n = S.stats.lessons || 0, have = OUTFITS.filter(([k]) => outfitOpen(k)).length;
+  const nxt = OUTFITS.filter(r => lvOf(r[2]) > n).sort((a, b) => lvOf(a[2]) - lvOf(b[2]))[0];
+  const prev = Math.max(0, ...OUTFITS.map(r => lvOf(r[2])).filter(v => v && v <= n));
+  const pct = nxt ? Math.round((n - prev) / (lvOf(nxt[2]) - prev) * 100) : 100;
+  return `<div class="card kibistat"><div class="ks-kibi">${pokeKibi('happy', 104)}</div><div class="ks-body"><h3>${t('kibi.statsTitle')}</h3>
+    <p class="note">${t('kibi.statsLevels', { n })} · ${t('kibi.count', { n: have, m: OUTFITS.length })}</p>
+    ${nxt ? `<div class="ks-next">${kibi('idle', 40, 'still', { [nxt[1]]: nxt[0] })}<div><b>${t('kibi.next', { o: t('outfit.' + nxt[0]) })}</b><small>${t('kibi.nextIn', { k: lvOf(nxt[2]) - n })}</small>
+      <span class="meter" role="progressbar" aria-label="${t('kibi.next', { o: t('outfit.' + nxt[0]) })}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}"><i style="width:${pct}%"></i></span></div></div>` : `<p>${t('kibi.allLv')}</p>`}
+    <button class="btn small ghost" data-go="kibi">${I.hanger}${t('kibi.dress')}</button></div></div>`;
+}
 function statsSection() {
   const td = P.history(S, 1)[0], weak = P.weak(S, S.course).slice(0, 4), due = P.pending(S, S.course).length;
-  return `<h2>${t('stats.title')}</h2><div class="sgrid">${activityHTML()}${hexdumpHTML(S.course)}
+  return `<h2>${t('stats.title')}</h2><div class="sgrid">${kibiStatsHTML()}${activityHTML()}${hexdumpHTML(S.course)}
     <div class="card"><h3>${t('stats.weak')} · ${META[S.course].name}</h3>${weak.length ? `<ul class="weak">${weak.map(w => `<li><button class="linkbtn" data-go="${dayHash(w.day - 1, 'guide')}">${t('day.n', { d: w.day })}: ${esc(dayTitle(w.day - 1))}</button><small>${t('stats.weakAcc', { p: Math.round(w.acc * 100), n: w.n })}</small></li>`).join('')}</ul>` : `<p class="note">${t('stats.weakNone')}</p>`}
       <p class="note">${due ? t('stats.review', { n: due }) : t('stats.reviewNone')}</p></div>
     <div class="card"><h3>${t('stats.time')}</h3><p class="bignum mono">${fmtTime(P.studySeconds(S))}</p>
@@ -1043,7 +1102,8 @@ function startLesson(opts) {
   renderEx();
 }
 /* Secciones de cada nivel: el nivel 1 tiene 8, el 2 tiene 7, el 3 otra vez 8... (el reto, nivel 8, tiene 7).
-   Cada nivel alterna secciones de elegir (mc, out, fill, order) con secciones de escribir código. */
+   De cada tres secciones, una es de elegir (mc, out, fill; ordenar, solo si no queda otra) y dos de escribir código.
+   En Python y JavaScript, además, hay programas que se ejecutan de verdad (t: 'run', ver addPrograms). */
 const sectionsOf = k => (k % 2 ? 7 : 8);
 const ORDER_Q = /^(ordena|order|arrange|put |remets|ordonne|ordina|metti)/i;
 // Versión "escríbelo tú" de un ejercicio de opciones, o null si la respuesta no cabe en una línea.
@@ -1061,12 +1121,14 @@ const asTyped = ex => { const r = typedForm(ex); return r && r !== ex ? Object.a
    repite alguno, al final y en la otra forma. */
 function mixSections(list, n, write = false) {
   const pool = [...new Set(list)], out = [], used = [];
+  let slot = write ? 1 : 0;
   while (out.length < n && pool.length) {
-    let i = pool.findIndex(ex => (write ? asTyped(ex) : ex.t !== 'type'));
+    write = slot++ % 3 !== 0;
+    let i = pool.findIndex(ex => (write ? asTyped(ex) : ex.t !== 'type' && ex.t !== 'order'));
+    if (i < 0 && !write) i = pool.findIndex(ex => ex.t !== 'type');
     if (i < 0) i = 0;
     const ex = pool.splice(i, 1)[0], ty = write || ex.t === 'type' ? asTyped(ex) : null;
     out.push(ty || ex); used.push([ex, !!ty]);
-    write = !write;
   }
   for (const [ex, typed] of used) {
     if (out.length >= n) break;
@@ -1079,10 +1141,18 @@ function mixSections(list, n, write = false) {
 // Aleatorio con semilla: el repaso de un día se baraja siempre igual y cada nivel recibe un trozo distinto.
 const hash = s => { let h = 2166136261; for (const ch of s) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return h >>> 0; };
 const rng = seed => () => { seed = (seed + 0x6D2B79F5) | 0; let x = Math.imul(seed ^ (seed >>> 15), 1 | seed); x ^= x + Math.imul(x ^ (x >>> 7), 61 | x); return ((x ^ (x >>> 14)) >>> 0) / 4294967296; };
+// Pone m programas (ejercicios que se ejecutan) en secciones repartidas, sin tocar la primera.
+function addPrograms(list, d, m) {
+  const progs = window.NibblePractice && NibblePractice.programs ? NibblePractice.programs(CUR.course, d + 1, m, Math.random, t) : [];
+  if (!progs.length) return list;
+  const out = list.slice(0, list.length - progs.length), step = Math.max(2, Math.floor(list.length / (progs.length + 1)));
+  progs.forEach((ex, i) => out.splice(Math.min(out.length, step * (i + 1) - 1 + i), 0, ex));
+  return out;
+}
 function buildLevel(d, k, replay) {
   const days = CUR.data.days, own = days[d].x.slice(0, RETO), n = sectionsOf(k);
   const rnd = replay ? Math.random : rng(hash(`${CUR.course}:${CUR.loc}:${d}`));
-  if (k === RETO) return mixSections([...shuffle(own.slice(), rnd).slice(0, 3), ...fresh(d, 8)], n - 1).concat(days[d].x[RETO]);
+  if (k === RETO) return addPrograms(mixSections([...shuffle(own.slice(), rnd).slice(0, 3), ...fresh(d, 8)], n - 1), d, 1).concat(days[d].x[RETO]);
   /* Cada nivel: su práctica del día (x[k], que solo sale en este nivel), 1 o 2 de repaso de días
      anteriores (un trozo distinto para cada nivel) y el resto, ejercicios nuevos generados al azar
      sobre los temas ya vistos (practice.js): no se repiten entre niveles ni al volver a jugar. */
@@ -1095,7 +1165,7 @@ function buildLevel(d, k, replay) {
   rev.forEach((ex, i) => list.splice(2 + i * 3, 0, ex));
   // Si el generador no está disponible, completa con las demás prácticas del día.
   if (list.length < n) list.push(...[0, 2, 4, 6, 1, 3, 5].map(j => own[(k + j) % RETO]));
-  return mixSections(list, n, k % 2 === 1);
+  return addPrograms(mixSections(list, n, k % 2 === 1), d, n >= 8 ? 3 : 2);
 }
 // Ejercicios nuevos del generador; los temas con menos aciertos salen más a menudo.
 const fresh = (d, count) => (window.NibblePractice ? window.NibblePractice.generate(CUR.course, d + 1, count, Math.random, t, P.weak(S, CUR.course).map(w => w.day)) : []);
@@ -1140,7 +1210,16 @@ function setBar(shine) {
   L.prog = p;
 }
 const isMono = s => !/\s/.test(s) || s.includes('(');
+// Programa: enunciado, salida esperada y un cuadro de código; se corrige ejecutándolo (Pyodide o sandbox.html).
+function runHTML(ex) {
+  return `<div class="ex-tags"><span class="ex-sec">${t('ex.section', { n: ex.pos + 1, m: L.total })}</span>${ex.retry ? `<span class="ex-kind">${t('ex.retryTag')}</span>` : ''}
+    <span class="ex-kind run">${I.play}${t('ex.kind.run')}</span></div><div class="ex-head">${kibi('idle', 56)}<h2 class="ex-q">${rich(ex.q)}</h2></div>
+    <div class="expect"><span>${t('code.expected')}</span><pre>${esc(ex.out)}</pre></div>${ex.in ? `<div class="expect"><span>${t('run.input')}</span><pre>${esc(ex.in.trimEnd())}</pre></div>` : ''}
+    <textarea class="runin" id="runIn" rows="6" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="${t('code.editor')}">${esc(ex.start)}</textarea>
+    <p class="hint">${t('ex.hintRun')}</p>`;
+}
 function exHTML(ex) {
+  if (ex.t === 'run') return runHTML(ex);
   const isRetoQ = L.mode === 'reto' && ex.src === dayData(L.d).x[RETO];
   const write = ex.t === 'type', inp = cls => `<input class="${cls}" id="typeIn" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" aria-label="${t('ex.answer')}">`;
   let h = `<div class="ex-tags"><span class="ex-sec">${t('ex.section', { n: ex.pos + 1, m: L.total })}</span>${ex.retry ? `<span class="ex-kind">${t('ex.retryTag')}</span>` : ''}`;
@@ -1157,7 +1236,7 @@ function exHTML(ex) {
 // Modo de pruebas (?e2e=1, scripts/e2e): la lección deja la solución en data-sol para que Playwright la conteste.
 // No da ninguna ventaja real: el progreso y la XP ya viven en el navegador de cada uno.
 const E2E = /[?&]e2e=1\b/.test(location.search);
-const solutionOf = ex => ex.opts ? ex.opts.findIndex(o => o.ok) : ex.t === 'order' ? ex.w : ex.a[0];
+const solutionOf = ex => ex.opts ? ex.opts.findIndex(o => o.ok) : ex.t === 'order' ? ex.w : ex.t === 'run' ? ex.sol : ex.a[0];
 function renderEx() {
   const ex = L.queue[0]; L.sel = null; L.phase = 'answer';
   if (E2E) LS.dataset.sol = JSON.stringify({ t: ex.t, sol: solutionOf(ex) });
@@ -1165,6 +1244,25 @@ function renderEx() {
    <div class="ls-foot" id="foot"><div class="foot-in"><button class="btn ghost" data-act="skip">${t('ex.skip')}</button><div class="fb" id="fb" role="status" aria-live="polite"></div><button class="btn primary" id="checkBtn" data-act="check" disabled>${t('ex.check')}</button></div></div>`;
   setBar(false);
   if (ex.t === 'order') renderOrder();
+  if (ex.t === 'run') {
+    const ta = $('#runIn'), unit = S.course === 'python' ? '    ' : '  ';
+    // Se prepara el entorno mientras se escribe (la primera vez, Python tarda unos segundos).
+    (S.course === 'python' ? pyWorker() : jsFrame()).catch(() => {});
+    ta.addEventListener('input', () => { $('#checkBtn').disabled = !ta.value.trim() || ta.value === ex.start; });
+    // Tab sangra (Esc y luego Tab sale del cuadro); Intro mantiene la sangría; Ctrl+Intro comprueba.
+    const put = s => { ta.setRangeText(s, ta.selectionStart, ta.selectionEnd, 'end'); ta.dispatchEvent(new Event('input')); };
+    ta.addEventListener('keydown', e => {
+      if (ta.readOnly) return; // ya corregido: Intro pasa a la siguiente sección
+      if (e.key === 'Tab' && !e.shiftKey && !ta.dataset.esc) { e.preventDefault(); e.stopPropagation(); put(unit); }
+      else if (e.key === 'Enter' && !e.ctrlKey && !e.metaKey) {
+        const before = ta.value.slice(0, ta.selectionStart), cur = before.slice(before.lastIndexOf('\n') + 1), ind = cur.match(/^\s*/)[0];
+        e.preventDefault(); e.stopPropagation(); put('\n' + ind + (/[:{]\s*$/.test(cur) ? unit : ''));
+      } else if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); if (!$('#checkBtn').disabled) $('#checkBtn').click(); }
+      if (e.key === 'Escape') { ta.dataset.esc = '1'; e.stopPropagation(); } else if (e.key !== 'Tab') delete ta.dataset.esc;
+    });
+    ta.addEventListener('focus', () => setTimeout(() => { fitLesson(); ta.scrollIntoView({ block: 'center' }); }, 320));
+    setTimeout(() => { ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }, 60);
+  }
   if (ex.t === 'type') { const inp = $('#typeIn'); inp.addEventListener('input', () => { if (!ex.line) inp.style.width = Math.max(6, inp.value.length + 2) + 'ch'; $('#checkBtn').disabled = !inp.value.trim(); });
     // Con el teclado ya abierto, deja el campo a la vista dentro de la lección.
     inp.addEventListener('focus', () => setTimeout(() => { fitLesson(); inp.scrollIntoView({ block: 'center' }); }, 320));
@@ -1182,11 +1280,19 @@ function selectOpt(i) {
   if (ex.t === 'fill') { const bl = $('#blank'); bl.textContent = ex.opts[i].t; bl.classList.remove('filled'); void bl.offsetWidth; bl.classList.add('filled'); }
   $('#checkBtn').disabled = false;
 }
-function check(skipped) {
+async function check(skipped) {
   const ex = L.queue[0]; if (L.phase !== 'answer') return;
-  let ok = false, sol = '', yours = '', why = '';
+  let ok = false, sol = '', yours = '', why = '', ran = null;
+  if (ex.t === 'run' && !skipped) {
+    const cur = L, btn = $('#checkBtn'), ta = $('#runIn');
+    L.phase = 'running'; btn.disabled = true; btn.textContent = t('run.running'); ta.readOnly = true; $('#foot [data-act="skip"]').disabled = true;
+    try { ran = await (S.course === 'python' ? pyRun : jsRun)(ta.value, ex.in || ''); } catch (e) { ran = { type: 'Boot', out: '', err: t(S.course === 'python' ? 'run.bootError' : 'run.jsError') }; }
+    if (L !== cur) return;
+    L.phase = 'answer';
+  }
   if (ex.opts) { sol = ex.o[0]; ok = !skipped && L.sel !== null && ex.opts[L.sel].ok; if (L.sel !== null) yours = ex.opts[L.sel].t; }
   else if (ex.t === 'order') { sol = joinTokens(ex.w); const seq = ex.picked.map(id => ex.bank.find(b => b.id === id).t); ok = !skipped && seq.join('\u0001') === ex.w.join('\u0001'); yours = joinTokens(seq); }
+  else if (ex.t === 'run') { sol = ex.sol; ok = !skipped && !!ran && !ran.type && normOut(ran.out) === normOut(ex.out); const ta = $('#runIn'); ta.readOnly = true; if (!ok) ta.classList.add('wrong'); }
   else if (ex.t === 'type') { sol = ex.a[0]; const inp = $('#typeIn'), v = inp.value; yours = v.trim(); why = whyWrong(ex.a, v); ok = !skipped && (ex.a.some(a => norm(a) === norm(v) || norm(a).replace(/\s/g, '') === norm(v).replace(/\s/g, '')) || (!!ex.re && ex.re.test(norm(v).replace(/\s/g, '')))); inp.readOnly = true; if (!ok) inp.classList.add('wrong'); }
   L.phase = 'feedback'; L.answered++;
   P.add(S, Store.dev, { answered: 1, correct: ok ? 1 : 0, concept: conceptOf(ex) }, today());
@@ -1209,11 +1315,17 @@ function check(skipped) {
   const oks = window.I18N.list('ex.ok');
   const sparks = ok && !reduceMotion() ? Array.from({ length: 10 }, (_, i) => `<i style="--a:${i * 36}deg;--c:var(${['--gold', '--ok', '--lang', '--heart', '--gem'][i % 5]})"></i>`).join('') : '';
   $('#fb').innerHTML = `<span class="sparks">${kibi(ok ? 'happy' : 'sad', 60)}${sparks}</span><div><p class="fb-t">${ok ? (L.combo >= 3 ? t('ex.combo', { n: L.combo }) : oks[Math.floor(Math.random() * oks.length)]) : (skipped ? t('ex.skipped') : t('ex.wrong'))}</p>
-    ${!ok && !skipped && yours ? `<p class="fb-yours">${t('ex.yours')} <code>${esc(yours)}</code></p>` : ''}${!ok ? `<p class="fb-sol">${t('ex.solution')} <code>${esc(sol)}</code></p>` : ''}${!ok && !skipped && why ? `<p class="fb-why">${t(why)}</p>` : ''}<p class="fb-e">${rich(ex.e)}</p>${run === 'add' ? `<p class="fb-run">${I.chain}${t('ex.run', { n: S.run.cur })}</p>` : run === 'reset' && runBefore >= 3 ? `<p class="fb-run lost">${I.chain}${t('ex.runLost', { n: runBefore })}</p>` : ''}</div>`;
+    ${ex.t === 'run' ? runFeedback(ok, skipped, ran, sol) : `${!ok && !skipped && yours ? `<p class="fb-yours">${t('ex.yours')} <code>${esc(yours)}</code></p>` : ''}${!ok ? `<p class="fb-sol">${t('ex.solution')} <code>${esc(sol)}</code></p>` : ''}`}${!ok && !skipped && why ? `<p class="fb-why">${t(why)}</p>` : ''}<p class="fb-e">${rich(ex.e)}</p>${run === 'add' ? `<p class="fb-run">${I.chain}${t('ex.run', { n: S.run.cur })}</p>` : run === 'reset' && runBefore >= 3 ? `<p class="fb-run lost">${I.chain}${t('ex.runLost', { n: runBefore })}</p>` : ''}</div>`;
   foot.querySelector('[data-act="skip"]').hidden = true;
   const btn = $('#checkBtn'); btn.disabled = false; btn.textContent = t('ex.continue'); btn.dataset.act = 'next'; btn.className = 'btn ' + (ok ? 'good' : 'danger'); btn.focus();
   LS.querySelector('.ls-top').innerHTML = topHTML(); setBar(ok);
   if (lost) { const hh = $('#lsHearts'); if (hh) { hh.classList.add('hit'); const s = document.createElement('span'); s.className = 'lost'; s.innerHTML = `-1${I.heart}`; hh.appendChild(s); } }
+}
+function runFeedback(ok, skipped, r, sol) {
+  if (ok) return '';
+  let h = '';
+  if (r && !skipped) h += r.type ? `<p class="fb-why">${esc(errText(r))}</p>` : `<p class="fb-lbl">${t('run.got')}</p><pre class="fb-pre">${esc(r.out || ' ')}</pre>`;
+  return h + `<p class="fb-sol">${t('ex.solution')}</p><pre class="fb-pre">${esc(sol)}</pre>`;
 }
 function next() {
   if (L.phase !== 'feedback') return;
@@ -1274,6 +1386,7 @@ function finish() {
   normalizeDay();
   // lessons cuenta solo los niveles del camino (antes también sumaban el nivel extra y la prueba de salto).
   Object.assign(inc, { xp, course: c, sec: secs, perfect: perfect && inc.lessons ? 1 : 0 });
+  const lvBefore = S.stats.lessons || 0;
   P.add(S, Store.dev, inc, today());
   if (bumpStreak()) rewards.unshift(`<p class="reward flame">${I.flame}${t('done.streak', { n: S.streak })}</p>`);
   checkAch().forEach(id => {
@@ -1281,6 +1394,8 @@ function finish() {
     const fit = OUTFITS.find(r => r[2] === id);
     if (fit) rewards.push(`<p class="reward outfit">${kibi('idle', 28, 'still', { [fit[1]]: fit[0] })}${t('kibi.new', { o: t('outfit.' + fit[0]) })}</p>`);
   });
+  OUTFITS.filter(r => lvOf(r[2]) > lvBefore && lvOf(r[2]) <= (S.stats.lessons || 0)).forEach(([k, sl]) =>
+    rewards.push(`<p class="reward outfit">${kibi('idle', 28, 'still', { [sl]: k })}${t('kibi.new', { o: t('outfit.' + k) })}</p>`));
   Store.save();
   const acc = Math.round(L.firstOk / L.total * 100);
   Store.logResult({ course: c, locale: S.locale, mode: L.mode, day: L.d === undefined ? null : L.d + 1, day_id: L.d === undefined ? null : dayId(c, L.d), level: L.k === undefined ? null : L.k + 1,
