@@ -1,7 +1,7 @@
 /* Nibble: interfaz. Depende de content-api.js, i18n.js y store.js. */
 (function () {
 'use strict';
-const VERSION = '4.7.0';
+const VERSION = '4.8.0';
 const Store = window.SintaxisStore;
 const P = window.NibbleProgress;
 const t = (k, v) => window.I18N.t(k, v);
@@ -525,7 +525,7 @@ function flushDraft() {
   const note = $('#draftNote'); if (note) note.textContent = ok ? t('code.saved') : t('code.tooLong');
 }
 function renderCode() {
-  const c = S.course, d = route.d, day = dayData(d), ex = labEx();
+  const c = S.course, d = route.d, day = dayData(d), ex = labEx(), canRun = c === 'python';
   if (!ex) return renderDay();
   return `<div class="wrap codeview">
     <header class="dayhead"><div class="top"><button class="crumb" data-go="${dayHash(d, 'guide')}">${I.left}${esc(day.t)}</button></div>
@@ -535,8 +535,9 @@ function renderCode() {
     <div class="symbar" role="toolbar" aria-label="${t('code.symbols')}">${SYMBOLS.map(s => `<button type="button" data-sym="${esc(s)}" aria-label="${s === '\t' ? t('code.tab') : esc(s)}">${s === '\t' ? '⇥' : esc(s)}</button>`).join('')}</div>
     <div class="code-actions"><small class="mono" id="draftNote" aria-live="polite">${P.draft(S, labKey(c, d, route.i)) !== null ? t('code.saved') : ''}</small>
       <button class="btn ghost" data-act="code-reset">${t('code.reset')}</button>
-      <button class="btn primary" disabled title="${t('code.soon')}">${I.play}${t('code.run')}<small>${t('code.soon')}</small></button></div>
-    <section class="outpanel"><h2>${t('code.output')}</h2><p>${t('code.outputSoon')}</p></section></div>`;
+      ${canRun ? `<button class="btn ghost" data-act="code-check">${I.check}${t('code.check')}</button><button class="btn primary" data-act="code-run">${I.play}${t('code.run')}</button>`
+        : `<button class="btn primary" disabled data-soon title="${t('code.soon')}">${I.play}${t('code.run')}<small>${t('code.soon')}</small></button>`}</div>
+    <section class="outpanel" id="outpanel" aria-live="polite"><h2>${t('code.output')}</h2><p>${canRun ? t('run.hint') : t('code.outputSoon')}</p></section></div>`;
 }
 async function mountEditor() {
   const host = $('#editor'), ex = labEx(); if (!host || !ex) return;
@@ -550,6 +551,68 @@ async function mountEditor() {
   } catch (e) {
     host.innerHTML = `<p class="editor-msg">${t('code.loadError')}</p>`;
   }
+}
+
+/* ---------- ejecutar Python: Pyodide en un Worker (assets/js/py-worker.js) ---------- */
+// Se crea al pulsar Ejecutar o Comprobar por primera vez. Un programa que pasa de RUN_MS se corta con terminate()
+// y se prepara otro Worker al momento; la página nunca se congela.
+const PY_MB = 13, RUN_MS = 5000;
+const PYERR = ['NameError', 'SyntaxError', 'IndentationError', 'TabError', 'TypeError', 'ValueError', 'IndexError', 'KeyError', 'ZeroDivisionError',
+  'AttributeError', 'EOFError', 'ModuleNotFoundError', 'ImportError', 'RecursionError', 'UnboundLocalError', 'AssertionError', 'FileNotFoundError', 'OverflowError'];
+let pyW = null, pyBoot = null, pySeq = 0, runBusy = false;
+function pyWorker() {
+  if (pyW) return pyBoot;
+  const w = pyW = new Worker('assets/js/py-worker.js', { type: 'module' });
+  pyBoot = new Promise((ok, ko) => {
+    w.onmessage = e => { if (e.data.ready) ok(); else if (e.data.bootError) ko(new Error(e.data.bootError)); };
+    w.onerror = e => ko(new Error(e.message || 'worker'));
+  });
+  pyBoot.catch(() => { w.terminate(); if (pyW === w) pyW = null; });
+  return pyBoot;
+}
+async function pyRun(code, input) {
+  await pyWorker();
+  const w = pyW, id = ++pySeq;
+  return new Promise(ok => {
+    const timer = setTimeout(() => { w.terminate(); if (pyW === w) { pyW = null; pyWorker().catch(() => {}); } ok({ type: 'Timeout', out: '', err: '' }); }, RUN_MS);
+    w.onmessage = e => { if (e.data.id === id) { clearTimeout(timer); ok(e.data); } };
+    w.postMessage({ id, code, input });
+  });
+}
+// Se compara la salida sin \r ni espacios al final de cada línea ni líneas vacías al final.
+const normOut = s => String(s || '').replace(/\r\n?/g, '\n').split('\n').map(l => l.trimEnd()).join('\n').trimEnd();
+const preOut = (txt, cls) => `<pre class="${cls}">${esc(txt)}</pre>`;
+function errHelp(r) {
+  const k = r.type === 'Timeout' ? 'Timeout' : PYERR.includes(r.type) ? r.type : 'other';
+  return `<div class="runhelp">${kibi('sad', 44)}${bubble(`${r.line ? `<b>${t('run.line', { n: r.line })}</b> ` : ''}${esc(t('pyerr.' + k, { type: r.type }))}`)}</div>`;
+}
+function setOut(html) { const o = $('#outpanel'); if (o) o.innerHTML = `<h2>${t('code.output')}</h2>${html}`; }
+function setRunBusy(on) { runBusy = on; document.querySelectorAll('.code-actions .btn').forEach(b => { if (!b.hasAttribute('data-soon')) b.disabled = on; }); }
+// check: false ejecuta con la entrada del primer caso y enseña la salida; true pasa todos los casos y marca cada uno.
+async function runCode(check) {
+  const ex = labEx(); if (runBusy || !cm || !ex) return;
+  setRunBusy(true); flushDraft();
+  const code = cm.get();
+  let first = true; try { first = !localStorage.getItem('nibble.py'); } catch (e) { /* */ }
+  setOut(`<p class="runstate busy">${t(first && !pyW ? 'run.first' : 'run.loading', { mb: PY_MB })}</p>`);
+  try { await pyWorker(); try { localStorage.setItem('nibble.py', '1'); } catch (e) { /* */ } }
+  catch (e) { setOut(`<p class="runstate bad">${t('run.bootError')}</p>`); setRunBusy(false); return; }
+  setOut(`<p class="runstate busy">${t('run.running')}</p>`);
+  if (!check) {
+    const t0 = performance.now(), r = await pyRun(code, ex.tests[0].in || ''), ms = Math.round(performance.now() - t0);
+    setOut(`<p class="runstate ${r.type ? 'bad' : 'ok'}">${r.type ? t('run.failed') : t('run.done', { ms })}</p>${r.out ? preOut(r.out, 'stdout') : ''}${r.err ? preOut(r.err, 'stderr') : ''}
+      ${r.cut ? `<p class="note">${t('run.cut')}</p>` : ''}${r.type ? errHelp(r) : r.out ? '' : `<p class="note">${t('run.empty')}</p>`}`);
+  } else {
+    const rows = [];
+    for (const tc of ex.tests) { const r = await pyRun(code, tc.in || ''); rows.push({ tc, r, ok: !r.type && normOut(r.out) === normOut(tc.out) }); }
+    const pass = rows.filter(x => x.ok).length, all = pass === rows.length;
+    setOut(`<div class="runhelp">${kibi(all ? 'happy' : 'sad', 44)}${bubble(all ? t('run.allPass') : t('run.somePass', { n: pass, m: rows.length }))}</div>
+      <ol class="cases">${rows.map(({ tc, r, ok }, i) => `<li class="case ${ok ? 'ok' : 'bad'}"><span class="mark">${ok ? I.check : I.x}</span><div><b>${t('run.case', { n: i + 1 })}</b>
+        ${tc.in ? `<small>${t('run.input')}: <code>${esc(tc.in.trimEnd())}</code></small>` : ''}
+        ${ok ? '' : `<div class="diff"><span>${t('run.expected')}</span>${preOut(tc.out, 'exp')}<span>${t('run.got')}</span>${preOut(r.out || ' ', 'got')}</div>${r.type ? errHelp(r) : ''}`}</div></li>`).join('')}</ol>`);
+    sfx(all ? 'win' : 'bad');
+  }
+  setRunBusy(false);
 }
 
 // Indicador de lectura de la guía y botón fijo "Empezar la práctica" al acercarse al final.
@@ -1479,6 +1542,7 @@ document.addEventListener('click', async e => {
     return;
   }
   if (d.sym !== undefined) { if (cm) cm.insert(d.sym); return; }
+  if (d.act === 'code-run' || d.act === 'code-check') { runCode(d.act === 'code-check'); return; }
   if (d.act === 'code-reset') { const ex = labEx(); if (cm && ex) { cm.set(ex.start); cmPending = [labKey(S.course, route.d, route.i), ex.start, ex.start]; flushDraft(); $('#draftNote').textContent = ''; cm.focus(); } return; }
   if (d.opt !== undefined && L) { selectOpt(+d.opt); return; }
   if (d.bank !== undefined && L && L.phase === 'answer') { const ex = L.queue[0], bb = ex.bank.find(x => x.id === +d.bank); if (bb && !bb.used) { bb.used = true; ex.picked.push(bb.id); renderOrder(); } return; }

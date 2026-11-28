@@ -139,3 +139,29 @@ test('7. vestir a Kibi: lo libre se pone, lo bloqueado no, y se guarda al recarg
   await page.locator('.stage [data-act="poke"]').click();
   await expect(page.locator('.stage .bubble p')).not.toBeEmpty();
 });
+
+test('8. Python: Comprobar marca los casos, un error se explica y un bucle infinito se corta en 5 s', async ({ page }) => {
+  test.setTimeout(90000);
+  await start(page);
+  await page.goto('/?e2e=1#day-1-code-0');
+  const editor = page.locator('#editor .cm-content'), out = page.locator('#outpanel');
+  const write = async code => { await editor.click(); await page.keyboard.press('Control+A'); await page.keyboard.press('Delete'); await page.keyboard.insertText(code); };
+  // El texto esperado depende del idioma del navegador: se lee de la propia página.
+  const greet = (await page.locator('.expect pre').innerText()).split('\n')[0];
+  await write(`print(${JSON.stringify(greet)})\nprint(7 * 6)\n`);
+  await page.locator('[data-act="code-check"]').click();
+  await expect(out.locator('.case.ok')).toHaveCount(1, { timeout: 60000 });
+  await write('print(nombre)\n');
+  await page.locator('[data-act="code-run"]').click();
+  await expect(out.locator('.stderr')).toContainText('NameError');
+  await expect(out.locator('.runhelp')).toBeVisible();
+  await write('while True:\n    pass\n');
+  await page.locator('[data-act="code-run"]').click();
+  await expect(out.locator('.runstate.busy')).toBeVisible();
+  // La página sigue respondiendo mientras corre el bucle.
+  expect(await page.evaluate(() => 1 + 1)).toBe(2);
+  await expect(out.locator('.runhelp')).toBeVisible({ timeout: 9000 });
+  await write("print('otra vez')\n");
+  await page.locator('[data-act="code-run"]').click();
+  await expect(out.locator('.stdout')).toHaveText('otra vez', { timeout: 30000 });
+});

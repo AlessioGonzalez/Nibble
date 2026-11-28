@@ -6,6 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
+import { spawnSync } from 'node:child_process';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const COURSES = ['python', 'java', 'javascript', 'cpp'];
@@ -38,6 +39,8 @@ const missing = [];
 let exercises = 0;
 const err = (where, msg) => errors.push(`${where}: ${msg}`);
 
+// Programas de Python: la solución debe pasar sus propias pruebas (como en el botón Comprobar).
+const pyLabs = [];
 for (const course of courses) {
   for (const loc of locales) {
     const file = path.join(root, 'content', course, `${loc}.js`);
@@ -74,6 +77,7 @@ for (const course of courses) {
           if (e.t !== 'code') err(we, 'solo admite ejercicios code');
           if (!e.q || !e.e || typeof e.start !== 'string' || !e.sol) err(we, 'necesita q, start, sol y e');
           if (!Array.isArray(e.tests) || !e.tests.length || e.tests.some(c => typeof c.in !== 'string' || typeof c.out !== 'string')) err(we, 'tests: al menos uno, con in y out de texto');
+          else if (course === 'python' && e.sol) pyLabs.push([we, e.sol, e.tests]);
         });
       }
       if (!Array.isArray(d.x) || d.x.length !== 8) { err(w, `debe tener 8 ejercicios: 7 prácticas + 1 reto (tiene ${d.x?.length})`); return; }
@@ -113,6 +117,14 @@ if (missing.length) {
   console.log(`Faltan ${missing.length} archivos:\n  ${missing.join('\n  ')}`);
   if (!allowMissing) errors.push(`faltan ${missing.length} archivos de contenido (usa --allow-missing para ignorarlo)`);
 }
+const normOut = s => String(s || '').replace(/\r\n?/g, '\n').split('\n').map(l => l.trimEnd()).join('\n').trimEnd();
+const pyBin = pyLabs.length && ['python3', 'python'].find(b => spawnSync(b, ['--version']).status === 0);
+if (pyLabs.length && !pyBin) console.log('Aviso: no hay Python; no se han ejecutado las soluciones de los programas.');
+if (pyBin) for (const [we, sol, tests] of pyLabs) tests.forEach((tc, k) => {
+  const r = spawnSync(pyBin, ['-I', '-c', sol], { input: tc.in, encoding: 'utf8', timeout: 10000, env: { ...process.env, PYTHONIOENCODING: 'utf-8' } });
+  if (r.status !== 0) errors.push(`${we} caso ${k + 1}: la solución falla: ${(r.stderr || '').trim().split('\n').pop()}`);
+  else if (normOut(r.stdout) !== normOut(tc.out)) errors.push(`${we} caso ${k + 1}: la solución muestra "${normOut(r.stdout)}" y se espera "${normOut(tc.out)}"`);
+});
 if (errors.length) {
   console.error(`\n${errors.length} problemas:\n  ${errors.slice(0, 200).join('\n  ')}`);
   process.exit(1);
