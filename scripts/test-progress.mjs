@@ -220,6 +220,13 @@ test('días fusionados: su progreso pasa al día que los contiene', () => {
   assert.deepEqual(P.upgrade(u).done, u.done);
 });
 
+test('JavaScript: las copias v3 usan el orden de entonces y los días fusionados pasan al que los contiene', () => {
+  // v3: js-arrays era el índice 4, js-console el 12 y js-storage el 16.
+  const m = P.upgrade({ v: 3, savedAt: 1, done: { 'javascript:4:0': true, 'javascript:12:3': true, 'javascript:16:1': true }, dev: {} });
+  assert.deepEqual(Object.keys(m.done).sort(), ['javascript:js-arrays:0', 'javascript:js-intro:3', 'javascript:js-json:1']);
+  for (const c of ['python', 'javascript', 'java', 'cpp']) assert.equal(new Set(globalThis.NibbleOrderV3[c]).size, 30, c);
+});
+
 test('v4: los ids de order.js son únicos y hay 30 por curso', () => {
   for (const c of ['python', 'javascript', 'java', 'cpp']) {
     const ids = globalThis.NibbleOrder[c];

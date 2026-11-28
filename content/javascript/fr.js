@@ -1,12 +1,12 @@
 /* JavaScript · Français */
 (({ mc, out, fill, ord, typ, addCourse }) => addCourse('javascript', 'fr', {
-  tag: 'Le langage du web, du navigateur à Node.js, en 30 jours.',
+  tag: 'Du premier console.log à une boutique en ligne avec données, tests et Node.js : quatre semaines, avec un projet à la fin de chacune.',
   days: [
     // Jour 1
     {
       id: 'js-intro',
-      t: 'Introduction',
-      d: 'Ce qu’est JavaScript, où il s’exécute, la console et ton premier script.',
+      t: 'Ton premier programme et la console',
+      d: 'Ce qu’est JavaScript, où il s’exécute, ton premier script et la console pour voir ce qui se passe.',
       guide: [
         { h: 'Qu’est-ce que JavaScript ?', p: [
           'JavaScript est le langage de programmation du web. Brendan Eich l’a créé en 1995 pour le navigateur Netscape et aujourd’hui tous les navigateurs du monde le comprennent.',
@@ -26,6 +26,10 @@
           'Ce qui suit `//` est un commentaire d’une ligne ; `/* ... */` couvre plusieurs lignes. JavaScript les ignore : ils servent à expliquer le pourquoi du code.',
           'Erreur typique : réaffecter une `const`. JavaScript lève `TypeError: Assignment to constant variable`.' ],
           code: `const nom = "Eva";   // ne changera pas\nlet age = 30;        // peut changer\nage = age + 1;\n/* On affiche le résultat\n   sur une seule ligne */\nconsole.log(nom, age);  // Eva 31` },
+        { h: 'Au-delà de console.log', p: [
+          '`console.log` accepte plusieurs arguments et les sépare par une espace. Dans le navigateur, les objets s’affichent de façon interactive.',
+          '`console.info`, `console.warn` et `console.error` fonctionnent pareil, mais le navigateur les marque de couleurs et d’icônes et on peut les filtrer. `error` écrit en plus dans la sortie d’erreurs.' ],
+          code: `const utilisateur = { nom: "Ana", points: 40 };\nconsole.log("Utilisateur :", utilisateur, "actif");\nconsole.warn("Il reste peu d’essais");\nconsole.error("Impossible d’enregistrer");` },
         { h: 'Exemple réel : partager l’addition au restaurant', real: true, p: [
           'Avec quelques lignes, tu résous déjà un problème du quotidien : partager une addition avec 10 % de pourboire entre amis.',
           '`toFixed(2)` arrondit à deux décimales et renvoie un texte, parfait pour afficher de l’argent.' ],
@@ -35,18 +39,18 @@
         mc('Comment affiche-t-on un message dans la console en JavaScript ?', ['console.log("Bonjour")', 'print("Bonjour")', 'System.out.println("Bonjour")', 'echo "Bonjour"'], '`console.log` est la manière standard d’écrire dans la console. `print` vient de Python.'),
         mc('Comment écrit-on un commentaire d’une ligne ?', ['// commentaire', '# commentaire', '<!-- commentaire -->', '-- commentaire'], 'Tout ce qui suit `//` sur cette ligne est ignoré. `/* */` sert pour plusieurs lignes.'),
         mc('Où peut-on exécuter JavaScript ?', ['Dans le navigateur et en dehors avec Node.js', 'Seulement dans le navigateur', 'Seulement sous Windows', 'Seulement dans Java'], 'Tous les navigateurs l’exécutent, et Node.js l’amène sur les serveurs et dans le terminal.'),
-        fill(`<script ___="app.js" defer></script>`, ['src', 'href', 'file', 'link'], 'L’attribut `src` relie un fichier JavaScript externe. `href` sert aux liens et aux feuilles de style.'),
         out(`console.log(2 + 3 * 4);`, ['14', '20', '24', '9'], 'La multiplication se calcule avant l’addition : 3 * 4 = 12 et 2 + 12 = 14.'),
         ord('Écris la ligne qui affiche Bonjour, le monde dans la console', ['console', '.', 'log', '(', '"Bonjour, le monde"', ')'], ['print', 'echo'], 'On appelle la méthode `log` de l’objet `console` avec le texte entre parenthèses.'),
-        typ('Déclare une variable qui peut être réaffectée', `___ age = 30;\nage = 31;`, ['let', 'var'], '`let` permet de réaffecter. Avec `const`, la deuxième ligne lèverait une `TypeError`.'),
+        mc('En quoi `console.error` diffère-t-il de `console.log` ?', ['Il écrit dans la sortie d’erreurs et le navigateur le marque comme erreur', 'Il arrête le programme', 'Il lève une exception', 'Il n’y a aucune différence'], 'Pour lever une vraie erreur, on utilise `throw`.'),
+        out(`const n = 5;\nconsole.log("Total:", n, "articles");`, ['Total: 5 articles', 'Total:5articles', 'Total: n articles', 'Total: 5, articles'], 'Les arguments s’affichent séparés par une espace.'),
         out(`let prix = 10;\nprix = prix * 2;\nconst livraison = 5;\nconsole.log("Total:", prix + livraison);`, ['Total: 25', 'Total: 15', 'Total:25', 'Erreur'], '`prix` passe à 20 et on ajoute la livraison : 25. `console.log` sépare ses arguments par une espace.'),
       ],
     },
     // Jour 2
     {
       id: 'js-types',
-      t: 'Types de données',
-      d: 'Primitifs, typeof, textes, nombres et conversions entre types.',
+      t: 'Variables et types',
+      d: 'let et const, les types primitifs, le texte avec les gabarits et passer du texte au nombre.',
       guide: [
         { h: 'Primitifs et objets', p: [
           'JavaScript a sept types primitifs : `string` (texte), `number` (nombres entiers ou décimaux), `boolean` (`true`/`false`), `undefined`, `null`, `bigint` et `symbol`. Tout le reste, comme les tableaux et les fonctions, ce sont des objets.',
@@ -84,8 +88,8 @@
     // Jour 3
     {
       id: 'js-booleans',
-      t: 'Booléens, opérateurs et dates',
-      d: '=== contre ==, truthy et falsy, opérateurs arithmétiques et logiques, et Date.',
+      t: 'Opérations et comparaisons',
+      d: 'Calculer, comparer avec === et combiner des conditions avec &&, || et !, et quelles valeurs comptent comme fausses.',
       guide: [
         { h: 'Booléens et comparaisons', p: [
           'Un booléen ne peut valoir que `true` ou `false`. Tu en obtiens un en comparant : `>`, `<`, `>=`, `<=`, `===` (égal) et `!==` (différent).',
@@ -102,14 +106,10 @@
         { h: 'Opérateurs logiques', p: [
           '`&&` (et) est vrai si les deux côtés le sont ; `||` (ou) si au moins un l’est ; `!` inverse.',
           'Ils s’évaluent en court-circuit : dans `a && b`, si `a` est falsy, on ne regarde même pas `b`. C’est pourquoi `utilisateur && utilisateur.nom` n’échoue pas si `utilisateur` vaut `null`.' ] },
-        { h: 'Les dates avec Date', p: [
-          '`new Date()` crée la date et l’heure actuelles ; `new Date(2024, 0, 15)` crée une date précise. Attention : les mois commencent à 0 (janvier) et finissent à 11 (décembre).',
-          '`getFullYear()`, `getMonth()`, `getDate()` (jour du mois) et `getDay()` (jour de la semaine, 0 est dimanche) lisent ses parties. Soustraire deux dates donne la différence en millisecondes.' ],
-          code: `const d = new Date(2024, 0, 15);  // 15 janvier 2024\nconsole.log(d.getFullYear(), d.getMonth(), d.getDate());  // 2024 0 15\nconsole.log(d.getDay());  // 1 (lundi)` },
-        { h: 'Exemple réel : combien de jours avant les vacances', real: true, p: [
-          'Un compte à rebours est un classique des sites d’événements. On soustrait les dates et on convertit les millisecondes en jours.',
-          '`Math.round` évite les erreurs d’une heure quand il y a un changement d’heure entre les deux dates.' ],
-          code: `const aujourdhui = new Date(2024, 5, 1);  // 1er juin\nconst voyage = new Date(2024, 6, 15);     // 15 juillet\nconst MS_PAR_JOUR = 1000 * 60 * 60 * 24;\nconst jours = Math.round((voyage - aujourdhui) / MS_PAR_JOUR);\nconsole.log("Plus que", jours, "jours");  // Plus que 44 jours` },
+        { h: 'Exemple réel : peut-on entrer au concert ?', real: true, p: [
+          'Un billet est valable si la personne en a un et, en plus, est majeure ou accompagnée. Les parenthèses regroupent la partie « ou » pour qu’elle soit évaluée en premier.',
+          'La jauge se contrôle avec des opérateurs d’affectation et une comparaison : si on vend plus de billets que de places, on sait combien il y en a en trop.' ],
+          code: `const age = 17;\nconst accompagne = true;\nconst aUnBillet = true;\nconsole.log(aUnBillet && (age >= 18 || accompagne));  // true\n\nconst jauge = 500;\nlet vendus = 480;\nvendus += 25;\nconsole.log(vendus > jauge, vendus - jauge);  // true 5` },
       ],
       x: [
         mc('Laquelle de ces valeurs est falsy ?', ['0', '"0"', '[]', '"false"'], 'Le nombre 0 est falsy. Tout texte non vide et tout tableau, même vide, sont truthy.'),
@@ -118,15 +118,15 @@
         out(`let x = 5;\nx += 2;\nx++;\nconsole.log(x);`, ['8', '7', '6', '52'], '5 + 2 = 7, et `x++` ajoute encore 1.'),
         fill(`const peutEntrer = age >= 18 ___ aUnBillet;`, ['&&', 'and', '||', '&&&'], 'Les deux conditions doivent être remplies, on utilise donc `&&`. `and` vient de Python.'),
         out(`console.log(Boolean(""), Boolean("0"));`, ['false true', 'true true', 'false false', 'true false'], 'Le texte vide est falsy ; "0" est un texte non vide, donc truthy.'),
-        out(`const d = new Date(2024, 0, 15);\nconsole.log(d.getMonth());`, ['0', '1', '15', '2024'], 'Dans `Date`, les mois commencent à 0 : janvier vaut 0.'),
+        out(`console.log(7 > 3 && 2 > 5, 7 > 3 || 2 > 5, !(7 > 3));`, ['false true false', 'true true false', 'false false true', 'true false false'], '`&&` exige que les deux côtés soient vrais, `||` un seul, et `!` inverse le résultat.'),
         out(`const age = 20;\nconst membre = false;\nconst reduction = age < 25 || membre;\nconsole.log(reduction, !reduction && age > 18, 7 + 3 * 2 ** 2);`, ['true false 19', 'true true 19', 'true false 40', 'false false 19'], '`age < 25` est vrai, donc `||` donne true ; `!true` est false ; et 2 ** 2 = 4, 3 * 4 = 12, 7 + 12 = 19.'),
       ],
     },
     // Jour 4
     {
       id: 'js-conditionals',
-      t: 'Conditions',
-      d: 'if, else if, l’opérateur ternaire, switch, ?? et ?.',
+      t: 'Prendre des décisions',
+      d: 'if, else if et else, le ternaire, switch et les valeurs par défaut avec ?? et ?.',
       guide: [
         { h: 'if, else if et else', p: [
           '`if` exécute un bloc seulement si la condition est vraie. Tu peux enchaîner des alternatives avec `else if` et finir par un `else` pour les autres cas.',
@@ -161,46 +161,9 @@
     },
     // Jour 5
     {
-      id: 'js-arrays',
-      t: 'Tableaux',
-      d: 'Créer, lire, modifier, chercher et trier des listes de valeurs.',
-      guide: [
-        { h: 'Créer et accéder', p: [
-          'Un tableau est une liste ordonnée de valeurs entre crochets : `const notes = [7, 9, 4]`. Il peut mélanger les types, même si en général ils sont tous du même type.',
-          'Les indices commencent à 0 : le premier élément est `notes[0]` et le dernier `notes[notes.length - 1]` ou, plus court, `notes.at(-1)`. Lire un indice qui n’existe pas donne `undefined`, pas une erreur.' ],
-          code: `const fruits = ["poire", "raisin", "kiwi"];\nconsole.log(fruits[0]);       // poire\nconsole.log(fruits.length);   // 3\nconsole.log(fruits.at(-1));   // kiwi\nconsole.log(fruits[10]);      // undefined` },
-        { h: 'Ajouter et enlever des éléments', p: [
-          '`push` ajoute à la fin et `pop` enlève le dernier. `unshift` ajoute au début et `shift` enlève le premier.',
-          '`splice(début, combien, ...nouveaux)` supprime ou insère à n’importe quelle position. Toutes ces méthodes modifient le tableau d’origine.' ],
-          code: `const taches = ["courses", "étudier"];\ntaches.push("courir");      // ["courses", "étudier", "courir"]\ntaches.unshift("se lever"); // ["se lever", "courses", "étudier", "courir"]\ntaches.pop();               // enlève "courir"\ntaches.splice(1, 1);        // enlève "courses"\nconsole.log(taches);        // ["se lever", "étudier"]` },
-        { h: 'Chercher, copier et joindre', p: [
-          '`indexOf` renvoie la position d’une valeur (ou -1 si elle n’y est pas) et `includes` renvoie true ou false. `slice(début, fin)` copie un morceau sans inclure la fin.',
-          '`join(séparateur)` assemble les éléments en un texte et `concat` (ou le spread `[...a, ...b]`) réunit des tableaux. Ces méthodes ne modifient pas l’original.' ],
-          code: `const nums = [10, 20, 30, 40];\nconsole.log(nums.indexOf(30));    // 2\nconsole.log(nums.includes(50));   // false\nconsole.log(nums.slice(1, 3));    // [20, 30]\nconsole.log(nums.join(" | "));    // 10 | 20 | 30 | 40` },
-        { h: 'Trier et les références', p: [
-          '`sort()` sans argument trie comme du texte : `[3, 1, 10].sort()` donne `[1, 10, 3]`. Pour des nombres, passe une fonction : `sort((a, b) => a - b)`.',
-          'Un tableau rangé dans une `const` ne peut pas être réaffecté, mais il peut être modifié de l’intérieur. Et `const b = a` ne copie pas : les deux variables pointent vers le même tableau. Pour copier, utilise `[...a]`.' ],
-          code: `const prix = [30, 5, 120];\nprix.sort((a, b) => a - b);\nconsole.log(prix);  // [5, 30, 120]\n\nconst a = [1, 2];\nconst b = a;       // même liste\nconst c = [...a];  // copie\nb.push(3);\nconsole.log(a, c); // [1, 2, 3] [1, 2]` },
-        { h: 'Exemple réel : la liste de courses', real: true, p: [
-          'Une liste de courses est un tableau qui grandit et rétrécit. Avant d’ajouter, on vérifie qu’il n’y a pas de doublon, et on retire ce qu’on a déjà acheté.' ],
-          code: `const courses = ["lait", "pain"];\ncourses.push("œufs");\nif (!courses.includes("café")) courses.push("café");\ncourses.splice(courses.indexOf("pain"), 1);  // le pain est déjà acheté\nconsole.log(courses.length, courses.join(", "));  // 3 lait, œufs, café` },
-      ],
-      x: [
-        out(`const fruits = ["poire", "raisin"];\nfruits.push("kiwi");\nconsole.log(fruits.length);`, ['3', '2', 'kiwi', 'Erreur'], '`push` ajoute à la fin et la taille passe à 3.'),
-        ord('Ajoute 4 à la fin du tableau nums', ['nums', '.', 'push', '(', '4', ')'], ['append', 'add'], 'Les tableaux JavaScript utilisent `push`. `append` vient de Python.'),
-        fill(`const notes = [7, 9, 4];\nconst derniere = notes[notes.___ - 1];`, ['length', 'size', 'count', 'length()'], '`length` est une propriété, pas une méthode : pas de parenthèses. Le dernier indice est `length - 1`.'),
-        out(`const a = [1, 2, 3];\nconsole.log(a.indexOf(2), a.includes(5));`, ['1 false', '2 false', '1 true', '-1 false'], 'Le 2 est à l’indice 1 et le 5 n’y est pas.'),
-        out(`const a = [1, 2, 3, 4, 5];\nconsole.log(a.slice(1, 3));`, ['[2, 3]', '[1, 2, 3]', '[2, 3, 4]', '[1, 2]'], '`slice(début, fin)` inclut le début mais pas la fin, et ne modifie pas l’original.'),
-        out(`console.log([3, 1, 10].sort());`, ['[1, 10, 3]', '[1, 3, 10]', '[10, 3, 1]', '[3, 1, 10]'], 'Sans fonction de comparaison, `sort` trie comme du texte et "10" passe avant "3". Utilise `sort((a, b) => a - b)` pour les nombres.'),
-        out(`const a = [1, 2, 3];\nconst b = a;\nb.pop();\nconsole.log(a);`, ['[1, 2]', '[1, 2, 3]', '[3]', 'Erreur'], '`b` n’est pas une copie : il pointe vers le même tableau que `a`.'),
-        out(`const file = ["Ana", "Leo", "Eva"];\nfile.push("Sol");\nconst servi = file.shift();\nfile.splice(1, 1, "Iker");\nconsole.log(servi, file);`, ['Ana ["Leo", "Iker", "Sol"]', 'Sol ["Ana", "Iker", "Eva"]', 'Ana ["Leo", "Iker", "Eva", "Sol"]', 'Ana ["Iker", "Eva", "Sol"]'], '`shift` sort "Ana" du début ; il reste ["Leo", "Eva", "Sol"] et `splice(1, 1, "Iker")` remplace "Eva" par "Iker".'),
-      ],
-    },
-    // Jour 6
-    {
       id: 'js-loops',
       t: 'Boucles',
-      d: 'for, while, do...while, for...of, for...in, break et continue.',
+      d: 'for, while, for...of et for...in, break et continue : répéter un travail sans copier de code.',
       guide: [
         { h: 'La boucle for', p: [
           '`for (début; condition; pas)` répète un bloc un nombre connu de fois. Le plus courant est de compter avec `let i = 0` tant que `i < n`, en ajoutant 1 à chaque tour.',
@@ -211,6 +174,7 @@
           '`do...while` vérifie la condition à la fin, donc le bloc s’exécute au moins une fois.' ],
           code: `let solde = 100;\nlet mois = 0;\nwhile (solde > 0) {\n  solde -= 30;\n  mois++;\n}\nconsole.log(mois);  // 4` },
         { h: 'for...of et for...in', p: [
+          'Les tableaux (des valeurs entre crochets) et les objets (des paires clé-valeur entre accolades) apparaissent ici pour la première fois. Pour l’instant, il suffit de savoir que `for...of` parcourt les valeurs et `for...in` les clés ; tu les verras en détail aux jours 8 et 9.',
           '`for...of` parcourt les valeurs de n’importe quel itérable : tableaux, textes, Set ou Map. C’est la manière la plus claire de parcourir un tableau.',
           '`for...in` parcourt les clés d’un objet. Avec un tableau, il te donnerait les indices sous forme de texte ("0", "1"...), ne l’utilise donc pas pour les tableaux.' ],
           code: `for (const lettre of "sol") console.log(lettre);  // s, o, l (une par ligne)\n\nconst ages = { Ana: 30, Leo: 8 };\nfor (const nom in ages) {\n  console.log(nom, ages[nom]);\n}\n// Ana 30\n// Leo 8` },
@@ -233,11 +197,11 @@
         out(`const notes = [8, 3, 10, 6, 2];\nlet recus = 0;\nlet somme = 0;\nfor (const n of notes) {\n  if (n < 5) continue;\n  recus++;\n  somme += n;\n}\nconsole.log(recus, somme / recus);`, ['3 8', '5 5.8', '3 4.8', '2 9'], 'On saute le 3 et le 2. Il reste 8, 10 et 6 : trois reçus dont la somme est 24, et 24 / 3 = 8.'),
       ],
     },
-    // Jour 7
+    // Jour 6
     {
       id: 'js-functions',
       t: 'Fonctions',
-      d: 'Déclarations, fonctions fléchées, paramètres, return, portée et hoisting.',
+      d: 'Déclarations de fonctions et fonctions fléchées, paramètres par défaut et rest, return et portée.',
       guide: [
         { h: 'Déclarer et appeler des fonctions', p: [
           'Une fonction est un bloc de code nommé que tu peux réutiliser. On la déclare avec `function nom(paramètres) { ... }` et on l’appelle avec `nom(arguments)`.',
@@ -271,11 +235,85 @@
         out(`const remise = (prix, pct = 10) => prix - prix * pct / 100;\nfunction total(...prix) {\n  let t = 0;\n  for (const p of prix) t += remise(p);\n  return t;\n}\nconsole.log(total(100, 50), remise(200, 50));`, ['135 100', '150 100', '135 190', '15 100'], 'Avec les 10 % par défaut, 100 devient 90 et 50 devient 45 : total 135. Avec 50 %, 200 devient 100.'),
       ],
     },
+    // Jour 7
+    {
+      id: 'js-workshop-register',
+      t: 'L’atelier de Kibi : la caisse enregistreuse',
+      d: 'Projet de la semaine 1 : une caisse dans le navigateur qui demande les prix, additionne, applique les remises et imprime le ticket dans la console.',
+      guide: [
+        { h: 'La commande', p: [
+          'Kibi ouvre une boutique de graines et a besoin d’une caisse enregistreuse. On la fait dans le navigateur : elle demande les prix dans une boîte de dialogue, additionne, applique une remise quand il le faut et imprime le ticket dans la console.',
+          'Cet atelier réunit toute la semaine : la console, les variables, les opérations, les décisions, les boucles et les fonctions. Chaque étape fonctionne seule : colle-la dans la console du navigateur (F12) et vérifie-la avant de continuer.' ] },
+        { h: 'Étape 1 : une fonction par règle', p: [
+          'La boutique fait 10 % de remise dès 50 € et 5 % dès 20 €. On l’écrit comme une fonction pour pouvoir l’essayer avec plusieurs totaux sans répéter de code.',
+          'L’ordre des `if` compte : le palier le plus haut passe en premier, car 60 € respecte aussi `>= 20`. Chaque `return` sort de la fonction dès qu’il trouve son palier.' ],
+          code: `function remise(total) {\n  if (total >= 50) return total * 0.1;\n  if (total >= 20) return total * 0.05;\n  return 0;\n}\n\nconsole.log(remise(42.8).toFixed(2));  // 2.14\nconsole.log(remise(10));               // 0` },
+        { h: 'Étape 2 : demander des prix jusqu’à ce qu’on tape 0', p: [
+          '`prompt()` ouvre une boîte dans le navigateur et renvoie ce qui a été tapé sous forme de texte, ou `null` si on clique sur Annuler. `Number()` le transforme en nombre et donne `NaN` s’il n’y arrive pas.',
+          'On ne sait pas combien d’articles il y aura, donc on utilise `while (true)` et on sort avec `break`. Si ce qui est tapé n’est pas un prix, `continue` redemande sans rien ajouter.' ],
+          code: `let total = 0;\nlet articles = 0;\nwhile (true) {\n  const texte = prompt("Prix (0 pour terminer)");\n  if (texte === null) break;\n  const prix = Number(texte.replace(",", "."));\n  if (Number.isNaN(prix) || prix < 0) {\n    console.warn("Ce n'est pas un prix :", texte);\n    continue;\n  }\n  if (prix === 0) break;\n  total += prix;\n  articles++;\n}` },
+        { h: 'Étape 3 : un ticket aligné', p: [
+          '`toFixed(2)` garde toujours deux décimales et renvoie un texte. `padEnd(10)` complète avec des espaces à droite jusqu’à 10 caractères et `padStart(8)`, à gauche : ainsi les chiffres forment une colonne.',
+          'Une petite fonction par ligne évite d’écrire trois fois le même format.' ],
+          code: `function ligne(libelle, montant) {\n  return libelle.padEnd(10) + montant.toFixed(2).padStart(8);\n}\n\nconst total = 32.5;\nconst r = remise(total);\nconsole.log(ligne("Total", total));        // Total        32.50\nconsole.log(ligne("Remise", r));           // Remise        1.63\nconsole.log(ligne("À payer", total - r));  // À payer      30.88` },
+        { h: 'Exemple réel : la caisse complète', real: true, p: [
+          'On réunit les trois étapes dans un seul script. Enregistre-le sous `caisse.js`, relie-le à une page avec `<script src="caisse.js"></script>` et ouvre-la : le ticket apparaît dans la console.',
+          'Idées pour aller plus loin : demander aussi la quantité de chaque article, ou calculer la monnaie à rendre à partir de ce que donne le client.' ],
+          code: `const remise = (total) => (total >= 50 ? total * 0.1 : total >= 20 ? total * 0.05 : 0);\nconst ligne = (libelle, montant) => libelle.padEnd(10) + montant.toFixed(2).padStart(8);\n\nlet total = 0;\nlet articles = 0;\nwhile (true) {\n  const texte = prompt("Prix (0 pour terminer)");\n  if (texte === null) break;\n  const prix = Number(texte.replace(",", "."));\n  if (Number.isNaN(prix) || prix < 0) continue;\n  if (prix === 0) break;\n  total += prix;\n  articles++;\n}\n\nconst r = remise(total);\nconsole.log("Articles".padEnd(10) + String(articles).padStart(8));\nconsole.log(ligne("Total", total));\nconsole.log(ligne("Remise", r));\nconsole.log(ligne("À payer", total - r));` },
+      ],
+      x: [
+        mc('Tu tapes 12 dans la boîte de `prompt()`. Que renvoie-t-elle ?', ['Le texte "12"', 'Le nombre 12', 'undefined', 'true'], '`prompt()` renvoie toujours du texte (ou `null` si on annule). Pour calculer avec, il faut le convertir avec `Number()`.'),
+        out(`let total = 0;\ntotal += 2.5;\ntotal += 1.25;\nconsole.log(total.toFixed(2));`, ['3.75', '3.8', '3.750', '375'], '`+=` ajoute au total à chaque fois, et `toFixed(2)` l’affiche avec exactement deux décimales.'),
+        fill(`const prix = ___("4.5") * 2;\nconsole.log(prix);  // 9`, ['Number', 'String', 'parseInt', 'Boolean'], '`Number("4.5")` donne 4.5. `parseInt` ne garderait que la partie entière et donnerait 8.'),
+        out(`function remise(total) {\n  if (total >= 50) return total * 0.1;\n  if (total >= 20) return total * 0.05;\n  return 0;\n}\nconsole.log(remise(25), remise(60), remise(5));`, ['1.25 6 0', '2.5 6 0', '1.25 0.6 0', '0 6 0'], '25 tombe dans le palier à 5 %, 60 dans celui à 10 % et 5 n’a pas de remise.'),
+        out(`let n = 0;\nlet total = 0;\nwhile (total < 10) {\n  total += 4;\n  n++;\n}\nconsole.log(n, total);`, ['3 12', '2 8', '3 10', '4 16'], 'La boucle ajoute 4 tant que le total est inférieur à 10 : 4, 8 puis 12. À 12, la condition est fausse et la boucle a tourné 3 fois.'),
+        typ('Écris le mot qui sort de la boucle quand le prix vaut 0', `while (true) {\n  const prix = Number(prompt("Prix"));\n  if (prix === 0) ___;\n  total += prix;\n}`, 'break', '`break` termine la boucle dès que la condition est remplie.'),
+        out(`console.log("Total".padEnd(8) + "|" + (9.5).toFixed(2).padStart(6));`, ['Total   |  9.50', 'Total|9.50', '   Total|9.50  ', 'Total   |9.5'], '`padEnd(8)` complète le texte à droite jusqu’à 8 caractères ; `padStart(6)` complète à gauche le nombre, déjà avec deux décimales.'),
+        out(`const avecTva = (prix) => prix * 1.21;\nlet total = 0;\nfor (let prix = 5; prix < 30; prix += 10) {\n  if (prix > 20) continue;\n  total += prix;\n}\nconsole.log(total, avecTva(total).toFixed(2), total >= 20 ? "remise" : "sans remise");`, ['20 24.20 remise', '45 54.45 remise', '20 24.2 remise', '20 24.20 sans remise'], 'La boucle passe par 5, 15 et 25 ; le 25 est sauté avec `continue`, donc le total vaut 20. Avec la TVA cela fait 24.20, et comme il atteint 20, il a droit à la remise.'),
+      ],
+    },
     // Jour 8
+    {
+      id: 'js-arrays',
+      t: 'Tableaux',
+      d: 'Des listes de valeurs : créer, lire, ajouter, retirer, chercher, copier et trier.',
+      guide: [
+        { h: 'Créer et accéder', p: [
+          'Un tableau est une liste ordonnée de valeurs entre crochets : `const notes = [7, 9, 4]`. Il peut mélanger les types, même si en général ils sont tous du même type.',
+          'Les indices commencent à 0 : le premier élément est `notes[0]` et le dernier `notes[notes.length - 1]` ou, plus court, `notes.at(-1)`. Lire un indice qui n’existe pas donne `undefined`, pas une erreur.' ],
+          code: `const fruits = ["poire", "raisin", "kiwi"];\nconsole.log(fruits[0]);       // poire\nconsole.log(fruits.length);   // 3\nconsole.log(fruits.at(-1));   // kiwi\nconsole.log(fruits[10]);      // undefined` },
+        { h: 'Ajouter et enlever des éléments', p: [
+          '`push` ajoute à la fin et `pop` enlève le dernier. `unshift` ajoute au début et `shift` enlève le premier.',
+          '`splice(début, combien, ...nouveaux)` supprime ou insère à n’importe quelle position. Toutes ces méthodes modifient le tableau d’origine.' ],
+          code: `const taches = ["courses", "étudier"];\ntaches.push("courir");      // ["courses", "étudier", "courir"]\ntaches.unshift("se lever"); // ["se lever", "courses", "étudier", "courir"]\ntaches.pop();               // enlève "courir"\ntaches.splice(1, 1);        // enlève "courses"\nconsole.log(taches);        // ["se lever", "étudier"]` },
+        { h: 'Chercher, copier et joindre', p: [
+          '`indexOf` renvoie la position d’une valeur (ou -1 si elle n’y est pas) et `includes` renvoie true ou false. `slice(début, fin)` copie un morceau sans inclure la fin.',
+          '`join(séparateur)` assemble les éléments en un texte et `concat` (ou le spread `[...a, ...b]`) réunit des tableaux. Ces méthodes ne modifient pas l’original.' ],
+          code: `const nums = [10, 20, 30, 40];\nconsole.log(nums.indexOf(30));    // 2\nconsole.log(nums.includes(50));   // false\nconsole.log(nums.slice(1, 3));    // [20, 30]\nconsole.log(nums.join(" | "));    // 10 | 20 | 30 | 40` },
+        { h: 'Trier et les références', p: [
+          '`sort()` sans argument trie comme du texte : `[3, 1, 10].sort()` donne `[1, 10, 3]`. Pour des nombres, passe une fonction : `sort((a, b) => a - b)`.',
+          'Un tableau rangé dans une `const` ne peut pas être réaffecté, mais il peut être modifié de l’intérieur. Et `const b = a` ne copie pas : les deux variables pointent vers le même tableau. Pour copier, utilise `[...a]`.' ],
+          code: `const prix = [30, 5, 120];\nprix.sort((a, b) => a - b);\nconsole.log(prix);  // [5, 30, 120]\n\nconst a = [1, 2];\nconst b = a;       // même liste\nconst c = [...a];  // copie\nb.push(3);\nconsole.log(a, c); // [1, 2, 3] [1, 2]` },
+        { h: 'Exemple réel : la liste de courses', real: true, p: [
+          'Une liste de courses est un tableau qui grandit et rétrécit. Avant d’ajouter, on vérifie qu’il n’y a pas de doublon, et on retire ce qu’on a déjà acheté.' ],
+          code: `const courses = ["lait", "pain"];\ncourses.push("œufs");\nif (!courses.includes("café")) courses.push("café");\ncourses.splice(courses.indexOf("pain"), 1);  // le pain est déjà acheté\nconsole.log(courses.length, courses.join(", "));  // 3 lait, œufs, café` },
+      ],
+      x: [
+        out(`const fruits = ["poire", "raisin"];\nfruits.push("kiwi");\nconsole.log(fruits.length);`, ['3', '2', 'kiwi', 'Erreur'], '`push` ajoute à la fin et la taille passe à 3.'),
+        ord('Ajoute 4 à la fin du tableau nums', ['nums', '.', 'push', '(', '4', ')'], ['append', 'add'], 'Les tableaux JavaScript utilisent `push`. `append` vient de Python.'),
+        fill(`const notes = [7, 9, 4];\nconst derniere = notes[notes.___ - 1];`, ['length', 'size', 'count', 'length()'], '`length` est une propriété, pas une méthode : pas de parenthèses. Le dernier indice est `length - 1`.'),
+        out(`const a = [1, 2, 3];\nconsole.log(a.indexOf(2), a.includes(5));`, ['1 false', '2 false', '1 true', '-1 false'], 'Le 2 est à l’indice 1 et le 5 n’y est pas.'),
+        out(`const a = [1, 2, 3, 4, 5];\nconsole.log(a.slice(1, 3));`, ['[2, 3]', '[1, 2, 3]', '[2, 3, 4]', '[1, 2]'], '`slice(début, fin)` inclut le début mais pas la fin, et ne modifie pas l’original.'),
+        out(`console.log([3, 1, 10].sort());`, ['[1, 10, 3]', '[1, 3, 10]', '[10, 3, 1]', '[3, 1, 10]'], 'Sans fonction de comparaison, `sort` trie comme du texte et "10" passe avant "3". Utilise `sort((a, b) => a - b)` pour les nombres.'),
+        out(`const a = [1, 2, 3];\nconst b = a;\nb.pop();\nconsole.log(a);`, ['[1, 2]', '[1, 2, 3]', '[3]', 'Erreur'], '`b` n’est pas une copie : il pointe vers le même tableau que `a`.'),
+        out(`const file = ["Ana", "Leo", "Eva"];\nfile.push("Sol");\nconst servi = file.shift();\nfile.splice(1, 1, "Iker");\nconsole.log(servi, file);`, ['Ana ["Leo", "Iker", "Sol"]', 'Sol ["Ana", "Iker", "Eva"]', 'Ana ["Leo", "Iker", "Eva", "Sol"]', 'Ana ["Iker", "Eva", "Sol"]'], '`shift` sort "Ana" du début ; il reste ["Leo", "Eva", "Sol"] et `splice(1, 1, "Iker")` remplace "Eva" par "Iker".'),
+      ],
+    },
+    // Jour 9
     {
       id: 'js-objects',
       t: 'Objets',
-      d: 'Propriétés, méthodes, this, parcourir des objets et les copier.',
+      d: 'Regrouper des données nommées : propriétés, méthodes, this, parcourir des objets et les copier.',
       guide: [
         { h: 'Créer des objets et lire des propriétés', p: [
           'Un objet regroupe des données liées sous forme de paires clé-valeur : `const user = { nom: "Ana", age: 30 }`. C’est la structure la plus utilisée en JavaScript.',
@@ -308,11 +346,11 @@
         out(`const stock = { pommes: 4, poires: 0, raisins: 12 };\nstock.kiwis = 3;\ndelete stock.poires;\nlet total = 0;\nfor (const k in stock) total += stock[k];\nconsole.log(Object.keys(stock).length, total);`, ['3 19', '4 19', '3 16', '4 7'], 'Après avoir ajouté les kiwis et supprimé les poires, il reste 3 clés : pommes, raisins et kiwis. 4 + 12 + 3 = 19.'),
       ],
     },
-    // Jour 9
+    // Jour 10
     {
       id: 'js-higher-order',
-      t: 'Fonctions d’ordre supérieur',
-      d: 'Callbacks, forEach, map, filter, reduce, find, some, every et sort.',
+      t: 'Transformer des tableaux',
+      d: 'Passer des fonctions à d’autres fonctions : forEach, map, filter, find, reduce, some, every et sort.',
       guide: [
         { h: 'Les fonctions sont des valeurs', p: [
           'En JavaScript, les fonctions sont des valeurs : on les range dans des variables, on les passe en argument et on les renvoie. Une fonction d’ordre supérieur est une fonction qui en reçoit ou en renvoie une autre.',
@@ -346,48 +384,11 @@
         out(`const mots = ["sol", "mer", "lune", "sol", "mer", "sol"];\nconst compte = mots.reduce((acc, m) => {\n  acc[m] = (acc[m] || 0) + 1;\n  return acc;\n}, {});\nconsole.log(compte.sol, Object.keys(compte).length, mots.filter((m) => m.length > 3).length);`, ['3 3 1', '3 6 1', '1 3 1', '3 3 4'], '"sol" apparaît 3 fois, il y a 3 mots différents et seul "lune" a plus de 3 lettres.'),
       ],
     },
-    // Jour 10
-    {
-      id: 'js-sets-maps',
-      t: 'Set et Map',
-      d: 'Des valeurs uniques avec Set et des dictionnaires aux clés de tout type avec Map.',
-      guide: [
-        { h: 'Set : des valeurs uniques', p: [
-          'Un `Set` est une collection où chaque valeur n’apparaît qu’une fois. Si tu ajoutes un doublon, il est simplement ignoré.',
-          'Méthodes : `add`, `has`, `delete` et `clear` ; `size` (sans parenthèses) donne le nombre d’éléments. Vérifier avec `has` est bien plus rapide que `includes` sur de grandes listes.' ],
-          code: `const etiquettes = new Set(["js", "web"]);\netiquettes.add("js");      // doublon : rien ne change\netiquettes.add("node");\nconsole.log(etiquettes.size);       // 3\nconsole.log(etiquettes.has("web")); // true\netiquettes.delete("web");\nconsole.log([...etiquettes]);       // ["js", "node"]` },
-        { h: 'Opérations d’ensembles', p: [
-          'L’astuce la plus utilisée : `[...new Set(tableau)]` supprime les doublons d’un tableau en gardant l’ordre de première apparition.',
-          'Union : `new Set([...a, ...b])`. Intersection : `[...a].filter((x) => b.has(x))`. Différence : `[...a].filter((x) => !b.has(x))`.' ],
-          code: `const emails = ["ana@x.com", "leo@x.com", "ana@x.com"];\nconst uniques = [...new Set(emails)];\nconsole.log(uniques);  // ["ana@x.com", "leo@x.com"]` },
-        { h: 'Map : des clés de tout type', p: [
-          'Une `Map` associe des clés à des valeurs, comme un objet, mais les clés peuvent être de n’importe quel type (nombres, objets...) et elle garde l’ordre d’insertion.',
-          'Méthodes : `set(clé, valeur)`, `get(clé)`, `has`, `delete` et la propriété `size`. `set` renvoie la Map elle-même, on peut donc enchaîner.' ],
-          code: `const stock = new Map();\nstock.set("pain", 4).set("lait", 0);\nconsole.log(stock.get("pain"));  // 4\nconsole.log(stock.get("riz"));   // undefined\nconsole.log(stock.size);         // 2` },
-        { h: 'Parcourir et choisir entre Map et objet', p: [
-          '`for (const [cle, valeur] of map)` parcourt une Map. Elle a aussi `keys()`, `values()` et `entries()`. `new Map(Object.entries(obj))` et `Object.fromEntries(map)` convertissent de l’un à l’autre.',
-          'Utilise un objet pour des données à la forme fixe (un utilisateur avec un nom et un âge). Utilise une Map quand les clés arrivent pendant l’exécution, sont souvent ajoutées et retirées ou ne sont pas des textes.' ],
-          code: `const notes = new Map([["Ana", 9], ["Leo", 6]]);\nfor (const [eleve, note] of notes) {\n  console.log(eleve, note);\n}\n// Ana 9\n// Leo 6\nconsole.log(Object.fromEntries(notes));  // { Ana: 9, Leo: 6 }` },
-        { h: 'Exemple réel : compter des votes', real: true, p: [
-          'Dans un sondage, des votes répétés arrivent. Une Map compte combien en a chaque option et un Set dit combien d’options différentes il y a eu.' ],
-          code: `const votes = ["Ana", "Leo", "Ana", "Eva", "Ana", "Leo", "Sol"];\nconst decompte = new Map();\nfor (const v of votes) {\n  decompte.set(v, (decompte.get(v) || 0) + 1);\n}\nconsole.log(decompte.get("Ana"), decompte.size);  // 3 4\nconsole.log(new Set(votes).size);                 // 4` },
-      ],
-      x: [
-        out(`const s = new Set([1, 2, 2, 3]);\nconsole.log(s.size);`, ['3', '4', '2', 'undefined'], 'Le Set ignore le 2 en double.'),
-        fill(`const s = new Set(["js"]);\nconsole.log(s.___("js"));  // true`, ['has', 'includes', 'contains', 'get'], '`has` vérifie si une valeur est dans le Set. `includes` appartient aux tableaux.'),
-        mc('Quel avantage une Map a-t-elle sur un objet classique ?', ['Elle accepte des clés de tout type et garde l’ordre d’insertion', 'Elle est plus courte à écrire', 'Elle se convertit seule en JSON', 'Aucun'], 'Un objet n’accepte que des clés de type texte ou symbole.'),
-        out(`console.log([...new Set([3, 1, 3, 2, 1])]);`, ['[3, 1, 2]', '[1, 2, 3]', '[3, 1, 3, 2, 1]', '3'], 'Le Set garde l’ordre de première apparition et supprime les doublons ; il ne trie pas.'),
-        out(`const m = new Map();\nm.set("a", 1).set("b", 2);\nconsole.log(m.get("b"), m.get("c"));`, ['2 undefined', '2 null', '1 undefined', 'Erreur'], '`set` renvoie la Map elle-même, on peut donc enchaîner. Une clé inexistante donne `undefined`.'),
-        out(`const m = new Map([["x", 1], ["y", 2]]);\nconsole.log([...m.keys()]);`, ['["x", "y"]', '[1, 2]', '[["x", 1], ["y", 2]]', '2'], '`keys()` renvoie les clés dans l’ordre d’insertion.'),
-        out(`const s = new Set([1, 2, 3]);\ns.add(2);\ns.delete(1);\nconsole.log(s.size, s.has(1));`, ['2 false', '3 false', '3 true', '2 true'], 'Ajouter le 2 ne change rien car il y était déjà ; après avoir supprimé le 1, il reste 2 éléments.'),
-        out(`const a = new Set(["js", "py", "go"]);\nconst b = new Set(["py", "rs", "js"]);\nconst communs = [...a].filter((x) => b.has(x));\nconst tous = new Set([...a, ...b]);\nconsole.log(communs, tous.size);`, ['["js", "py"] 4', '["py", "js"] 4', '["js", "py"] 6', '["go", "rs"] 4'], 'L’intersection suit l’ordre de `a` : "js" et "py". L’union sans doublon contient js, py, go et rs.'),
-      ],
-    },
     // Jour 11
     {
       id: 'js-destructuring',
       t: 'Déstructuration et spread',
-      d: 'Extraire des valeurs de tableaux et d’objets, valeurs par défaut, spread et rest.',
+      d: 'Extraire des valeurs de tableaux et d’objets en une ligne, valeurs par défaut, spread et rest.',
       guide: [
         { h: 'Déstructurer des tableaux', p: [
           'La déstructuration sort des valeurs d’un tableau et les range dans des variables en une seule ligne : `const [a, b] = liste`. Elles sont affectées par position.',
@@ -422,9 +423,46 @@
     },
     // Jour 12
     {
+      id: 'js-sets-maps',
+      t: 'Set et Map',
+      d: 'Des valeurs sans doublons avec Set et des dictionnaires avec des clés de tout type avec Map.',
+      guide: [
+        { h: 'Set : des valeurs uniques', p: [
+          'Un `Set` est une collection où chaque valeur n’apparaît qu’une fois. Si tu ajoutes un doublon, il est simplement ignoré.',
+          'Méthodes : `add`, `has`, `delete` et `clear` ; `size` (sans parenthèses) donne le nombre d’éléments. Vérifier avec `has` est bien plus rapide que `includes` sur de grandes listes.' ],
+          code: `const etiquettes = new Set(["js", "web"]);\netiquettes.add("js");      // doublon : rien ne change\netiquettes.add("node");\nconsole.log(etiquettes.size);       // 3\nconsole.log(etiquettes.has("web")); // true\netiquettes.delete("web");\nconsole.log([...etiquettes]);       // ["js", "node"]` },
+        { h: 'Opérations d’ensembles', p: [
+          'L’astuce la plus utilisée : `[...new Set(tableau)]` supprime les doublons d’un tableau en gardant l’ordre de première apparition.',
+          'Union : `new Set([...a, ...b])`. Intersection : `[...a].filter((x) => b.has(x))`. Différence : `[...a].filter((x) => !b.has(x))`.' ],
+          code: `const emails = ["ana@x.com", "leo@x.com", "ana@x.com"];\nconst uniques = [...new Set(emails)];\nconsole.log(uniques);  // ["ana@x.com", "leo@x.com"]` },
+        { h: 'Map : des clés de tout type', p: [
+          'Une `Map` associe des clés à des valeurs, comme un objet, mais les clés peuvent être de n’importe quel type (nombres, objets...) et elle garde l’ordre d’insertion.',
+          'Méthodes : `set(clé, valeur)`, `get(clé)`, `has`, `delete` et la propriété `size`. `set` renvoie la Map elle-même, on peut donc enchaîner.' ],
+          code: `const stock = new Map();\nstock.set("pain", 4).set("lait", 0);\nconsole.log(stock.get("pain"));  // 4\nconsole.log(stock.get("riz"));   // undefined\nconsole.log(stock.size);         // 2` },
+        { h: 'Parcourir et choisir entre Map et objet', p: [
+          '`for (const [cle, valeur] of map)` parcourt une Map. Elle a aussi `keys()`, `values()` et `entries()`. `new Map(Object.entries(obj))` et `Object.fromEntries(map)` convertissent de l’un à l’autre.',
+          'Utilise un objet pour des données à la forme fixe (un utilisateur avec un nom et un âge). Utilise une Map quand les clés arrivent pendant l’exécution, sont souvent ajoutées et retirées ou ne sont pas des textes.' ],
+          code: `const notes = new Map([["Ana", 9], ["Leo", 6]]);\nfor (const [eleve, note] of notes) {\n  console.log(eleve, note);\n}\n// Ana 9\n// Leo 6\nconsole.log(Object.fromEntries(notes));  // { Ana: 9, Leo: 6 }` },
+        { h: 'Exemple réel : compter des votes', real: true, p: [
+          'Dans un sondage, des votes répétés arrivent. Une Map compte combien en a chaque option et un Set dit combien d’options différentes il y a eu.' ],
+          code: `const votes = ["Ana", "Leo", "Ana", "Eva", "Ana", "Leo", "Sol"];\nconst decompte = new Map();\nfor (const v of votes) {\n  decompte.set(v, (decompte.get(v) || 0) + 1);\n}\nconsole.log(decompte.get("Ana"), decompte.size);  // 3 4\nconsole.log(new Set(votes).size);                 // 4` },
+      ],
+      x: [
+        out(`const s = new Set([1, 2, 2, 3]);\nconsole.log(s.size);`, ['3', '4', '2', 'undefined'], 'Le Set ignore le 2 en double.'),
+        fill(`const s = new Set(["js"]);\nconsole.log(s.___("js"));  // true`, ['has', 'includes', 'contains', 'get'], '`has` vérifie si une valeur est dans le Set. `includes` appartient aux tableaux.'),
+        mc('Quel avantage une Map a-t-elle sur un objet classique ?', ['Elle accepte des clés de tout type et garde l’ordre d’insertion', 'Elle est plus courte à écrire', 'Elle se convertit seule en JSON', 'Aucun'], 'Un objet n’accepte que des clés de type texte ou symbole.'),
+        out(`console.log([...new Set([3, 1, 3, 2, 1])]);`, ['[3, 1, 2]', '[1, 2, 3]', '[3, 1, 3, 2, 1]', '3'], 'Le Set garde l’ordre de première apparition et supprime les doublons ; il ne trie pas.'),
+        out(`const m = new Map();\nm.set("a", 1).set("b", 2);\nconsole.log(m.get("b"), m.get("c"));`, ['2 undefined', '2 null', '1 undefined', 'Erreur'], '`set` renvoie la Map elle-même, on peut donc enchaîner. Une clé inexistante donne `undefined`.'),
+        out(`const m = new Map([["x", 1], ["y", 2]]);\nconsole.log([...m.keys()]);`, ['["x", "y"]', '[1, 2]', '[["x", 1], ["y", 2]]', '2'], '`keys()` renvoie les clés dans l’ordre d’insertion.'),
+        out(`const s = new Set([1, 2, 3]);\ns.add(2);\ns.delete(1);\nconsole.log(s.size, s.has(1));`, ['2 false', '3 false', '3 true', '2 true'], 'Ajouter le 2 ne change rien car il y était déjà ; après avoir supprimé le 1, il reste 2 éléments.'),
+        out(`const a = new Set(["js", "py", "go"]);\nconst b = new Set(["py", "rs", "js"]);\nconst communs = [...a].filter((x) => b.has(x));\nconst tous = new Set([...a, ...b]);\nconsole.log(communs, tous.size);`, ['["js", "py"] 4', '["py", "js"] 4', '["js", "py"] 6', '["go", "rs"] 4'], 'L’intersection suit l’ordre de `a` : "js" et "py". L’union sans doublon contient js, py, go et rs.'),
+      ],
+    },
+    // Jour 13
+    {
       id: 'js-regex',
-      t: 'Expressions régulières',
-      d: 'Littéraux /.../, classes de caractères, test, match, replace et drapeaux.',
+      t: 'Texte, dates et regex',
+      d: 'Chercher, valider et remplacer du texte avec les expressions régulières, et travailler avec les dates avec Date.',
       guide: [
         { h: 'Ce qu’est une expression régulière', p: [
           'Une expression régulière décrit un motif de texte. Elle s’écrit entre barres obliques, `/motif/drapeaux`, ou avec `new RegExp("motif")` quand le motif est construit à partir d’une variable.',
@@ -443,9 +481,14 @@
           '`replace(regex, nouveau)` remplace la première correspondance, ou toutes si l’expression a `g`. Dans le texte de remplacement, `$1` est le premier groupe.',
           '`split` accepte aussi une expression régulière, pratique quand le séparateur varie.' ],
           code: `console.log("1-2-3".replace(/-/g, "+"));                    // 1+2+3\nconsole.log("Ana Ruiz".replace(/(\\w+) (\\w+)/, "$2, $1"));   // Ruiz, Ana\nconsole.log("un, deux,trois".split(/,\\s*/));               // ["un", "deux", "trois"]` },
-        { h: 'Exemple réel : valider un formulaire', real: true, p: [
-          'Un formulaire d’inscription vérifie l’e-mail et le code postal avant de les envoyer, et nettoie le numéro de téléphone que l’utilisateur a tapé avec des espaces et des tirets.' ],
-          code: `const regles = {\n  email: /^[\\w.-]+@[\\w-]+\\.[a-z]{2,}$/i,\n  cp: /^\\d{5}$/,\n};\n\nfunction valider(donnees) {\n  const erreurs = [];\n  if (!regles.email.test(donnees.email)) erreurs.push("email");\n  if (!regles.cp.test(donnees.cp)) erreurs.push("code postal");\n  return erreurs;\n}\n\nconsole.log(valider({ email: "ana@mail.com", cp: "75001" }));  // []\nconsole.log(valider({ email: "ana@mail", cp: "750" }));       // ["email", "code postal"]\nconsole.log("06 12-34 56 78".replace(/\\D/g, ""));            // 0612345678` },
+        { h: 'Les dates avec Date', p: [
+          '`new Date()` crée la date et l’heure actuelles ; `new Date(2024, 0, 15)` crée une date précise. Attention : les mois commencent à 0 (janvier) et finissent à 11 (décembre).',
+          '`getFullYear()`, `getMonth()`, `getDate()` (jour du mois) et `getDay()` (jour de la semaine, 0 est dimanche) lisent ses parties. Soustraire deux dates donne la différence en millisecondes.' ],
+          code: `const d = new Date(2024, 0, 15);  // 15 janvier 2024\nconsole.log(d.getFullYear(), d.getMonth(), d.getDate());  // 2024 0 15\nconsole.log(d.getDay());  // 1 (lundi)` },
+        { h: 'Exemple réel : combien de jours avant les vacances', real: true, p: [
+          'Un compte à rebours est un classique des sites d’événements. On soustrait les dates et on convertit les millisecondes en jours.',
+          '`Math.round` évite les erreurs d’une heure quand il y a un changement d’heure entre les deux dates.' ],
+          code: `const aujourdhui = new Date(2024, 5, 1);  // 1er juin\nconst voyage = new Date(2024, 6, 15);     // 15 juillet\nconst MS_PAR_JOUR = 1000 * 60 * 60 * 24;\nconst jours = Math.round((voyage - aujourdhui) / MS_PAR_JOUR);\nconsole.log("Plus que", jours, "jours");  // Plus que 44 jours` },
       ],
       x: [
         out(`console.log(/^\\d{3}$/.test("123"), /^\\d{3}$/.test("1234"));`, ['true false', 'true true', 'false false', 'false true'], 'Avec `^` et `$`, le texte entier doit avoir exactement trois chiffres.'),
@@ -453,312 +496,56 @@
         out(`console.log("a1b22c333".match(/\\d+/g));`, ['["1", "22", "333"]', '["1"]', '["1", "2", "2", "3", "3", "3"]', 'null'], '`\\d+` prend autant de chiffres consécutifs que possible, et `g` renvoie toutes les correspondances.'),
         out(`console.log("2024-05-01".replace(/-/g, "/"));`, ['2024/05/01', '2024/05-01', '2024-05-01', '/'], 'Avec `g`, tous les tirets sont remplacés, pas seulement le premier.'),
         mc('Que représente `\\s` dans une expression régulière ?', ['Un espace blanc : espace, tabulation ou saut de ligne', 'La lettre s', 'N’importe quel caractère', 'Un chiffre'], 'Son contraire est `\\S` : tout caractère qui n’est pas un espace.'),
-        typ('Fais-lui accepter une ou plusieurs lettres', `const seulementLettres = /^[a-z]___$/i;`, '+', '`+` signifie une ou plusieurs fois. Avec `*`, il accepterait aussi le texte vide.'),
+        out(`const d = new Date(2024, 0, 15);\nconsole.log(d.getMonth());`, ['0', '1', '15', '2024'], 'Dans `Date`, les mois commencent à 0 : janvier vaut 0.'),
         out(`console.log("un, deux,trois".split(/,\\s*/));`, ['["un", "deux", "trois"]', '["un", " deux", "trois"]', '["un, deux,trois"]'], 'Le séparateur est une virgule suivie de zéro ou plusieurs espaces, donc aucun morceau ne garde d’espace.'),
         out(`const texte = "Commandes : A-12, B-7, A-30, C-5";\nconst codes = texte.match(/A-\\d+/g);\nconst somme = codes.map((c) => Number(c.slice(2))).reduce((a, b) => a + b, 0);\nconsole.log(codes.length, somme, /c-5/i.test(texte));`, ['2 42 true', '2 42 false', '4 54 true', '3 42 true'], 'Seuls "A-12" et "A-30" commencent par A. `slice(2)` enlève "A-" : 12 + 30 = 42. Avec `i`, "c-5" trouve "C-5".'),
       ],
     },
-    // Jour 13
-    {
-      id: 'js-console',
-      t: 'Méthodes de console',
-      d: 'log, error, warn, table, time, count, group et assert pour déboguer.',
-      guide: [
-        { h: 'Au-delà de console.log', p: [
-          '`console.log` accepte plusieurs arguments et les sépare par une espace. Dans le navigateur, les objets s’affichent de façon interactive.',
-          '`console.info`, `console.warn` et `console.error` fonctionnent pareil, mais le navigateur les marque de couleurs et d’icônes et on peut les filtrer. `error` écrit en plus dans la sortie d’erreurs.' ],
-          code: `const utilisateur = { nom: "Ana", points: 40 };\nconsole.log("Utilisateur :", utilisateur, "actif");\nconsole.warn("Il reste peu d’essais");\nconsole.error("Impossible d’enregistrer");` },
-        { h: 'console.table', p: [
-          '`console.table` affiche un tableau d’objets sous forme de table, avec une ligne par élément et une colonne par propriété.',
-          'Un deuxième argument choisit les colonnes : `console.table(donnees, ["nom"])`. C’est idéal pour vérifier des données qui viennent d’une API.' ],
-          code: `const eleves = [\n  { nom: "Ana", note: 9 },\n  { nom: "Leo", note: 6 },\n];\nconsole.table(eleves);\n// ┌─────────┬───────┬──────┐\n// │ (index) │ nom   │ note │\n// │    0    │ "Ana" │  9   │\n// │    1    │ "Leo" │  6   │` },
-        { h: 'Mesurer et compter', p: [
-          '`console.time("étiquette")` lance un chronomètre et `console.timeEnd("étiquette")` affiche le temps écoulé. Tu sais ainsi quelle partie du code est lente.',
-          '`console.count("étiquette")` affiche combien de fois il a été appelé avec cette étiquette, et `console.countReset` remet le compteur à zéro.' ],
-          code: `console.time("boucle");\nlet s = 0;\nfor (let i = 0; i < 1e6; i++) s += i;\nconsole.timeEnd("boucle");  // boucle: 3.2 ms (variable)\n\nconsole.count("clic");  // clic: 1\nconsole.count("clic");  // clic: 2` },
-        { h: 'Regrouper et vérifier', p: [
-          '`console.group("titre")` met en retrait les messages suivants jusqu’à `console.groupEnd()`. Cela aide à lire la sortie des traitements en plusieurs étapes.',
-          '`console.assert(condition, message)` n’affiche le message, comme une erreur, que si la condition est fausse. Il n’arrête pas le programme.' ],
-          code: `console.group("Commande 42");\nconsole.log("Client : Ana");\nconsole.log("Total : 30 €");\nconsole.groupEnd();\n\nconsole.assert(1 + 1 === 2, "ne s’affiche pas");\nconsole.assert([].length > 0, "La liste est vide");  // Assertion failed: La liste est vide` },
-        { h: 'Exemple réel : déboguer un panier', real: true, p: [
-          'Un panier calcule un total faux. Avec quelques appels à console, on voit son contenu, on vérifie chaque étape et on mesure le calcul sans utiliser le débogueur.' ],
-          code: `const panier = [\n  { produit: "Livre", prix: 15, unites: 2 },\n  { produit: "Étui", prix: 8, unites: 0 },\n];\n\nconsole.table(panier);\nconsole.time("total");\nconst total = panier.reduce((s, l) => {\n  console.assert(l.unites > 0, "Ligne sans unités :", l.produit);\n  return s + l.prix * l.unites;\n}, 0);\nconsole.timeEnd("total");\nconsole.log("Total :", total);  // Total : 30` },
-      ],
-      x: [
-        mc('Quelle méthode affiche un tableau d’objets sous forme de table ?', ['console.table', 'console.grid', 'console.list', 'console.dir'], 'Chaque objet est une ligne et chaque propriété une colonne.'),
-        mc('Après `console.count("clic")` deux fois et `console.count("autre")` une fois, qu’affiche le dernier appel ?', ['autre: 1', 'autre: 3', 'clic: 3', '3'], 'Chaque étiquette a son propre compteur.'),
-        fill(`console.___("chargement");\nchargerDonnees();\nconsole.timeEnd("chargement");`, ['time', 'timer', 'start', 'clock'], '`console.time` et `console.timeEnd` doivent utiliser la même étiquette.'),
-        out(`console.assert(2 + 2 === 4, "échec");\nconsole.log("fin");`, ['fin', 'Assertion failed: échec\nfin', 'échec\nfin', 'Erreur'], 'La condition est vraie, donc `assert` n’affiche rien.'),
-        mc('En quoi `console.error` diffère-t-il de `console.log` ?', ['Il écrit dans la sortie d’erreurs et le navigateur le marque comme erreur', 'Il arrête le programme', 'Il lève une exception', 'Il n’y a aucune différence'], 'Pour lever une vraie erreur, on utilise `throw`.'),
-        typ('Ferme le groupe de messages', `console.group("Utilisateur");\nconsole.log("Ana");\nconsole.___();`, 'groupEnd', 'Chaque `group` se ferme avec son `groupEnd`.'),
-        out(`const n = 5;\nconsole.log("Total:", n, "articles");`, ['Total: 5 articles', 'Total:5articles', 'Total: n articles', 'Total: 5, articles'], 'Les arguments s’affichent séparés par une espace.'),
-        out(`for (let i = 0; i < 3; i++) console.count("étape");\nconsole.countReset("étape");\nconsole.count("étape");\nconsole.assert(false, "vérifier");`, ['étape: 1\nétape: 2\nétape: 3\nétape: 1\nAssertion failed: vérifier', 'étape: 1\nétape: 2\nétape: 3\nétape: 4\nAssertion failed: vérifier', 'étape: 1\nétape: 2\nétape: 3\nétape: 1', 'étape: 3\nétape: 1\nAssertion failed: vérifier'], 'La boucle compte jusqu’à 3, `countReset` remet le compteur à zéro et l’appel suivant repart à 1. `assert` avec `false` affiche son message.'),
-      ],
-    },
     // Jour 14
     {
-      id: 'js-errors',
-      t: 'Gestion des erreurs',
-      d: 'try, catch, finally, throw, types d’erreurs et erreurs personnalisées.',
+      id: 'js-workshop-contacts',
+      t: 'L’atelier de Kibi : le carnet de clients',
+      d: 'Projet de la semaine 2 : ranger les clients dans un tableau d’objets, les chercher, les valider et les résumer avec map, filter et reduce.',
       guide: [
-        { h: 'try et catch', p: [
-          'Quand quelque chose échoue, JavaScript lève une erreur et, si personne ne l’attrape, le script s’arrête. Le code qui peut échouer va dans `try` ; s’il échoue, `catch` s’exécute avec l’erreur.',
-          'L’objet erreur a `name` (le type) et `message` (la description). Si tu n’as pas besoin de l’erreur, tu peux écrire simplement `catch { ... }`.' ],
-          code: `try {\n  const donnees = JSON.parse("{mauvais json}");\n} catch (erreur) {\n  console.log(erreur.name);     // SyntaxError\n  console.log("Impossible de lire le fichier");\n}\nconsole.log("Le programme continue");` },
-        { h: 'Lever des erreurs avec throw', p: [
-          '`throw new Error("message")` lève une erreur personnalisée. La fonction s’arrête à cet endroit et l’erreur remonte jusqu’au `catch` le plus proche.',
-          'Lève des erreurs quand une fonction reçoit des données avec lesquelles elle ne peut pas travailler, au lieu de renvoyer une valeur bizarre qui échouera plus tard.' ],
-          code: `function diviser(a, b) {\n  if (b === 0) throw new Error("Impossible de diviser par zéro");\n  return a / b;\n}\n\ntry {\n  console.log(diviser(10, 2));  // 5\n  console.log(diviser(1, 0));   // lève : rien n’est affiché\n} catch (e) {\n  console.log(e.message);       // Impossible de diviser par zéro\n}` },
-        { h: 'finally et types d’erreurs', p: [
-          '`finally` s’exécute toujours, qu’il y ait une erreur ou non, même si le `try` fait un `return`. Il sert à fermer ou à nettoyer : cacher un indicateur de chargement, fermer une connexion.',
-          'Types courants : `TypeError` (mauvaise utilisation d’une valeur, comme lire une propriété de `null`), `ReferenceError` (variable inexistante), `SyntaxError` (code ou JSON mal écrit) et `RangeError` (nombre hors limites).' ],
-          code: `try {\n  const utilisateur = null;\n  utilisateur.nom;\n} catch (e) {\n  console.log(e instanceof TypeError);  // true\n} finally {\n  console.log("Nettoyage terminé");\n}` },
-        { h: 'Erreurs personnalisées', p: [
-          'Tu peux créer tes propres types en héritant de `Error`. Ainsi, le `catch` peut distinguer une erreur de validation d’un échec inattendu avec `instanceof`.',
-          'Si un `catch` reçoit une erreur qu’il ne sait pas traiter, le mieux est de la relancer avec `throw e` pour ne pas la cacher.' ],
-          code: `class ValidationError extends Error {\n  constructor(message) {\n    super(message);\n    this.name = "ValidationError";\n  }\n}\n\ntry {\n  throw new ValidationError("L’e-mail est vide");\n} catch (e) {\n  if (e instanceof ValidationError) console.log("Vérifie :", e.message);\n  else throw e;\n}` },
-        { h: 'Exemple réel : lire une configuration', real: true, p: [
-          'Une application lit sa configuration enregistrée sous forme de texte. Si le texte est cassé ou qu’il manque une donnée, elle prévient et utilise des valeurs par défaut au lieu de planter.' ],
-          code: `function lireConfig(texte) {\n  try {\n    const cfg = JSON.parse(texte);\n    if (!cfg.langue) throw new Error("La langue manque");\n    return cfg;\n  } catch (erreur) {\n    console.warn("Configuration invalide :", erreur.message);\n    return { langue: "fr" };\n  }\n}\n\nconsole.log(lireConfig('{"langue":"es"}').langue);  // es\nconsole.log(lireConfig("{}").langue);               // fr (avec avertissement)\nconsole.log(lireConfig("cassé").langue);            // fr (avec avertissement)` },
+        { h: 'La commande', p: [
+          'La boutique de Kibi a maintenant des habitués et veut s’en souvenir : nom, téléphone, nombre d’achats et depuis quand ils sont clients, pour récompenser les plus fidèles.',
+          'Cet atelier réunit la semaine 2 : tableaux, objets, méthodes qui transforment les tableaux, déstructuration, spread, Map, dates et expressions régulières.' ] },
+        { h: 'Étape 1 : les données', p: [
+          'Chaque client est un objet avec les mêmes propriétés, et tous vont dans un tableau. C’est comme une table : le tableau contient les lignes et les propriétés sont les colonnes.',
+          'Pour lire une donnée, on combine les deux accès : d’abord la position dans le tableau, puis la propriété.' ],
+          code: `const clients = [\n  { nom: "Lucía", telephone: "600111222", achats: 12, depuis: "2025-01-10" },\n  { nom: "Marco", telephone: "600333444", achats: 3, depuis: "2025-06-02" },\n  { nom: "Aiko", telephone: "600555666", achats: 7, depuis: "2026-02-20" },\n];\nconsole.log(clients.length, clients[0].nom);  // 3 Lucía` },
+        { h: 'Étape 2 : chercher et ajouter sans doublons', p: [
+          '`find()` renvoie le premier client qui correspond, ou `undefined` s’il n’y en a aucun. On compare en minuscules pour que « aiko » trouve « Aiko ».',
+          '`ajouter()` vérifie avec une expression régulière que le téléphone a 9 chiffres et renvoie un nouveau tableau avec spread, sans modifier l’original. Si quelque chose ne va pas, elle renvoie la liste telle quelle.' ],
+          code: `const chercher = (liste, nom) =>\n  liste.find((c) => c.nom.toLowerCase() === nom.toLowerCase());\n\nfunction ajouter(liste, nom, telephone) {\n  if (!/^\\d{9}$/.test(telephone) || chercher(liste, nom)) return liste;\n  const depuis = new Date().toISOString().slice(0, 10);\n  return [...liste, { nom, telephone, achats: 0, depuis }];\n}\n\nconsole.log(chercher(clients, "aiko").telephone);  // 600555666` },
+        { h: 'Étape 3 : filtrer et résumer', p: [
+          '`filter()` garde les clients fidèles et `map()` ne prend que leur nom. `reduce()` parcourt le tableau en accumulant un résultat : ici, le total des achats.',
+          'Dans le paramètre de `reduce`, on déstructure `{ achats }` pour ne pas écrire `c.achats`.' ],
+          code: `const fideles = clients.filter((c) => c.achats >= 5).map((c) => c.nom);\nconsole.log(fideles.join(", "));  // Lucía, Aiko\n\nconst total = clients.reduce((somme, { achats }) => somme + achats, 0);\nconsole.log(total);  // 22` },
+        { h: 'Étape 4 : un index par téléphone', p: [
+          'Si tu cherches souvent par téléphone, une `Map` le trouve instantanément sans parcourir le tableau. Elle se crée à partir de paires `[clé, valeur]`.',
+          'Avec `Date`, on obtient l’année d’inscription de chaque client pour savoir depuis combien de temps il fréquente la boutique.' ],
+          code: `const parTelephone = new Map(clients.map((c) => [c.telephone, c]));\nconsole.log(parTelephone.get("600333444").nom);  // Marco\n\nconst annee = (c) => new Date(c.depuis).getFullYear();\nconsole.log(annee(clients[2]));  // 2026` },
+        { h: 'Exemple réel : la fiche de chaque client', real: true, p: [
+          'Une fonction qui reçoit un client déstructuré et renvoie une ligne prête à afficher : le niveau selon ses achats et le téléphone groupé par trois avec `replace` et les groupes de l’expression régulière.' ],
+          code: `function fiche({ nom, telephone, achats }) {\n  const niveau = achats >= 10 ? "or" : achats >= 5 ? "argent" : "nouveau";\n  const tel = telephone.replace(/(\\d{3})(\\d{3})(\\d{3})/, "$1 $2 $3");\n  return \`\${nom.padEnd(6)} \${tel}  \${niveau}\`;\n}\n\nclients.forEach((c) => console.log(fiche(c)));\n// Lucía  600 111 222  or\n// Marco  600 333 444  nouveau\n// Aiko   600 555 666  argent` },
       ],
       x: [
-        out(`let r = "";\ntry {\n  r += "A";\n  throw new Error("x");\n  r += "B";\n} catch {\n  r += "C";\n} finally {\n  r += "D";\n}\nconsole.log(r);`, ['ACD', 'ABCD', 'AD', 'AC'], 'Après le `throw`, le reste du `try` ne s’exécute pas. Viennent ensuite `catch` et `finally`.'),
-        fill(`if (solde < montant) {\n  ___ new Error("Solde insuffisant");\n}`, ['throw', 'raise', 'error', 'catch'], 'En JavaScript, les erreurs se lèvent avec `throw`. `raise` vient de Python.'),
-        out(`try {\n  null.length;\n} catch (e) {\n  console.log(e.name);\n}`, ['TypeError', 'ReferenceError', 'SyntaxError', 'RangeError'], 'Lire une propriété de `null`, c’est mal utiliser une valeur : `TypeError`.'),
-        out(`try {\n  console.log(nExistePas);\n} catch (e) {\n  console.log(e instanceof ReferenceError);\n}`, ['true', 'false', 'undefined'], 'Utiliser une variable qui n’a pas été déclarée lève une `ReferenceError`.'),
-        mc('Quand le bloc `finally` s’exécute-t-il ?', ['Toujours, qu’il y ait une erreur ou non', 'Seulement s’il y a une erreur', 'Seulement s’il n’y a pas d’erreur', 'Jamais si le try fait un return'], 'C’est pourquoi on s’en sert pour nettoyer, quoi qu’il arrive.'),
-        typ('Crée ton propre type d’erreur', `class ValidationError ___ Error {}`, 'extends', 'Hériter de `Error` permet ensuite de la distinguer avec `instanceof`.'),
-        out(`function f() {\n  try {\n    return "try";\n  } finally {\n    console.log("finally");\n  }\n}\nconsole.log(f());`, ['finally\ntry', 'try\nfinally', 'try', 'finally'], 'Le `return` attend que `finally` se termine : on voit d’abord "finally", puis la valeur renvoyée.'),
-        out('class ValidationError extends Error {\n  constructor(champ) {\n    super(`${champ} n’est pas valide`);\n    this.name = "ValidationError";\n  }\n}\nfunction valider(age) {\n  if (typeof age !== "number") throw new TypeError("l’âge doit être un nombre");\n  if (age < 0) throw new ValidationError("age");\n  return age;\n}\nconst journal = [];\nfor (const v of [30, -1, "x"]) {\n  try {\n    journal.push(valider(v));\n  } catch (e) {\n    journal.push(e instanceof ValidationError ? e.message : e.name);\n  } finally {\n    journal.push("|");\n  }\n}\nconsole.log(journal.join(" "));', ['30 | age n’est pas valide | TypeError |', '30 | age n’est pas valide | l’âge doit être un nombre |', '30 | ValidationError | TypeError |', '30 age n’est pas valide TypeError'], '30 est valide. -1 lève `ValidationError` et on garde son message. "x" lève `TypeError`, qui n’est pas une `ValidationError`, on garde donc son `name`. `finally` ajoute "|" à chacun des trois tours.'),
+        out(`const c = { nom: "Aiko", achats: 7 };\nconsole.log(c.achats + 1);`, ['8', '71', '7', 'undefined'], '`c.achats` est le nombre 7 ; en ajoutant 1, on obtient 8.'),
+        out(`const clients = [{ n: "Ana" }, { n: "Leo" }];\nconsole.log(clients[1].n);`, ['Leo', 'Ana', 'undefined', '[object Object]'], '`clients[1]` est le deuxième objet et `.n` lit son nom.'),
+        fill(`const liste = [{ n: "Ana" }];\nconst autre = [___liste, { n: "Eva" }];\nconsole.log(autre.length);  // 2`, ['...', '..', '*', '&'], 'Les trois points du spread copient les éléments de `liste` dans le nouveau tableau.'),
+        out(`const clients = [{ k: 2 }, { k: 5 }];\nconsole.log(clients.reduce((s, c) => s + c.k, 0));`, ['7', '25', '[2, 5]', 'NaN'], '`reduce` part de 0 et ajoute le `k` de chaque client : 2 + 5.'),
+        out(`const clients = [{ n: "Ana", k: 9 }, { n: "Leo", k: 2 }, { n: "Eva", k: 5 }];\nconsole.log(clients.filter((c) => c.k > 4).map((c) => c.n).join(", "));`, ['Ana, Eva', 'Leo', 'Ana, Leo, Eva', '9, 5'], '`filter` garde les clients dont `k` est supérieur à 4 et `map` prend leur nom.'),
+        mc('Pourquoi `ajouter()` renvoie-t-elle `[...liste, nouveau]` au lieu d’utiliser `push` ?', ['Pour créer un nouveau tableau sans modifier l’original', 'Parce que les tableaux n’ont pas de push', 'Parce que le spread est toujours plus rapide', 'Pour trier les clients'], '`push` modifierait le tableau reçu par la fonction. En renvoyer un nouveau évite les surprises dans le code qui l’utilisait.'),
+        typ('Complète la vérification que le téléphone a 9 chiffres', `const valide = /^\\d{9}$/.___(telephone);`, 'test', '`test()` renvoie `true` si le texte correspond à l’expression régulière.'),
+        out(`const liste = [{ nom: "Ana", achats: 3 }];\nfunction ajouter(liste, nom) {\n  if (liste.some((c) => c.nom === nom)) return liste;\n  return [...liste, { nom, achats: 0 }];\n}\nconst a = ajouter(liste, "Leo");\nconst b = ajouter(a, "Ana");\nconsole.log(a.length, b === a, liste.length);`, ['2 true 1', '3 false 2', '2 false 1', '2 true 2'], 'Leo est ajouté dans un nouveau tableau de 2 clients. Ana y était déjà, donc on renvoie le même tableau (`b === a`). L’original ne change pas.'),
       ],
     },
     // Jour 15
     {
-      id: 'js-classes',
-      t: 'Classes',
-      d: 'class, constructor, méthodes, getters, extends, super, static et champs privés.',
-      guide: [
-        { h: 'Déclarer une classe', p: [
-          'Une classe est un moule pour créer des objets de même forme. Le `constructor` s’exécute avec `new` et prépare les propriétés de l’objet avec `this`.',
-          'Les méthodes s’écrivent dans la classe sans le mot `function` et sont partagées par tous les objets créés avec elle.' ],
-          code: `class Produit {\n  constructor(nom, prix) {\n    this.nom = nom;\n    this.prix = prix;\n  }\n  avecTva() {\n    return this.prix * 1.2;\n  }\n}\n\nconst livre = new Produit("Livre", 20);\nconsole.log(livre.nom, livre.avecTva());  // Livre 24` },
-        { h: 'Getters, setters et champs privés', p: [
-          'Un champ qui commence par `#` est privé : on ne peut l’utiliser qu’à l’intérieur de la classe. Essayer de le lire depuis l’extérieur est une erreur de syntaxe.',
-          '`get` définit une propriété calculée qu’on lit sans parenthèses et `set` une propriété qui valide avant d’enregistrer.' ],
-          code: `class Thermostat {\n  #degres = 20;\n  get degres() {\n    return this.#degres;\n  }\n  set degres(valeur) {\n    this.#degres = Math.min(30, Math.max(15, valeur));\n  }\n}\n\nconst t = new Thermostat();\nt.degres = 42;\nconsole.log(t.degres);  // 30` },
-        { h: 'Héritage avec extends et super', p: [
-          '`class Fille extends Mere` crée une classe qui hérite des propriétés et méthodes d’une autre. Elle peut ajouter les siennes et redéfinir celles héritées.',
-          'Dans le constructeur de la fille, il faut appeler `super(...)` avant d’utiliser `this`. Dans une méthode, `super.methode()` appelle la version de la mère.' ],
-          code: `class Animal {\n  constructor(nom) {\n    this.nom = nom;\n  }\n  parler() {\n    return this.nom + " fait un bruit";\n  }\n}\n\nclass Chien extends Animal {\n  parler() {\n    return super.parler() + " : ouaf !";\n  }\n}\n\nconsole.log(new Chien("Toby").parler());  // Toby fait un bruit : ouaf !` },
-        { h: 'Membres static et instanceof', p: [
-          'Une méthode ou propriété `static` appartient à la classe, pas à chaque objet : on l’utilise comme `Classe.methode()`. Elle sert pour les utilitaires et les compteurs partagés.',
-          '`objet instanceof Classe` vérifie si un objet a été créé avec cette classe ou avec une classe qui en hérite. Au fond, une classe reste une fonction : `typeof Classe` vaut « function ».' ],
-          code: `class Utilisateur {\n  static crees = 0;\n  constructor(nom) {\n    this.nom = nom;\n    Utilisateur.crees++;\n  }\n  static invite() {\n    return new Utilisateur("invité");\n  }\n}\n\nconst u = Utilisateur.invite();\nnew Utilisateur("Ana");\nconsole.log(Utilisateur.crees, u instanceof Utilisateur);  // 2 true` },
-        { h: 'Exemple réel : un panier d’achat', real: true, p: [
-          'Une boutique en ligne garde les lignes du panier dans un champ privé. De l’extérieur, on ne peut qu’ajouter des produits et lire le total, donc personne ne peut laisser le panier dans un état incorrect.' ],
-          code: `class Panier {\n  #lignes = [];\n  ajouter(produit, prix, unites = 1) {\n    if (unites <= 0) throw new Error("Unités invalides");\n    this.#lignes.push({ produit, prix, unites });\n    return this;   // permet d’enchaîner\n  }\n  get total() {\n    return this.#lignes.reduce((s, l) => s + l.prix * l.unites, 0);\n  }\n  get nombre() {\n    return this.#lignes.length;\n  }\n}\n\nconst p = new Panier().ajouter("Tasse", 8, 2).ajouter("Café", 12);\nconsole.log(p.nombre, p.total);  // 2 28` },
-      ],
-      x: [
-        fill(`class Chien ___ Animal {\n  aboyer() { return "ouaf"; }\n}`, ['extends', 'inherits', 'implements', ':'], 'En JavaScript, l’héritage s’écrit avec `extends`.'),
-        out(`class Compteur {\n  #n = 0;\n  inc() {\n    this.#n++;\n    return this;\n  }\n  get valeur() {\n    return this.#n;\n  }\n}\nconst c = new Compteur();\nc.inc().inc().inc();\nconsole.log(c.valeur);`, ['3', '1', 'undefined', 'Erreur'], '`inc` renvoie `this`, on peut donc enchaîner. Le getter se lit sans parenthèses.'),
-        mc('Que fait `super(...)` dans le constructeur d’une classe fille ?', ['Il appelle le constructeur de la classe mère', 'Il crée une copie de l’objet', 'Il rend la méthode statique', 'Il supprime la classe mère'], 'Il est obligatoire de l’appeler avant d’utiliser `this` dans une classe qui utilise `extends`.'),
-        out(`class A {\n  salut() { return "A"; }\n}\nclass B extends A {\n  salut() { return "B" + super.salut(); }\n}\nconsole.log(new B().salut());`, ['BA', 'B', 'A', 'AB'], '`B` redéfinit `salut`, mais appelle la version de `A` avec `super.salut()`.'),
-        typ('Fais en sorte que la méthode s’utilise depuis la classe, sans créer d’objet', `class Maths {\n  ___ double(n) { return n * 2; }\n}\nconsole.log(Maths.double(4));`, 'static', 'Les méthodes `static` appartiennent à la classe.'),
-        out(`class Point {\n  constructor(x) { this.x = x; }\n}\nconst p = new Point(2);\nconsole.log(typeof Point, p instanceof Point);`, ['function true', 'class true', 'object true', 'function false'], 'Au fond, une classe est une fonction spéciale.'),
-        mc('Que se passe-t-il si on écrit `panier.#lignes` en dehors de la classe ?', ['Erreur de syntaxe : les champs privés ne s’utilisent que dans la classe', 'Ça renvoie undefined', 'Ça renvoie le tableau', 'Ça renvoie null'], 'Les champs `#` sont protégés par le langage lui-même, pas seulement par convention.'),
-        out(`class Compte {\n  static total = 0;\n  #solde;\n  constructor(titulaire, solde = 0) {\n    this.titulaire = titulaire;\n    this.#solde = solde;\n    Compte.total++;\n  }\n  retirer(c) {\n    if (c > this.#solde) throw new Error("Fonds insuffisants");\n    this.#solde -= c;\n  }\n  get solde() { return this.#solde; }\n}\nclass Epargne extends Compte {\n  retirer(c) { super.retirer(c + 1); }\n}\nconst a = new Compte("Ana", 50);\nconst b = new Epargne("Leo", 20);\na.retirer(30);\ntry { b.retirer(20); } catch (e) { console.log(e.message); }\nconsole.log(a.solde, b.solde, Compte.total);`, ['Fonds insuffisants\n20 20 2', 'Fonds insuffisants\n20 0 2', '20 0 2', 'Fonds insuffisants\n20 20 1'], '`a` passe de 50 à 20. `Epargne` prélève 1 de frais : retirer 20 demande 21, plus que ce qu’il a, et lève l’erreur sans toucher au solde. Deux comptes ont été créés.'),
-      ],
-    },
-    // Jour 16
-    {
-      id: 'js-json',
-      t: 'JSON',
-      d: 'JSON.stringify, JSON.parse, les règles du format et les copies de données.',
-      guide: [
-        { h: 'Ce qu’est JSON', p: [
-          'JSON est un format texte pour échanger des données. Presque toutes les API web l’utilisent, ainsi que de nombreux fichiers de configuration comme `package.json`.',
-          'Il ressemble à un objet JavaScript, mais il est plus strict : les clés et les textes vont entre guillemets doubles, il n’accepte ni commentaires ni virgules finales, et il ne stocke que des textes, des nombres, des booléens, `null`, des tableaux et des objets.' ],
-          code: `{\n  "nom": "Ana",\n  "age": 31,\n  "active": true,\n  "cours": ["js", "python"],\n  "adresse": { "ville": "Nantes" },\n  "telephone": null\n}` },
-        { h: 'JSON.stringify : de l’objet au texte', p: [
-          '`JSON.stringify(valeur)` transforme une valeur en texte JSON. Le troisième argument ajoute une indentation pour le rendre lisible : `JSON.stringify(obj, null, 2)`.',
-          'Les propriétés avec `undefined` ou des fonctions sont omises, et les dates sont converties en texte au format ISO.' ],
-          code: `const utilisateur = { nom: "Leo", age: 25, saluer() {}, surnom: undefined };\nconsole.log(JSON.stringify(utilisateur));  // {"nom":"Leo","age":25}\nconsole.log(JSON.stringify({ a: 1, b: [2, 3] }, null, 2));\n// {\n//   "a": 1,\n//   "b": [\n//     2,\n//     3\n//   ]\n// }` },
-        { h: 'JSON.parse : du texte à l’objet', p: [
-          '`JSON.parse(texte)` fait l’inverse : il lit un texte JSON et renvoie la valeur JavaScript.',
-          'Si le texte n’est pas un JSON valide, il lève une `SyntaxError` : avec des données venant de l’extérieur, mieux vaut utiliser `try...catch`.' ],
-          code: `const texte = '{"produit":"Tasse","prix":8.5}';\nconst obj = JSON.parse(texte);\nconsole.log(obj.prix * 2);  // 17\n\ntry {\n  JSON.parse("{prix: 8.5}");  // clés sans guillemets\n} catch (e) {\n  console.log(e.name);  // SyntaxError\n}` },
-        { h: 'Copies et dates', p: [
-          '`JSON.parse(JSON.stringify(obj))` crée une copie profonde : les objets intérieurs ne sont plus partagés. Mais elle perd les dates, `undefined` et les fonctions.',
-          'Pour des copies profondes fiables, il existe `structuredClone(obj)`, qui conserve les dates. En lisant du JSON, les dates arrivent sous forme de texte : reconvertis-les avec `new Date(texte)`.' ],
-          code: `const original = { date: new Date(2024, 0, 1), etiquettes: ["a"] };\nconst viaJson = JSON.parse(JSON.stringify(original));\nconst clone = structuredClone(original);\nconsole.log(typeof viaJson.date);         // string\nconsole.log(clone.date instanceof Date);   // true` },
-        { h: 'Exemple réel : envoyer et recevoir une commande', real: true, p: [
-          'Une boutique envoie la commande à son serveur sous forme de texte JSON et reçoit la réponse en JSON aussi. Les dates sont reconverties à la lecture.' ],
-          code: `const commande = { client: "Eva", lignes: [{ produit: "Livre", unites: 2 }], date: new Date() };\nconst corps = JSON.stringify(commande);   // serait envoyé avec fetch\n\nconst reponse = '{"id":981,"statut":"payée","date":"2024-03-10T09:30:00.000Z"}';\nconst donnees = JSON.parse(reponse);\nconst date = new Date(donnees.date);\nconsole.log(donnees.id, donnees.statut, date.getUTCHours());  // 981 payée 9` },
-      ],
-      x: [
-        mc('Lequel de ces textes est un JSON valide ?', ['{"nom": "Ana", "age": 30}', '{nom: "Ana"}', "{'nom': 'Ana'}", '{"age": 30,}'], 'JSON exige des guillemets doubles pour les clés et les textes et n’accepte pas de virgule finale.'),
-        out(`console.log(JSON.stringify({ a: 1, b: "x" }));`, ['{"a":1,"b":"x"}', '{ a: 1, b: "x" }', '{"a": 1, "b": "x"}', '[object Object]'], 'Sans indentation, `stringify` ne laisse aucune espace.'),
-        out(`const o = JSON.parse('{"n": 5}');\nconsole.log(o.n + 1, typeof o);`, ['6 object', '51 object', '6 string', 'NaN object'], '`parse` renvoie un objet et `n` est un vrai nombre.'),
-        fill(`const utilisateur = { nom: "Ana" };\nconst texte = JSON.___(utilisateur);`, ['stringify', 'parse', 'toString', 'encode'], '`stringify` transforme l’objet en texte JSON.'),
-        out(`console.log(JSON.stringify({ a: undefined, b: () => 1, c: null }));`, ['{"c":null}', '{"a":undefined,"b":null,"c":null}', '{"a":null,"b":null,"c":null}', '{}'], 'Les propriétés avec `undefined` ou des fonctions sont omises ; `null`, lui, est gardé.'),
-        typ('Transforme le texte JSON en objet', `const texte = '{"actif":true}';\nconst donnees = JSON.___(texte);`, 'parse', '`JSON.parse` lit le texte et renvoie la valeur.'),
-        out(`const original = { liste: [1, 2] };\nconst copie = JSON.parse(JSON.stringify(original));\ncopie.liste.push(3);\nconsole.log(original.liste.length, copie.liste.length);`, ['2 3', '3 3', '2 2', '3 2'], 'La copie faite avec JSON est profonde : le tableau intérieur n’est plus partagé.'),
-        out(`const commande = { id: 3, date: new Date(Date.UTC(2024, 0, 15)), articles: [{ p: "thé", n: 2 }], note: undefined };\nconst texte = JSON.stringify(commande);\nconst retour = JSON.parse(texte);\nconsole.log(typeof retour.date, "note" in retour, retour.articles[0].n * 2, texte.includes("2024-01-15"));`, ['string false 4 true', 'object false 4 true', 'string true 4 true', 'object true 4 false'], 'La date est enregistrée en texte ISO et revient en texte. `note` valait `undefined`, elle n’a donc pas été enregistrée. Les tableaux et objets intérieurs sont conservés.'),
-      ],
-    },
-    // Jour 17
-    {
-      id: 'js-storage',
-      t: 'Web Storage',
-      d: 'Enregistrer des données dans le navigateur avec localStorage et sessionStorage.',
-      guide: [
-        { h: 'Ce qu’est Web Storage', p: [
-          'Le navigateur offre deux magasins de paires clé-valeur : `localStorage`, qui garde les données même si tu fermes le navigateur, et `sessionStorage`, qui les efface à la fermeture de l’onglet.',
-          'Chaque site web a son propre magasin et ne peut lire que le sien. On peut y stocker environ 5 Mo et tout est enregistré sous forme de texte.' ] },
-        { h: 'Enregistrer, lire et supprimer', p: [
-          '`setItem(clé, valeur)` enregistre, `getItem(clé)` lit (renvoie `null` si la clé n’existe pas), `removeItem(clé)` supprime une clé et `clear()` efface tout.',
-          '`length` indique combien de clés il y a. Toute valeur est convertie en texte : si tu enregistres le nombre 5, tu liras « 5 ».' ],
-          code: `localStorage.setItem("theme", "sombre");\nconsole.log(localStorage.getItem("theme"));   // sombre\nconsole.log(localStorage.getItem("langue"));  // null\n\nlocalStorage.setItem("visites", 3);\nconsole.log(typeof localStorage.getItem("visites"));  // string\nlocalStorage.removeItem("theme");` },
-        { h: 'Enregistrer des objets avec JSON', p: [
-          'Si tu enregistres un objet directement, il devient le texte « [object Object] » et les données sont perdues. Il faut le passer par `JSON.stringify` à l’enregistrement et par `JSON.parse` à la lecture.',
-          'Comme `JSON.parse(null)` renvoie `null`, avec `??` tu peux donner une valeur par défaut quand la clé n’existe pas encore.' ],
-          code: `const panier = [{ produit: "Tasse", unites: 2 }];\nlocalStorage.setItem("panier", JSON.stringify(panier));\n\nconst lu = JSON.parse(localStorage.getItem("panier")) ?? [];\nconsole.log(lu[0].produit);  // Tasse` },
-        { h: 'sessionStorage, événements et sécurité', p: [
-          '`sessionStorage` a les mêmes méthodes. Utilise-le pour des données temporaires, comme un formulaire à moitié rempli.',
-          'Quand un autre onglet du même site modifie `localStorage`, l’événement `storage` se déclenche, pratique pour synchroniser les onglets.',
-          'N’enregistre pas de mots de passe ni de données sensibles : n’importe quel script exécuté sur ta page peut lire le magasin.' ],
-          code: `sessionStorage.setItem("brouillon", "Bonjour, je voulais demander...");\n\nwindow.addEventListener("storage", (e) => {\n  if (e.key === "theme") appliquerTheme(e.newValue);\n});` },
-        { h: 'Exemple réel : se souvenir du mode sombre', real: true, p: [
-          'Un site enregistre la préférence de thème de l’utilisateur. Quand il revient des jours plus tard, la page s’ouvre avec le thème qu’il a choisi.' ],
-          code: `const CLE = "preferences";\n\nfunction lirePreferences() {\n  return JSON.parse(localStorage.getItem(CLE)) ?? { theme: "clair", police: 16 };\n}\n\nfunction changerTheme(theme) {\n  const prefs = { ...lirePreferences(), theme };\n  localStorage.setItem(CLE, JSON.stringify(prefs));\n  document.body.dataset.theme = theme;\n}\n\ndocument.body.dataset.theme = lirePreferences().theme;  // au chargement de la page` },
-      ],
-      x: [
-        mc('Quelle est la différence entre `localStorage` et `sessionStorage` ?', ['localStorage garde les données à la fermeture du navigateur ; sessionStorage les efface à la fermeture de l’onglet', 'sessionStorage stocke plus de données', 'localStorage ne stocke que des nombres', 'Il n’y a aucune différence'], 'Les deux ont les mêmes méthodes et ne stockent que du texte.'),
-        fill(`localStorage.___("theme", "sombre");`, ['setItem', 'set', 'save', 'put'], '`setItem(clé, valeur)` enregistre une valeur.'),
-        out(`localStorage.setItem("visites", 5);\nconst v = localStorage.getItem("visites");\nconsole.log(typeof v, v + 1);`, ['string 51', 'number 6', 'string 6', 'number 51'], 'Tout est enregistré en texte, donc `+` concatène.'),
-        out(`console.log(localStorage.getItem("inexistant"));`, ['null', 'undefined', '""', 'Erreur'], 'Une clé qui n’existe pas renvoie `null`.'),
-        out(`localStorage.setItem("u", { nom: "Ana" });\nconsole.log(localStorage.getItem("u"));`, ['[object Object]', '{"nom":"Ana"}', '{ nom: "Ana" }', 'null'], 'Sans `JSON.stringify`, l’objet devient un texte inutile.'),
-        typ('Donne un objet vide par défaut si la clé n’existe pas', `const prefs = JSON.parse(localStorage.getItem("prefs")) ___ {};`, ['??', '||'], '`JSON.parse(null)` vaut `null`, et `??` le remplace par `{}`.'),
-        mc('Que ne faut-il PAS enregistrer dans localStorage ?', ['Des mots de passe ou des données sensibles', 'La langue choisie', 'Le thème clair ou sombre', 'Un brouillon de commentaire'], 'N’importe quel script exécuté sur la page peut lire le magasin.'),
-        out(`localStorage.clear();\nconst enregistrer = (k, v) => localStorage.setItem(k, JSON.stringify(v));\nconst charger = (k, def) => JSON.parse(localStorage.getItem(k)) ?? def;\nenregistrer("taches", ["pain", "lait"]);\nconst taches = charger("taches", []);\ntaches.push("café");\nenregistrer("taches", taches);\nlocalStorage.removeItem("theme");\nconsole.log(charger("taches", []).length, charger("theme", "clair"), localStorage.length);`, ['3 clair 1', '2 clair 1', '3 null 1', '3 clair 2'], 'Les tâches sont lues, complétées et réenregistrées : 3. "theme" n’existe pas, donc `charger` renvoie la valeur par défaut. Il ne reste qu’une clé.'),
-      ],
-    },
-    // Jour 18
-    {
-      id: 'js-promises',
-      t: 'Promesses',
-      d: 'Code asynchrone, Promise, then, catch, Promise.all et l’ordre d’exécution.',
-      guide: [
-        { h: 'Le code asynchrone', p: [
-          'Certaines tâches prennent du temps : demander des données à un serveur, lire un fichier, attendre un minuteur. JavaScript ne reste pas bloqué à attendre : il continue avec le reste du code et traite le résultat quand il arrive.',
-          '`setTimeout(fn, ms)` est l’exemple le plus simple : il programme une fonction pour plus tard. Même avec 0 ms, elle s’exécute après le code déjà en cours.' ],
-          code: `console.log("1. Je demande les données");\nsetTimeout(() => console.log("3. Les données arrivent"), 1000);\nconsole.log("2. Je continue à travailler");` },
-        { h: 'Créer et utiliser des promesses', p: [
-          'Une promesse représente une valeur qui arrivera dans le futur. Elle est en attente, puis elle est tenue (resolve) ou rejetée (reject).',
-          '`then` reçoit la valeur quand elle est tenue, `catch` l’erreur quand elle est rejetée et `finally` s’exécute dans les deux cas.' ],
-          code: `function lancerDe() {\n  return new Promise((resolve, reject) => {\n    setTimeout(() => {\n      const n = Math.ceil(Math.random() * 6);\n      if (n === 1) reject(new Error("Tu as fait un 1"));\n      else resolve(n);\n    }, 500);\n  });\n}\n\nlancerDe()\n  .then((n) => console.log("Tu as fait", n))\n  .catch((e) => console.log(e.message))\n  .finally(() => console.log("Fin du lancer"));` },
-        { h: 'Enchaîner', p: [
-          'Ce que renvoie un `then` est la valeur que reçoit le suivant. S’il renvoie une autre promesse, la chaîne attend qu’elle soit tenue.',
-          'Un seul `catch` à la fin attrape l’erreur de n’importe quelle étape précédente.' ],
-          code: `Promise.resolve(2)\n  .then((n) => n * 10)\n  .then((n) => {\n    if (n > 100) throw new Error("Trop grand");\n    return n + 1;\n  })\n  .then((n) => console.log(n))   // 21\n  .catch((e) => console.log(e.message));` },
-        { h: 'Plusieurs promesses et l’ordre d’exécution', p: [
-          '`Promise.all([...])` attend qu’elles soient toutes tenues et renvoie leurs valeurs dans l’ordre ; si une échoue, tout échoue. `Promise.allSettled` les attend toutes et dit comment chacune s’est terminée. `Promise.race` garde la première qui se termine.',
-          'L’ordre : d’abord tout le code synchrone, ensuite les promesses tenues (microtâches) et enfin les minuteurs (macrotâches).' ],
-          code: `console.log("A");\nsetTimeout(() => console.log("D"), 0);\nPromise.resolve().then(() => console.log("C"));\nconsole.log("B");\n// A B C D` },
-        { h: 'Exemple réel : charger un tableau de bord en parallèle', real: true, p: [
-          'Un tableau de bord a besoin de l’utilisateur, de ses commandes et de ses notifications. On les demande en même temps avec `Promise.all` : le temps total est celui de la requête la plus lente, pas la somme de toutes.' ],
-          code: `const attendre = (ms, valeur) => new Promise((r) => setTimeout(() => r(valeur), ms));\n\nconst demanderUtilisateur = () => attendre(300, { nom: "Ana" });\nconst demanderCommandes = () => attendre(500, [101, 102]);\nconst demanderAvis = () => attendre(200, ["Colis en route"]);\n\nconsole.time("tableau");\nPromise.all([demanderUtilisateur(), demanderCommandes(), demanderAvis()])\n  .then(([utilisateur, commandes, avis]) => {\n    console.log(utilisateur.nom, commandes.length, avis[0]);  // Ana 2 Colis en route\n    console.timeEnd("tableau");  // environ 500 ms, pas 1000\n  })\n  .catch((e) => console.log("Impossible de charger le tableau :", e.message));` },
-      ],
-      x: [
-        out(`console.log("A");\nsetTimeout(() => console.log("B"), 0);\nconsole.log("C");`, ['A\nC\nB', 'A\nB\nC', 'B\nA\nC', 'C\nA\nB'], 'Le minuteur s’exécute quand le code synchrone est terminé, même avec 0 ms.'),
-        out(`console.log(1);\nsetTimeout(() => console.log(2), 0);\nPromise.resolve().then(() => console.log(3));\nconsole.log(4);`, ['1\n4\n3\n2', '1\n2\n3\n4', '1\n4\n2\n3', '1\n3\n4\n2'], 'D’abord le code synchrone (1 et 4), ensuite les promesses (3) et enfin les minuteurs (2).'),
-        fill(`const p = Promise.___(new Error("raté"));\np.catch((e) => console.log(e.message));  // raté`, ['reject', 'fail', 'error', 'catch'], '`Promise.reject` crée une promesse déjà rejetée, comme `Promise.resolve` en crée une déjà tenue.'),
-        out(`Promise.resolve(2)\n  .then((n) => n * 3)\n  .then((n) => console.log(n + 1));`, ['7', '6', '3', 'undefined'], 'Le premier `then` renvoie 6 et le second le reçoit : 6 + 1 = 7.'),
-        mc('Que fait `Promise.all` si l’une des promesses est rejetée ?', ['Elle est rejetée dès qu’une échoue', 'Elle ignore celle qui échoue', 'Elle les attend toutes et renvoie les erreurs', 'Elle la relance'], 'Si tu as besoin du résultat de toutes, même en cas d’échec, utilise `Promise.allSettled`.'),
-        typ('Attrape l’erreur de la chaîne', `demanderDonnees()\n  .then(afficher)\n  .___((erreur) => console.log(erreur.message));`, 'catch', 'Un `catch` à la fin attrape l’erreur de n’importe quelle étape précédente.'),
-        out(`Promise.reject(new Error("x"))\n  .then(() => console.log("A"))\n  .catch((e) => console.log("B", e.message))\n  .finally(() => console.log("C"));`, ['B x\nC', 'A\nB x\nC', 'B x', 'A\nC'], 'La promesse rejetée saute le `then` et arrive au `catch`. `finally` s’exécute toujours.'),
-        out(`const attendre = (ms, v) => new Promise((r) => setTimeout(() => r(v), ms));\nconst journal = [];\nPromise.all([attendre(30, "a"), attendre(10, "b"), 5]).then((r) => journal.push(r.join("")));\nPromise.race([attendre(20, "x"), attendre(5, "y")]).then((v) => journal.push(v));\nPromise.allSettled([Promise.reject(new Error("non")), 1]).then((r) => journal.push(r.map((s) => s.status[0]).join("")));\nsetTimeout(() => console.log(journal.join(" ")), 50);`, ['rf y ab5', 'ab5 y rf', 'y rf ab5', 'rf x ab5'], '`allSettled` n’attend aucun minuteur : il finit en premier avec "rejected" et "fulfilled" (rf). `race` garde celle de 5 ms (y). `all` attend la plus lente et respecte l’ordre d’origine : ab5.'),
-      ],
-    },
-    // Jour 19
-    {
-      id: 'js-closures',
-      t: 'Closures',
-      d: 'Des fonctions qui se souviennent de leur portée, des fabriques de fonctions et des données privées.',
-      guide: [
-        { h: 'La portée lexicale', p: [
-          'Une fonction peut utiliser les variables de l’endroit où elle a été écrite, pas de l’endroit d’où on l’appelle. C’est la portée lexicale.',
-          'Les fonctions intérieures voient les variables des fonctions extérieures, mais pas l’inverse.' ],
-          code: `const salutation = "Bonjour";\nfunction exterieure() {\n  const nom = "Ana";\n  function interieure() {\n    return salutation + ", " + nom;  // voit les deux variables\n  }\n  return interieure();\n}\nconsole.log(exterieure());  // Bonjour, Ana` },
-        { h: 'Ce qu’est une closure', p: [
-          'Une closure est une fonction qui se souvient des variables de sa portée même quand la fonction qui les a créées est terminée.',
-          'Chaque appel à la fonction extérieure crée une nouvelle portée, donc chaque closure a ses propres variables.' ],
-          code: `function creerCompteur() {\n  let compte = 0;\n  return () => ++compte;\n}\n\nconst a = creerCompteur();\nconst b = creerCompteur();\na();\na();\nconsole.log(a(), b());  // 3 1` },
-        { h: 'Fabriques de fonctions et données privées', p: [
-          'Une fabrique de fonctions renvoie des fonctions configurées avec les données qu’elle reçoit : `multiplicateur(3)` crée une fonction qui triple.',
-          'Les variables de la closure sont privées : personne ne peut y toucher de l’extérieur, sauf à travers les fonctions renvoyées.' ],
-          code: `function multiplicateur(k) {\n  return (n) => n * k;\n}\nconst triple = multiplicateur(3);\nconsole.log(triple(5));  // 15\n\nfunction creerPorteMonnaie() {\n  let solde = 0;\n  return {\n    deposer: (c) => (solde += c),\n    consulter: () => solde,\n  };\n}\nconst pm = creerPorteMonnaie();\npm.deposer(10);\nconsole.log(pm.consulter(), pm.solde);  // 10 undefined` },
-        { h: 'Closures dans les boucles', p: [
-          'Avec `let`, chaque tour de boucle a sa propre variable, donc chaque closure se souvient d’une valeur différente.',
-          'Avec `var`, il n’existe qu’une variable pour toute la boucle et toutes les closures voient sa valeur finale. C’est une erreur classique ; utiliser `let` l’évite.' ],
-          code: `for (let i = 0; i < 3; i++) {\n  setTimeout(() => console.log("let:", i), 0);   // 0, 1, 2\n}\nfor (var j = 0; j < 3; j++) {\n  setTimeout(() => console.log("var:", j), 0);   // 3, 3, 3\n}` },
-        { h: 'Exemple réel : limiter les tentatives de connexion', real: true, p: [
-          'Un formulaire de connexion autorise trois tentatives. Le compteur vit dans une closure, donc aucun autre code de la page ne peut le remettre à zéro.' ],
-          code: `function creerLimiteur(maximum) {\n  let tentatives = 0;\n  return function essayer(correct) {\n    if (tentatives >= maximum) return "Bloqué";\n    tentatives++;\n    return correct ? "Bienvenue" : "Il en reste " + (maximum - tentatives);\n  };\n}\n\nconst connexion = creerLimiteur(3);\nconsole.log(connexion(false));  // Il en reste 2\nconsole.log(connexion(false));  // Il en reste 1\nconsole.log(connexion(false));  // Il en reste 0\nconsole.log(connexion(true));   // Bloqué` },
-      ],
-      x: [
-        out(`function creer() {\n  let n = 0;\n  return () => ++n;\n}\nconst a = creer();\na();\na();\nconsole.log(a());`, ['3', '1', '0', 'undefined'], 'La fonction renvoyée se souvient de `n` entre les appels.'),
-        out(`function creer() {\n  let n = 0;\n  return () => ++n;\n}\nconst a = creer();\nconst b = creer();\na();\na();\nconsole.log(a(), b());`, ['3 1', '3 4', '1 1', '3 3'], 'Chaque appel à `creer` a son propre `n`.'),
-        mc('Qu’est-ce qu’une closure ?', ['Une fonction qui se souvient des variables de la portée où elle a été créée', 'Une fonction qui se ferme toute seule', 'Une boucle qui se termine', 'Un objet sans propriétés'], 'Elle s’en souvient même quand la fonction qui l’a créée est terminée.'),
-        out(`const fs = [];\nfor (var i = 0; i < 3; i++) fs.push(() => i);\nconsole.log(fs.map((f) => f()).join(""));`, ['333', '012', '222', 'undefined'], 'Avec `var`, il n’y a qu’un seul `i` pour toute la boucle et à la fin il vaut 3.'),
-        fill(`const fs = [];\nfor (___ i = 0; i < 3; i++) fs.push(() => i);\nconsole.log(fs.map((f) => f()).join(""));  // 012`, ['let', 'var', 'global', 'static'], 'Avec `let`, chaque tour a sa propre variable.'),
-        typ('Complète la fabrique de fonctions', `function multiplicateur(k) {\n  return (n) => n * ___;\n}\nconsole.log(multiplicateur(4)(5));  // 20`, 'k', 'La fonction renvoyée se souvient du `k` avec lequel elle a été créée.'),
-        out(`function uneFois(fn) {\n  let fait = false, r;\n  return (...args) => {\n    if (!fait) {\n      fait = true;\n      r = fn(...args);\n    }\n    return r;\n  };\n}\nconst init = uneFois((x) => x * 10);\nconsole.log(init(2), init(5));`, ['20 20', '20 50', '20 undefined', '50 50'], 'Le deuxième appel n’exécute plus `fn` : il renvoie le résultat mémorisé.'),
-        out(`function creerBanque(soldeInitial) {\n  let solde = soldeInitial;\n  const historique = [];\n  return {\n    deposer(c) { solde += c; historique.push("+" + c); return this; },\n    retirer(c) { if (c <= solde) { solde -= c; historique.push("-" + c); } return this; },\n    resume: () => solde + " [" + historique.join(",") + "]",\n  };\n}\nconst compte = creerBanque(10);\ncompte.deposer(5).retirer(20).retirer(8);\nconst autre = creerBanque(0);\nconsole.log(compte.resume(), autre.resume(), compte.solde);`, ['7 [+5,-8] 0 [] undefined', '7 [+5,-20,-8] 0 [] undefined', '7 [+5,-8] 7 [+5,-8] 7', '-13 [+5,-20,-8] 0 [] undefined'], '10 + 5 = 15 ; retirer 20 n’est pas autorisé ; retirer 8 laisse 7. `autre` a son propre solde et son propre historique. `solde` est privé : ce n’est pas une propriété de l’objet.'),
-      ],
-    },
-    // Jour 20
-    {
-      id: 'js-clean-code',
-      t: 'Code propre',
-      d: 'Des noms clairs, de petites fonctions, des constantes et des outils de qualité.',
-      guide: [
-        { h: 'Des noms qui s’expliquent tout seuls', p: [
-          'Le code est lu bien plus souvent qu’il n’est écrit. Un bon nom évite un commentaire : `utilisateursActifs` en dit plus que `arr2`.',
-          'Conventions de JavaScript : `camelCase` pour les variables et les fonctions, `PascalCase` pour les classes et `MAJUSCULES_AVEC_TIRETS` pour les constantes fixes. Les booléens sonnent comme une question : `estActif`, `aLaPermission`.' ],
-          code: `// Difficile à lire\nconst d = u.filter((x) => x.a && x.e > 17);\n\n// Clair\nconst utilisateursAdultesActifs = utilisateurs.filter(\n  (utilisateur) => utilisateur.actif && utilisateur.age >= 18\n);` },
-        { h: 'De petites fonctions, sans nombres magiques', p: [
-          'Chaque fonction devrait faire une seule chose et avoir un nom qui la décrit. Si tu as besoin du mot « et » pour l’expliquer, ce sont sûrement deux fonctions.',
-          'Un nombre magique est une valeur sans explication au milieu du code, comme `0.2` ou `86400000`. Donne-lui un nom avec une constante.' ],
-          code: `const TVA = 0.2;\nconst MS_PAR_JOUR = 24 * 60 * 60 * 1000;\n\nconst avecTva = (prix) => prix * (1 + TVA);\nconst joursEntre = (a, b) => Math.round((b - a) / MS_PAR_JOUR);` },
-        { h: 'Les retours anticipés', p: [
-          'Beaucoup de `if` imbriqués obligent à retenir toutes les conditions à la fois. Vérifie d’abord les cas particuliers et sors de la fonction avec `return`.',
-          'Le chemin principal reste à la fin, sans indentation et facile à suivre.' ],
-          code: `// Imbriqué\nfunction remise(utilisateur) {\n  if (utilisateur) {\n    if (utilisateur.estMembre) {\n      return 0.1;\n    } else {\n      return 0;\n    }\n  } else {\n    return 0;\n  }\n}\n\n// Avec des retours anticipés\nfunction remise(utilisateur) {\n  if (!utilisateur?.estMembre) return 0;\n  return 0.1;\n}` },
-        { h: 'Bonnes habitudes et outils', p: [
-          'Utilise `const` par défaut et `let` seulement si tu vas réaffecter. Compare toujours avec `===`. Ne modifie pas les paramètres que tu reçois : renvoie une nouvelle valeur.',
-          'ESLint analyse le code sans l’exécuter et signale les erreurs et les mauvaises pratiques. Prettier le formate automatiquement pour que toute l’équipe écrive pareil. Les commentaires doivent expliquer le pourquoi, pas le quoi.' ],
-          code: `// npm install --save-dev eslint prettier\n// npx eslint src/\n// npx prettier --write src/\n\n// Mal : le commentaire répète le code\ni++;  // ajoute un à i\n\n// Bien : il explique une décision\nconst ESSAIS = 3;  // l’API échoue parfois au premier essai` },
-        { h: 'Exemple réel : refactoriser le calcul d’une commande', real: true, p: [
-          'Une boutique avait une seule longue fonction pleine de nombres isolés. Découpée en petites fonctions avec des constantes, chaque règle métier se comprend et se teste séparément.' ],
-          code: `const REMISE_MEMBRE = 0.1;\nconst LIVRAISON_GRATUITE_DES = 50;\nconst FRAIS_LIVRAISON = 5;\n\nconst sousTotal = (lignes) => lignes.reduce((s, l) => s + l.prix * l.unites, 0);\nconst remise = (montant, estMembre) => (estMembre ? montant * REMISE_MEMBRE : 0);\nconst livraison = (montant) => (montant >= LIVRAISON_GRATUITE_DES ? 0 : FRAIS_LIVRAISON);\n\nfunction totalCommande(lignes, estMembre) {\n  const base = sousTotal(lignes);\n  const apresRemise = base - remise(base, estMembre);\n  return apresRemise + livraison(apresRemise);\n}\n\nconsole.log(totalCommande([{ prix: 30, unites: 1 }], false));  // 35` },
-      ],
-      x: [
-        mc('Quel nom est le plus clair pour un tableau d’utilisateurs actifs ?', ['utilisateursActifs', 'arr', 'donnees2', 'x'], 'Un bon nom dit ce que contient la variable sans devoir lire le reste du code.'),
-        mc('Qu’est-ce qu’un nombre magique ?', ['Une valeur sans explication au milieu du code', 'Un nombre aléatoire', 'Un très grand nombre', 'Un nombre négatif'], 'On le corrige en lui donnant un nom avec une constante, comme `TVA`.'),
-        out(`function prixLivraison(total, estMembre) {\n  if (estMembre) return 0;\n  if (total >= 50) return 0;\n  return 4.99;\n}\nconsole.log(prixLivraison(30, false), prixLivraison(30, true), prixLivraison(60, false));`, ['4.99 0 0', '0 0 4.99', '4.99 4.99 0', '4.99 0 4.99'], 'Chaque cas particulier sort tôt ; seul le cas normal arrive à la fin.'),
-        fill(`___ TVA = 0.2;  // ne change jamais`, ['const', 'let', 'var', 'static'], 'Ce qui n’est pas réaffecté se déclare avec `const`.'),
-        mc('Quel outil analyse le code sans l’exécuter et signale les erreurs et les mauvaises pratiques ?', ['ESLint', 'Prettier', 'Node.js', 'npm'], 'Prettier ne fait que formater ; ESLint analyse.'),
-        out(`function avecRemise(produits) {\n  return produits.map((p) => ({ ...p, prix: p.prix * 0.9 }));\n}\nconst liste = [{ prix: 100 }];\nconst soldee = avecRemise(liste);\nconsole.log(liste[0].prix, soldee[0].prix);`, ['100 90', '90 90', '100 100', '90 100'], 'La fonction crée de nouveaux objets avec le spread, donc le tableau d’origine ne change pas.'),
-        ord('Remets la fonction dans l’ordre pour qu’elle utilise un retour anticipé', ['function nom(utilisateur) {', 'if (!utilisateur) return "Anonyme";', 'return utilisateur.nom;', '}'], ['else {', 'if (utilisateur) {'], 'On écarte d’abord le cas particulier ; le cas normal reste à la fin sans imbrication.'),
-        out(`const REMISE_MEMBRE = 0.1;\nconst LIVRAISON_GRATUITE_DES = 50;\nconst FRAIS_LIVRAISON = 5;\nconst sousTotal = (articles) => articles.reduce((s, a) => s + a.prix * a.unites, 0);\nconst remise = (montant, estMembre) => (estMembre ? montant * REMISE_MEMBRE : 0);\nconst livraison = (montant) => (montant >= LIVRAISON_GRATUITE_DES ? 0 : FRAIS_LIVRAISON);\nfunction totalCommande(articles, estMembre) {\n  const base = sousTotal(articles);\n  const apresRemise = base - remise(base, estMembre);\n  return apresRemise + livraison(apresRemise);\n}\nconst articles = [{ prix: 20, unites: 2 }, { prix: 15, unites: 1 }];\nconsole.log(totalCommande(articles, false), totalCommande(articles, true));`, ['55 54.5', '55 49.5', '60 54.5', '55 55'], 'Le sous-total est 55. Sans remise, la livraison est gratuite : 55. Le membre paie 49.5, qui n’atteint pas 50, donc on ajoute la livraison : 54.5.'),
-      ],
-    },
-    // Jour 21
-    {
       id: 'js-dom',
-      t: 'DOM',
-      d: 'L’arbre de la page, sélectionner des éléments et lire leur contenu.',
+      t: 'Le DOM',
+      d: 'La page comme un arbre : sélectionner des éléments et lire leur texte, leurs valeurs et leurs attributs.',
       guide: [
         { h: 'L’arbre du document', p: [
           'Quand le navigateur charge une page, il transforme le HTML en un arbre d’objets appelé DOM (Document Object Model). Chaque balise est un nœud élément avec des parents, des enfants et des frères.',
@@ -791,11 +578,11 @@
         out(`// <section id="boutique">\n//   <article class="produit" data-prix="12"><h2>Tasse</h2></article>\n//   <article class="produit epuise" data-prix="30"><h2>Lampe</h2></article>\n//   <article class="produit" data-prix="8"><h2>Carnet</h2></article>\n// </section>\nconst produits = [...document.querySelectorAll("#boutique .produit:not(.epuise)")];\nconst total = produits.reduce((s, p) => s + Number(p.dataset.prix), 0);\nconst noms = produits.map((p) => p.querySelector("h2").textContent);\nconsole.log(produits.length, total, noms.join("+"));`, ['2 20 Tasse+Carnet', '3 50 Tasse+Lampe+Carnet', '2 20 Tasse+Lampe', '2 128 Tasse+Carnet'], '`:not(.epuise)` écarte la lampe. `Number` convertit les prix avant d’additionner : 12 + 8 = 20. Sans `Number`, ils seraient concaténés.'),
       ],
     },
-    // Jour 22
+    // Jour 16
     {
       id: 'js-dom-edit',
-      t: 'Modifier le DOM',
-      d: 'Changer le texte, créer et insérer des éléments, classes, styles et attributs.',
+      t: 'Modifier la page',
+      d: 'Changer du texte, créer et insérer des éléments, et modifier classes, styles et attributs.',
       guide: [
         { h: 'Changer le contenu', p: [
           'Affecter `textContent` remplace le texte d’un élément. C’est l’option sûre pour afficher des données qui viennent de l’utilisateur.',
@@ -828,11 +615,11 @@
         out(`const taches = [{ texte: "Acheter du pain", faite: true }, { texte: "Étudier <b>JS</b>", faite: false }];\nconst ul = document.createElement("ul");\nfor (const t of taches) {\n  const li = document.createElement("li");\n  li.textContent = t.texte;\n  li.classList.toggle("faite", t.faite);\n  ul.append(li);\n}\nul.firstElementChild.remove();\nconsole.log(ul.children.length, ul.innerHTML);`, ['1 <li>Étudier &lt;b&gt;JS&lt;/b&gt;</li>', '1 <li>Étudier <b>JS</b></li>', '2 <li class="faite">Acheter du pain</li>'], 'La première tâche est supprimée. Comme le texte a été mis avec `textContent`, les balises ne sont pas interprétées et apparaissent échappées dans le HTML. `toggle` avec `false` n’ajoute pas la classe.'),
       ],
     },
-    // Jour 23
+    // Jour 17
     {
       id: 'js-events',
       t: 'Événements',
-      d: 'addEventListener, l’objet événement, preventDefault, propagation et délégation.',
+      d: 'Réagir aux clics et aux formulaires avec addEventListener, l’objet événement, preventDefault et la délégation.',
       guide: [
         { h: 'Écouter des événements', p: [
           'Un événement est quelque chose qui se passe sur la page : un clic, une touche, un formulaire envoyé. `element.addEventListener("click", fonction)` exécute la fonction chaque fois que ça se produit.',
@@ -865,11 +652,239 @@
         out(`// <ul id="liste"><li><button class="supprimer">x</button> Pain</li><li><button class="supprimer">x</button> Lait</li></ul>\nconst liste = document.querySelector("#liste");\nconst journal = [];\nliste.addEventListener("click", (e) => {\n  const bouton = e.target.closest(".supprimer");\n  if (!bouton) return journal.push("dehors");\n  bouton.closest("li").remove();\n  journal.push("supprimé");\n});\nliste.querySelector("li").click();\nliste.querySelector(".supprimer").click();\nconsole.log(journal.join(","), liste.children.length, liste.textContent.trim());`, ['dehors,supprimé 1 x Lait', 'supprimé,supprimé 0', 'dehors,supprimé 1 Lait', 'supprimé,dehors 1 x Pain'], 'Le premier clic est sur le `li`, pas sur un bouton : `closest` renvoie `null`. Le second appuie sur le bouton de "Pain" et supprime son `li`. Il reste "x Lait", car le bouton est toujours dedans.'),
       ],
     },
+    // Jour 18
+    {
+      id: 'js-json',
+      t: 'JSON et enregistrer des données',
+      d: 'Transformer des données en texte et inversement avec JSON, et les garder dans le navigateur avec localStorage.',
+      guide: [
+        { h: 'Ce qu’est JSON', p: [
+          'JSON est un format texte pour échanger des données. Presque toutes les API web l’utilisent, ainsi que de nombreux fichiers de configuration comme `package.json`.',
+          'Il ressemble à un objet JavaScript, mais il est plus strict : les clés et les textes vont entre guillemets doubles, il n’accepte ni commentaires ni virgules finales, et il ne stocke que des textes, des nombres, des booléens, `null`, des tableaux et des objets.' ],
+          code: `{\n  "nom": "Ana",\n  "age": 31,\n  "active": true,\n  "cours": ["js", "python"],\n  "adresse": { "ville": "Nantes" },\n  "telephone": null\n}` },
+        { h: 'JSON.stringify : de l’objet au texte', p: [
+          '`JSON.stringify(valeur)` transforme une valeur en texte JSON. Le troisième argument ajoute une indentation pour le rendre lisible : `JSON.stringify(obj, null, 2)`.',
+          'Les propriétés avec `undefined` ou des fonctions sont omises, et les dates sont converties en texte au format ISO.' ],
+          code: `const utilisateur = { nom: "Leo", age: 25, saluer() {}, surnom: undefined };\nconsole.log(JSON.stringify(utilisateur));  // {"nom":"Leo","age":25}\nconsole.log(JSON.stringify({ a: 1, b: [2, 3] }, null, 2));\n// {\n//   "a": 1,\n//   "b": [\n//     2,\n//     3\n//   ]\n// }` },
+        { h: 'JSON.parse : du texte à l’objet', p: [
+          '`JSON.parse(texte)` fait l’inverse : il lit un texte JSON et renvoie la valeur JavaScript.',
+          'Si le texte n’est pas un JSON valide, il lève une `SyntaxError` : avec des données venant de l’extérieur, mieux vaut utiliser `try...catch`.' ],
+          code: `const texte = '{"produit":"Tasse","prix":8.5}';\nconst obj = JSON.parse(texte);\nconsole.log(obj.prix * 2);  // 17\n\ntry {\n  JSON.parse("{prix: 8.5}");  // clés sans guillemets\n} catch (e) {\n  console.log(e.name);  // SyntaxError\n}` },
+        { h: 'Enregistrer, lire et supprimer', p: [
+          '`setItem(clé, valeur)` enregistre, `getItem(clé)` lit (renvoie `null` si la clé n’existe pas), `removeItem(clé)` supprime une clé et `clear()` efface tout.',
+          '`length` indique combien de clés il y a. Toute valeur est convertie en texte : si tu enregistres le nombre 5, tu liras « 5 ».' ],
+          code: `localStorage.setItem("theme", "sombre");\nconsole.log(localStorage.getItem("theme"));   // sombre\nconsole.log(localStorage.getItem("langue"));  // null\n\nlocalStorage.setItem("visites", 3);\nconsole.log(typeof localStorage.getItem("visites"));  // string\nlocalStorage.removeItem("theme");` },
+        { h: 'Enregistrer des objets avec JSON', p: [
+          'Si tu enregistres un objet directement, il devient le texte « [object Object] » et les données sont perdues. Il faut le passer par `JSON.stringify` à l’enregistrement et par `JSON.parse` à la lecture.',
+          'Comme `JSON.parse(null)` renvoie `null`, avec `??` tu peux donner une valeur par défaut quand la clé n’existe pas encore.' ],
+          code: `const panier = [{ produit: "Tasse", unites: 2 }];\nlocalStorage.setItem("panier", JSON.stringify(panier));\n\nconst lu = JSON.parse(localStorage.getItem("panier")) ?? [];\nconsole.log(lu[0].produit);  // Tasse` },
+        { h: 'Exemple réel : se souvenir du mode sombre', real: true, p: [
+          'Un site enregistre la préférence de thème de l’utilisateur. Quand il revient des jours plus tard, la page s’ouvre avec le thème qu’il a choisi.' ],
+          code: `const CLE = "preferences";\n\nfunction lirePreferences() {\n  return JSON.parse(localStorage.getItem(CLE)) ?? { theme: "clair", police: 16 };\n}\n\nfunction changerTheme(theme) {\n  const prefs = { ...lirePreferences(), theme };\n  localStorage.setItem(CLE, JSON.stringify(prefs));\n  document.body.dataset.theme = theme;\n}\n\ndocument.body.dataset.theme = lirePreferences().theme;  // au chargement de la page` },
+      ],
+      x: [
+        mc('Lequel de ces textes est un JSON valide ?', ['{"nom": "Ana", "age": 30}', '{nom: "Ana"}', "{'nom': 'Ana'}", '{"age": 30,}'], 'JSON exige des guillemets doubles pour les clés et les textes et n’accepte pas de virgule finale.'),
+        out(`console.log(JSON.stringify({ a: 1, b: "x" }));`, ['{"a":1,"b":"x"}', '{ a: 1, b: "x" }', '{"a": 1, "b": "x"}', '[object Object]'], 'Sans indentation, `stringify` ne laisse aucune espace.'),
+        out(`const o = JSON.parse('{"n": 5}');\nconsole.log(o.n + 1, typeof o);`, ['6 object', '51 object', '6 string', 'NaN object'], '`parse` renvoie un objet et `n` est un vrai nombre.'),
+        fill(`const utilisateur = { nom: "Ana" };\nconst texte = JSON.___(utilisateur);`, ['stringify', 'parse', 'toString', 'encode'], '`stringify` transforme l’objet en texte JSON.'),
+        fill(`localStorage.___("theme", "sombre");`, ['setItem', 'set', 'save', 'put'], '`setItem(clé, valeur)` enregistre une valeur.'),
+        out(`console.log(localStorage.getItem("inexistant"));`, ['null', 'undefined', '""', 'Erreur'], 'Une clé qui n’existe pas renvoie `null`.'),
+        mc('Que ne faut-il PAS enregistrer dans localStorage ?', ['Des mots de passe ou des données sensibles', 'La langue choisie', 'Le thème clair ou sombre', 'Un brouillon de commentaire'], 'N’importe quel script exécuté sur la page peut lire le magasin.'),
+        out(`localStorage.clear();\nconst enregistrer = (k, v) => localStorage.setItem(k, JSON.stringify(v));\nconst charger = (k, def) => JSON.parse(localStorage.getItem(k)) ?? def;\nenregistrer("taches", ["pain", "lait"]);\nconst taches = charger("taches", []);\ntaches.push("café");\nenregistrer("taches", taches);\nlocalStorage.removeItem("theme");\nconsole.log(charger("taches", []).length, charger("theme", "clair"), localStorage.length);`, ['3 clair 1', '2 clair 1', '3 null 1', '3 clair 2'], 'Les tâches sont lues, complétées et réenregistrées : 3. "theme" n’existe pas, donc `charger` renvoie la valeur par défaut. Il ne reste qu’une clé.'),
+      ],
+    },
+    // Jour 19
+    {
+      id: 'js-errors',
+      t: 'Erreurs',
+      d: 'Gérer les échecs avec try, catch et finally, lever les tiennes avec throw et créer tes propres types d’erreur.',
+      guide: [
+        { h: 'try et catch', p: [
+          'Quand quelque chose échoue, JavaScript lève une erreur et, si personne ne l’attrape, le script s’arrête. Le code qui peut échouer va dans `try` ; s’il échoue, `catch` s’exécute avec l’erreur.',
+          'L’objet erreur a `name` (le type) et `message` (la description). Si tu n’as pas besoin de l’erreur, tu peux écrire simplement `catch { ... }`.' ],
+          code: `try {\n  const donnees = JSON.parse("{mauvais json}");\n} catch (erreur) {\n  console.log(erreur.name);     // SyntaxError\n  console.log("Impossible de lire le fichier");\n}\nconsole.log("Le programme continue");` },
+        { h: 'Lever des erreurs avec throw', p: [
+          '`throw new Error("message")` lève une erreur personnalisée. La fonction s’arrête à cet endroit et l’erreur remonte jusqu’au `catch` le plus proche.',
+          'Lève des erreurs quand une fonction reçoit des données avec lesquelles elle ne peut pas travailler, au lieu de renvoyer une valeur bizarre qui échouera plus tard.' ],
+          code: `function diviser(a, b) {\n  if (b === 0) throw new Error("Impossible de diviser par zéro");\n  return a / b;\n}\n\ntry {\n  console.log(diviser(10, 2));  // 5\n  console.log(diviser(1, 0));   // lève : rien n’est affiché\n} catch (e) {\n  console.log(e.message);       // Impossible de diviser par zéro\n}` },
+        { h: 'finally et types d’erreurs', p: [
+          '`finally` s’exécute toujours, qu’il y ait une erreur ou non, même si le `try` fait un `return`. Il sert à fermer ou à nettoyer : cacher un indicateur de chargement, fermer une connexion.',
+          'Types courants : `TypeError` (mauvaise utilisation d’une valeur, comme lire une propriété de `null`), `ReferenceError` (variable inexistante), `SyntaxError` (code ou JSON mal écrit) et `RangeError` (nombre hors limites).' ],
+          code: `try {\n  const utilisateur = null;\n  utilisateur.nom;\n} catch (e) {\n  console.log(e instanceof TypeError);  // true\n} finally {\n  console.log("Nettoyage terminé");\n}` },
+        { h: 'Erreurs personnalisées', p: [
+          'Tu peux créer tes propres types en héritant de `Error`. Ainsi, le `catch` peut distinguer une erreur de validation d’un échec inattendu avec `instanceof`.',
+          'Si un `catch` reçoit une erreur qu’il ne sait pas traiter, le mieux est de la relancer avec `throw e` pour ne pas la cacher.' ],
+          code: `class ValidationError extends Error {\n  constructor(message) {\n    super(message);\n    this.name = "ValidationError";\n  }\n}\n\ntry {\n  throw new ValidationError("L’e-mail est vide");\n} catch (e) {\n  if (e instanceof ValidationError) console.log("Vérifie :", e.message);\n  else throw e;\n}` },
+        { h: 'Exemple réel : lire une configuration', real: true, p: [
+          'Une application lit sa configuration enregistrée sous forme de texte. Si le texte est cassé ou qu’il manque une donnée, elle prévient et utilise des valeurs par défaut au lieu de planter.' ],
+          code: `function lireConfig(texte) {\n  try {\n    const cfg = JSON.parse(texte);\n    if (!cfg.langue) throw new Error("La langue manque");\n    return cfg;\n  } catch (erreur) {\n    console.warn("Configuration invalide :", erreur.message);\n    return { langue: "fr" };\n  }\n}\n\nconsole.log(lireConfig('{"langue":"es"}').langue);  // es\nconsole.log(lireConfig("{}").langue);               // fr (avec avertissement)\nconsole.log(lireConfig("cassé").langue);            // fr (avec avertissement)` },
+      ],
+      x: [
+        out(`let r = "";\ntry {\n  r += "A";\n  throw new Error("x");\n  r += "B";\n} catch {\n  r += "C";\n} finally {\n  r += "D";\n}\nconsole.log(r);`, ['ACD', 'ABCD', 'AD', 'AC'], 'Après le `throw`, le reste du `try` ne s’exécute pas. Viennent ensuite `catch` et `finally`.'),
+        fill(`if (solde < montant) {\n  ___ new Error("Solde insuffisant");\n}`, ['throw', 'raise', 'error', 'catch'], 'En JavaScript, les erreurs se lèvent avec `throw`. `raise` vient de Python.'),
+        out(`try {\n  null.length;\n} catch (e) {\n  console.log(e.name);\n}`, ['TypeError', 'ReferenceError', 'SyntaxError', 'RangeError'], 'Lire une propriété de `null`, c’est mal utiliser une valeur : `TypeError`.'),
+        out(`try {\n  console.log(nExistePas);\n} catch (e) {\n  console.log(e instanceof ReferenceError);\n}`, ['true', 'false', 'undefined'], 'Utiliser une variable qui n’a pas été déclarée lève une `ReferenceError`.'),
+        mc('Quand le bloc `finally` s’exécute-t-il ?', ['Toujours, qu’il y ait une erreur ou non', 'Seulement s’il y a une erreur', 'Seulement s’il n’y a pas d’erreur', 'Jamais si le try fait un return'], 'C’est pourquoi on s’en sert pour nettoyer, quoi qu’il arrive.'),
+        typ('Crée ton propre type d’erreur', `class ValidationError ___ Error {}`, 'extends', 'Hériter de `Error` permet ensuite de la distinguer avec `instanceof`.'),
+        out(`function f() {\n  try {\n    return "try";\n  } finally {\n    console.log("finally");\n  }\n}\nconsole.log(f());`, ['finally\ntry', 'try\nfinally', 'try', 'finally'], 'Le `return` attend que `finally` se termine : on voit d’abord "finally", puis la valeur renvoyée.'),
+        out('class ValidationError extends Error {\n  constructor(champ) {\n    super(`${champ} n’est pas valide`);\n    this.name = "ValidationError";\n  }\n}\nfunction valider(age) {\n  if (typeof age !== "number") throw new TypeError("l’âge doit être un nombre");\n  if (age < 0) throw new ValidationError("age");\n  return age;\n}\nconst journal = [];\nfor (const v of [30, -1, "x"]) {\n  try {\n    journal.push(valider(v));\n  } catch (e) {\n    journal.push(e instanceof ValidationError ? e.message : e.name);\n  } finally {\n    journal.push("|");\n  }\n}\nconsole.log(journal.join(" "));', ['30 | age n’est pas valide | TypeError |', '30 | age n’est pas valide | l’âge doit être un nombre |', '30 | ValidationError | TypeError |', '30 age n’est pas valide TypeError'], '30 est valide. -1 lève `ValidationError` et on garde son message. "x" lève `TypeError`, qui n’est pas une `ValidationError`, on garde donc son `name`. `finally` ajoute "|" à chacun des trois tours.'),
+      ],
+    },
+    // Jour 20
+    {
+      id: 'js-closures',
+      t: 'Portée et closures',
+      d: 'Des fonctions qui se souviennent des variables de l’endroit où elles sont nées : fabriques de fonctions et données privées.',
+      guide: [
+        { h: 'La portée lexicale', p: [
+          'Une fonction peut utiliser les variables de l’endroit où elle a été écrite, pas de l’endroit d’où on l’appelle. C’est la portée lexicale.',
+          'Les fonctions intérieures voient les variables des fonctions extérieures, mais pas l’inverse.' ],
+          code: `const salutation = "Bonjour";\nfunction exterieure() {\n  const nom = "Ana";\n  function interieure() {\n    return salutation + ", " + nom;  // voit les deux variables\n  }\n  return interieure();\n}\nconsole.log(exterieure());  // Bonjour, Ana` },
+        { h: 'Ce qu’est une closure', p: [
+          'Une closure est une fonction qui se souvient des variables de sa portée même quand la fonction qui les a créées est terminée.',
+          'Chaque appel à la fonction extérieure crée une nouvelle portée, donc chaque closure a ses propres variables.' ],
+          code: `function creerCompteur() {\n  let compte = 0;\n  return () => ++compte;\n}\n\nconst a = creerCompteur();\nconst b = creerCompteur();\na();\na();\nconsole.log(a(), b());  // 3 1` },
+        { h: 'Fabriques de fonctions et données privées', p: [
+          'Une fabrique de fonctions renvoie des fonctions configurées avec les données qu’elle reçoit : `multiplicateur(3)` crée une fonction qui triple.',
+          'Les variables de la closure sont privées : personne ne peut y toucher de l’extérieur, sauf à travers les fonctions renvoyées.' ],
+          code: `function multiplicateur(k) {\n  return (n) => n * k;\n}\nconst triple = multiplicateur(3);\nconsole.log(triple(5));  // 15\n\nfunction creerPorteMonnaie() {\n  let solde = 0;\n  return {\n    deposer: (c) => (solde += c),\n    consulter: () => solde,\n  };\n}\nconst pm = creerPorteMonnaie();\npm.deposer(10);\nconsole.log(pm.consulter(), pm.solde);  // 10 undefined` },
+        { h: 'Closures dans les boucles', p: [
+          'Avec `let`, chaque tour de boucle a sa propre variable, donc chaque closure se souvient d’une valeur différente.',
+          'Avec `var`, il n’existe qu’une variable pour toute la boucle et toutes les closures voient sa valeur finale. C’est une erreur classique ; utiliser `let` l’évite.' ],
+          code: `for (let i = 0; i < 3; i++) {\n  setTimeout(() => console.log("let:", i), 0);   // 0, 1, 2\n}\nfor (var j = 0; j < 3; j++) {\n  setTimeout(() => console.log("var:", j), 0);   // 3, 3, 3\n}` },
+        { h: 'Exemple réel : limiter les tentatives de connexion', real: true, p: [
+          'Un formulaire de connexion autorise trois tentatives. Le compteur vit dans une closure, donc aucun autre code de la page ne peut le remettre à zéro.' ],
+          code: `function creerLimiteur(maximum) {\n  let tentatives = 0;\n  return function essayer(correct) {\n    if (tentatives >= maximum) return "Bloqué";\n    tentatives++;\n    return correct ? "Bienvenue" : "Il en reste " + (maximum - tentatives);\n  };\n}\n\nconst connexion = creerLimiteur(3);\nconsole.log(connexion(false));  // Il en reste 2\nconsole.log(connexion(false));  // Il en reste 1\nconsole.log(connexion(false));  // Il en reste 0\nconsole.log(connexion(true));   // Bloqué` },
+      ],
+      x: [
+        out(`function creer() {\n  let n = 0;\n  return () => ++n;\n}\nconst a = creer();\na();\na();\nconsole.log(a());`, ['3', '1', '0', 'undefined'], 'La fonction renvoyée se souvient de `n` entre les appels.'),
+        out(`function creer() {\n  let n = 0;\n  return () => ++n;\n}\nconst a = creer();\nconst b = creer();\na();\na();\nconsole.log(a(), b());`, ['3 1', '3 4', '1 1', '3 3'], 'Chaque appel à `creer` a son propre `n`.'),
+        mc('Qu’est-ce qu’une closure ?', ['Une fonction qui se souvient des variables de la portée où elle a été créée', 'Une fonction qui se ferme toute seule', 'Une boucle qui se termine', 'Un objet sans propriétés'], 'Elle s’en souvient même quand la fonction qui l’a créée est terminée.'),
+        out(`const fs = [];\nfor (var i = 0; i < 3; i++) fs.push(() => i);\nconsole.log(fs.map((f) => f()).join(""));`, ['333', '012', '222', 'undefined'], 'Avec `var`, il n’y a qu’un seul `i` pour toute la boucle et à la fin il vaut 3.'),
+        fill(`const fs = [];\nfor (___ i = 0; i < 3; i++) fs.push(() => i);\nconsole.log(fs.map((f) => f()).join(""));  // 012`, ['let', 'var', 'global', 'static'], 'Avec `let`, chaque tour a sa propre variable.'),
+        typ('Complète la fabrique de fonctions', `function multiplicateur(k) {\n  return (n) => n * ___;\n}\nconsole.log(multiplicateur(4)(5));  // 20`, 'k', 'La fonction renvoyée se souvient du `k` avec lequel elle a été créée.'),
+        out(`function uneFois(fn) {\n  let fait = false, r;\n  return (...args) => {\n    if (!fait) {\n      fait = true;\n      r = fn(...args);\n    }\n    return r;\n  };\n}\nconst init = uneFois((x) => x * 10);\nconsole.log(init(2), init(5));`, ['20 20', '20 50', '20 undefined', '50 50'], 'Le deuxième appel n’exécute plus `fn` : il renvoie le résultat mémorisé.'),
+        out(`function creerBanque(soldeInitial) {\n  let solde = soldeInitial;\n  const historique = [];\n  return {\n    deposer(c) { solde += c; historique.push("+" + c); return this; },\n    retirer(c) { if (c <= solde) { solde -= c; historique.push("-" + c); } return this; },\n    resume: () => solde + " [" + historique.join(",") + "]",\n  };\n}\nconst compte = creerBanque(10);\ncompte.deposer(5).retirer(20).retirer(8);\nconst autre = creerBanque(0);\nconsole.log(compte.resume(), autre.resume(), compte.solde);`, ['7 [+5,-8] 0 [] undefined', '7 [+5,-20,-8] 0 [] undefined', '7 [+5,-8] 7 [+5,-8] 7', '-13 [+5,-20,-8] 0 [] undefined'], '10 + 5 = 15 ; retirer 20 n’est pas autorisé ; retirer 8 laisse 7. `autre` a son propre solde et son propre historique. `solde` est privé : ce n’est pas une propriété de l’objet.'),
+      ],
+    },
+    // Jour 21
+    {
+      id: 'js-workshop-sales',
+      t: 'L’atelier de Kibi : le rapport des ventes sur le web',
+      d: 'Projet de la semaine 3 : une page qui lit les ventes collées dans une zone de texte, signale les erreurs, affiche les totaux par mois et se souvient du dernier rapport.',
+      guide: [
+        { h: 'La commande', p: [
+          'Kibi note les ventes dans un tableur et veut les coller dans une page pour voir combien la boutique vend chaque mois. Si une ligne est fausse, la page doit dire laquelle, et au retour elle doit afficher le dernier rapport.',
+          'Cet atelier réunit la semaine 3 : le DOM, modifier la page, les événements, JSON et localStorage, les erreurs et les closures. Voici la page de départ :' ],
+          code: `<textarea id="donnees" rows="6">date,produit,montant\n2026-03-02,graines,4.50\n2026-03-15,foin,7.25\n2026-04-01,graines,4.50</textarea>\n<button id="calculer">Calculer</button>\n<p id="erreur" hidden></p>\n<table id="rapport"></table>\n<script src="rapport.js"></script>` },
+        { h: 'Étape 1 : lire le texte et signaler les erreurs', p: [
+          'On découpe le texte en lignes, on retire l’en-tête et on transforme chaque ligne en objet. Si une date n’a pas la forme `AAAA-MM-JJ` ou si le montant n’est pas un nombre, on lève une erreur qui indique quelle ligne pose problème.',
+          'Lever l’erreur ici et l’attraper là où la page est affichée sépare le « qu’est-ce qui ne va pas » du « comment je le montre à l’utilisateur ».' ],
+          code: `function lireVentes(texte) {\n  const lignes = texte.trim().split("\\n").slice(1);\n  return lignes.map((ligne, i) => {\n    const [date, produit, montant] = ligne.split(",");\n    const n = Number(montant);\n    if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(date) || Number.isNaN(n)) {\n      throw new Error(\`Ligne \${i + 2} non valide : \${ligne}\`);\n    }\n    return { date, produit, montant: n };\n  });\n}` },
+        { h: 'Étape 2 : les totaux par mois', p: [
+          '`reduce` part d’un objet vide et ajoute chaque vente à la clé de son mois. `?? 0` donne 0 la première fois qu’un mois apparaît.' ],
+          code: `function parMois(ventes) {\n  return ventes.reduce((totaux, v) => {\n    const mois = v.date.slice(0, 7);\n    totaux[mois] = (totaux[mois] ?? 0) + v.montant;\n    return totaux;\n  }, {});\n}\n\nconsole.log(JSON.stringify(parMois([{ date: "2026-03-02", montant: 4.5 }, { date: "2026-03-15", montant: 7.25 }])));\n// {"2026-03":11.75}` },
+        { h: 'Étape 3 : afficher le tableau au clic', p: [
+          'Chaque ligne du tableau se crée avec `insertRow()` et ses cellules avec `insertCell()`. On utilise `textContent`, jamais `innerHTML`, car le texte vient de l’utilisateur et pourrait contenir du HTML.',
+          'Le clic appelle les deux fonctions dans un `try`. Si `lireVentes` lève une erreur, le `catch` affiche son message au lieu de casser la page.' ],
+          code: `const $ = (selecteur) => document.querySelector(selecteur);\n\nfunction afficher(totaux) {\n  const table = $("#rapport");\n  table.replaceChildren();\n  for (const [mois, total] of Object.entries(totaux)) {\n    const ligne = table.insertRow();\n    ligne.insertCell().textContent = mois;\n    ligne.insertCell().textContent = total.toFixed(2) + " €";\n  }\n}\n\n$("#calculer").addEventListener("click", () => {\n  try {\n    const totaux = parMois(lireVentes($("#donnees").value));\n    afficher(totaux);\n    localStorage.setItem("kibi.rapport", JSON.stringify(totaux));\n    $("#erreur").hidden = true;\n  } catch (erreur) {\n    $("#erreur").textContent = erreur.message;\n    $("#erreur").hidden = false;\n  }\n});` },
+        { h: 'Étape 4 : se souvenir du dernier rapport', p: [
+          'À l’enregistrement, l’objet des totaux devient du texte avec `JSON.stringify`. À l’ouverture de la page, on le relit avec `JSON.parse` ; s’il n’y a rien ou si le texte est abîmé, on n’affiche rien.' ],
+          code: `function chargerDernier() {\n  try {\n    return JSON.parse(localStorage.getItem("kibi.rapport"));\n  } catch {\n    return null;\n  }\n}\n\nconst dernier = chargerDernier();\nif (dernier) afficher(dernier);` },
+        { h: 'Exemple réel : recalculer pendant la saisie', real: true, p: [
+          'Recalculer à chaque touche serait du gaspillage. `retarder()` renvoie une fonction qui se souvient, grâce à une closure, du minuteur en attente : chaque touche le relance, et le rapport n’est calculé que lorsque Kibi arrête de taper pendant 400 ms.' ],
+          code: `function retarder(fn, ms) {\n  let attente;\n  return () => {\n    clearTimeout(attente);\n    attente = setTimeout(fn, ms);\n  };\n}\n\n$("#donnees").addEventListener("input", retarder(() => $("#calculer").click(), 400));` },
+      ],
+      x: [
+        mc('Pourquoi remplit-on les cellules avec `textContent` et pas `innerHTML` ?', ['Parce que le texte vient de l’utilisateur et qu’innerHTML pourrait injecter du HTML ou des scripts', 'Parce qu’innerHTML ne marche pas dans les tableaux', 'Parce que textContent est plus court à écrire', 'Parce qu’innerHTML supprime les événements de toute la page'], '`textContent` traite tout comme du texte. `innerHTML` interprète les balises, ce qui ouvre la porte à l’injection de code.'),
+        out(`const [date, produit, montant] = "2026-03-02,graines,4.50".split(",");\nconsole.log(produit, Number(montant) * 2);`, ['graines 9', 'graines 9.00', '4.50 9', 'graines NaN'], '`split(",")` donne trois textes déstructurés dans l’ordre. `Number("4.50") * 2` vaut 9.'),
+        fill(`document.querySelector("#calculer").___("click", calculer);`, ['addEventListener', 'onClick', 'listen', 'addEvent'], '`addEventListener(type, fonction)` exécute la fonction chaque fois que l’événement se produit.'),
+        out(`try {\n  throw new Error("Ligne 3 non valide");\n} catch (e) {\n  console.log(e.message);\n}`, ['Ligne 3 non valide', 'Error', 'Error: Ligne 3 non valide', 'undefined'], '`e.message` ne contient que le texte passé à la création de l’erreur.'),
+        out(`const ventes = [{ date: "2026-03-02", montant: 4.5 }, { date: "2026-04-01", montant: 3 }, { date: "2026-03-31", montant: 1.5 }];\nconst totaux = {};\nfor (const v of ventes) {\n  const mois = v.date.slice(0, 7);\n  totaux[mois] = (totaux[mois] ?? 0) + v.montant;\n}\nconsole.log(JSON.stringify(totaux));`, ['{"2026-03":6,"2026-04":3}', '{"2026-03":4.5,"2026-04":3}', '{"2026-03":6}', '[object Object]'], 'Mars fait 4.5 + 1.5 = 6 et avril, 3. `JSON.stringify` écrit l’objet sous forme de texte JSON.'),
+        out(`localStorage.setItem("rapport", JSON.stringify({ total: 9 }));\nconst lu = JSON.parse(localStorage.getItem("rapport"));\nconsole.log(lu.total + 1, typeof lu);`, ['10 object', '91 string', '10 string', 'NaN object'], 'On l’enregistre en texte JSON et `JSON.parse` le retransforme en objet, avec `total` comme nombre.'),
+        typ('Empêche le formulaire de recharger la page quand on l’envoie', `formulaire.addEventListener("submit", (e) => {\n  e.___();\n  calculer();\n});`, 'preventDefault', '`preventDefault()` annule ce que le navigateur ferait par défaut, ici envoyer le formulaire et recharger.'),
+        out(`function lecteur() {\n  let erreurs = 0;\n  return (texte) => {\n    try {\n      if (Number.isNaN(Number(texte))) throw new Error("pas un nombre");\n      return Number(texte);\n    } catch {\n      erreurs++;\n      return -erreurs;\n    }\n  };\n}\nconst lire = lecteur();\nconsole.log(lire("4.5"), lire("abc"), lire("x"), lire("2"));`, ['4.5 -1 -2 2', '4.5 -1 -1 2', '4.5 NaN NaN 2', '4.5 0 0 2'], 'La fonction renvoyée se souvient d’`erreurs` grâce à la closure : chaque texte non numérique l’augmente, donc le deuxième échec renvoie -2.'),
+      ],
+    },
+    // Jour 22
+    {
+      id: 'js-classes',
+      t: 'Classes',
+      d: 'class, constructor, méthodes, getters, héritage avec extends, static et champs privés.',
+      guide: [
+        { h: 'Déclarer une classe', p: [
+          'Une classe est un moule pour créer des objets de même forme. Le `constructor` s’exécute avec `new` et prépare les propriétés de l’objet avec `this`.',
+          'Les méthodes s’écrivent dans la classe sans le mot `function` et sont partagées par tous les objets créés avec elle.' ],
+          code: `class Produit {\n  constructor(nom, prix) {\n    this.nom = nom;\n    this.prix = prix;\n  }\n  avecTva() {\n    return this.prix * 1.2;\n  }\n}\n\nconst livre = new Produit("Livre", 20);\nconsole.log(livre.nom, livre.avecTva());  // Livre 24` },
+        { h: 'Getters, setters et champs privés', p: [
+          'Un champ qui commence par `#` est privé : on ne peut l’utiliser qu’à l’intérieur de la classe. Essayer de le lire depuis l’extérieur est une erreur de syntaxe.',
+          '`get` définit une propriété calculée qu’on lit sans parenthèses et `set` une propriété qui valide avant d’enregistrer.' ],
+          code: `class Thermostat {\n  #degres = 20;\n  get degres() {\n    return this.#degres;\n  }\n  set degres(valeur) {\n    this.#degres = Math.min(30, Math.max(15, valeur));\n  }\n}\n\nconst t = new Thermostat();\nt.degres = 42;\nconsole.log(t.degres);  // 30` },
+        { h: 'Héritage avec extends et super', p: [
+          '`class Fille extends Mere` crée une classe qui hérite des propriétés et méthodes d’une autre. Elle peut ajouter les siennes et redéfinir celles héritées.',
+          'Dans le constructeur de la fille, il faut appeler `super(...)` avant d’utiliser `this`. Dans une méthode, `super.methode()` appelle la version de la mère.' ],
+          code: `class Animal {\n  constructor(nom) {\n    this.nom = nom;\n  }\n  parler() {\n    return this.nom + " fait un bruit";\n  }\n}\n\nclass Chien extends Animal {\n  parler() {\n    return super.parler() + " : ouaf !";\n  }\n}\n\nconsole.log(new Chien("Toby").parler());  // Toby fait un bruit : ouaf !` },
+        { h: 'Membres static et instanceof', p: [
+          'Une méthode ou propriété `static` appartient à la classe, pas à chaque objet : on l’utilise comme `Classe.methode()`. Elle sert pour les utilitaires et les compteurs partagés.',
+          '`objet instanceof Classe` vérifie si un objet a été créé avec cette classe ou avec une classe qui en hérite. Au fond, une classe reste une fonction : `typeof Classe` vaut « function ».' ],
+          code: `class Utilisateur {\n  static crees = 0;\n  constructor(nom) {\n    this.nom = nom;\n    Utilisateur.crees++;\n  }\n  static invite() {\n    return new Utilisateur("invité");\n  }\n}\n\nconst u = Utilisateur.invite();\nnew Utilisateur("Ana");\nconsole.log(Utilisateur.crees, u instanceof Utilisateur);  // 2 true` },
+        { h: 'Exemple réel : un panier d’achat', real: true, p: [
+          'Une boutique en ligne garde les lignes du panier dans un champ privé. De l’extérieur, on ne peut qu’ajouter des produits et lire le total, donc personne ne peut laisser le panier dans un état incorrect.' ],
+          code: `class Panier {\n  #lignes = [];\n  ajouter(produit, prix, unites = 1) {\n    if (unites <= 0) throw new Error("Unités invalides");\n    this.#lignes.push({ produit, prix, unites });\n    return this;   // permet d’enchaîner\n  }\n  get total() {\n    return this.#lignes.reduce((s, l) => s + l.prix * l.unites, 0);\n  }\n  get nombre() {\n    return this.#lignes.length;\n  }\n}\n\nconst p = new Panier().ajouter("Tasse", 8, 2).ajouter("Café", 12);\nconsole.log(p.nombre, p.total);  // 2 28` },
+      ],
+      x: [
+        fill(`class Chien ___ Animal {\n  aboyer() { return "ouaf"; }\n}`, ['extends', 'inherits', 'implements', ':'], 'En JavaScript, l’héritage s’écrit avec `extends`.'),
+        out(`class Compteur {\n  #n = 0;\n  inc() {\n    this.#n++;\n    return this;\n  }\n  get valeur() {\n    return this.#n;\n  }\n}\nconst c = new Compteur();\nc.inc().inc().inc();\nconsole.log(c.valeur);`, ['3', '1', 'undefined', 'Erreur'], '`inc` renvoie `this`, on peut donc enchaîner. Le getter se lit sans parenthèses.'),
+        mc('Que fait `super(...)` dans le constructeur d’une classe fille ?', ['Il appelle le constructeur de la classe mère', 'Il crée une copie de l’objet', 'Il rend la méthode statique', 'Il supprime la classe mère'], 'Il est obligatoire de l’appeler avant d’utiliser `this` dans une classe qui utilise `extends`.'),
+        out(`class A {\n  salut() { return "A"; }\n}\nclass B extends A {\n  salut() { return "B" + super.salut(); }\n}\nconsole.log(new B().salut());`, ['BA', 'B', 'A', 'AB'], '`B` redéfinit `salut`, mais appelle la version de `A` avec `super.salut()`.'),
+        typ('Fais en sorte que la méthode s’utilise depuis la classe, sans créer d’objet', `class Maths {\n  ___ double(n) { return n * 2; }\n}\nconsole.log(Maths.double(4));`, 'static', 'Les méthodes `static` appartiennent à la classe.'),
+        out(`class Point {\n  constructor(x) { this.x = x; }\n}\nconst p = new Point(2);\nconsole.log(typeof Point, p instanceof Point);`, ['function true', 'class true', 'object true', 'function false'], 'Au fond, une classe est une fonction spéciale.'),
+        mc('Que se passe-t-il si on écrit `panier.#lignes` en dehors de la classe ?', ['Erreur de syntaxe : les champs privés ne s’utilisent que dans la classe', 'Ça renvoie undefined', 'Ça renvoie le tableau', 'Ça renvoie null'], 'Les champs `#` sont protégés par le langage lui-même, pas seulement par convention.'),
+        out(`class Compte {\n  static total = 0;\n  #solde;\n  constructor(titulaire, solde = 0) {\n    this.titulaire = titulaire;\n    this.#solde = solde;\n    Compte.total++;\n  }\n  retirer(c) {\n    if (c > this.#solde) throw new Error("Fonds insuffisants");\n    this.#solde -= c;\n  }\n  get solde() { return this.#solde; }\n}\nclass Epargne extends Compte {\n  retirer(c) { super.retirer(c + 1); }\n}\nconst a = new Compte("Ana", 50);\nconst b = new Epargne("Leo", 20);\na.retirer(30);\ntry { b.retirer(20); } catch (e) { console.log(e.message); }\nconsole.log(a.solde, b.solde, Compte.total);`, ['Fonds insuffisants\n20 20 2', 'Fonds insuffisants\n20 0 2', '20 0 2', 'Fonds insuffisants\n20 20 1'], '`a` passe de 50 à 20. `Epargne` prélève 1 de frais : retirer 20 demande 21, plus que ce qu’il a, et lève l’erreur sans toucher au solde. Deux comptes ont été créés.'),
+      ],
+    },
+    // Jour 23
+    {
+      id: 'js-promises',
+      t: 'Promesses',
+      d: 'Du code qui finit plus tard : Promise, then, catch, Promise.all et l’ordre dans lequel tout s’exécute.',
+      guide: [
+        { h: 'Le code asynchrone', p: [
+          'Certaines tâches prennent du temps : demander des données à un serveur, lire un fichier, attendre un minuteur. JavaScript ne reste pas bloqué à attendre : il continue avec le reste du code et traite le résultat quand il arrive.',
+          '`setTimeout(fn, ms)` est l’exemple le plus simple : il programme une fonction pour plus tard. Même avec 0 ms, elle s’exécute après le code déjà en cours.' ],
+          code: `console.log("1. Je demande les données");\nsetTimeout(() => console.log("3. Les données arrivent"), 1000);\nconsole.log("2. Je continue à travailler");` },
+        { h: 'Créer et utiliser des promesses', p: [
+          'Une promesse représente une valeur qui arrivera dans le futur. Elle est en attente, puis elle est tenue (resolve) ou rejetée (reject).',
+          '`then` reçoit la valeur quand elle est tenue, `catch` l’erreur quand elle est rejetée et `finally` s’exécute dans les deux cas.' ],
+          code: `function lancerDe() {\n  return new Promise((resolve, reject) => {\n    setTimeout(() => {\n      const n = Math.ceil(Math.random() * 6);\n      if (n === 1) reject(new Error("Tu as fait un 1"));\n      else resolve(n);\n    }, 500);\n  });\n}\n\nlancerDe()\n  .then((n) => console.log("Tu as fait", n))\n  .catch((e) => console.log(e.message))\n  .finally(() => console.log("Fin du lancer"));` },
+        { h: 'Enchaîner', p: [
+          'Ce que renvoie un `then` est la valeur que reçoit le suivant. S’il renvoie une autre promesse, la chaîne attend qu’elle soit tenue.',
+          'Un seul `catch` à la fin attrape l’erreur de n’importe quelle étape précédente.' ],
+          code: `Promise.resolve(2)\n  .then((n) => n * 10)\n  .then((n) => {\n    if (n > 100) throw new Error("Trop grand");\n    return n + 1;\n  })\n  .then((n) => console.log(n))   // 21\n  .catch((e) => console.log(e.message));` },
+        { h: 'Plusieurs promesses et l’ordre d’exécution', p: [
+          '`Promise.all([...])` attend qu’elles soient toutes tenues et renvoie leurs valeurs dans l’ordre ; si une échoue, tout échoue. `Promise.allSettled` les attend toutes et dit comment chacune s’est terminée. `Promise.race` garde la première qui se termine.',
+          'L’ordre : d’abord tout le code synchrone, ensuite les promesses tenues (microtâches) et enfin les minuteurs (macrotâches).' ],
+          code: `console.log("A");\nsetTimeout(() => console.log("D"), 0);\nPromise.resolve().then(() => console.log("C"));\nconsole.log("B");\n// A B C D` },
+        { h: 'Exemple réel : charger un tableau de bord en parallèle', real: true, p: [
+          'Un tableau de bord a besoin de l’utilisateur, de ses commandes et de ses notifications. On les demande en même temps avec `Promise.all` : le temps total est celui de la requête la plus lente, pas la somme de toutes.' ],
+          code: `const attendre = (ms, valeur) => new Promise((r) => setTimeout(() => r(valeur), ms));\n\nconst demanderUtilisateur = () => attendre(300, { nom: "Ana" });\nconst demanderCommandes = () => attendre(500, [101, 102]);\nconst demanderAvis = () => attendre(200, ["Colis en route"]);\n\nconsole.time("tableau");\nPromise.all([demanderUtilisateur(), demanderCommandes(), demanderAvis()])\n  .then(([utilisateur, commandes, avis]) => {\n    console.log(utilisateur.nom, commandes.length, avis[0]);  // Ana 2 Colis en route\n    console.timeEnd("tableau");  // environ 500 ms, pas 1000\n  })\n  .catch((e) => console.log("Impossible de charger le tableau :", e.message));` },
+      ],
+      x: [
+        out(`console.log("A");\nsetTimeout(() => console.log("B"), 0);\nconsole.log("C");`, ['A\nC\nB', 'A\nB\nC', 'B\nA\nC', 'C\nA\nB'], 'Le minuteur s’exécute quand le code synchrone est terminé, même avec 0 ms.'),
+        out(`console.log(1);\nsetTimeout(() => console.log(2), 0);\nPromise.resolve().then(() => console.log(3));\nconsole.log(4);`, ['1\n4\n3\n2', '1\n2\n3\n4', '1\n4\n2\n3', '1\n3\n4\n2'], 'D’abord le code synchrone (1 et 4), ensuite les promesses (3) et enfin les minuteurs (2).'),
+        fill(`const p = Promise.___(new Error("raté"));\np.catch((e) => console.log(e.message));  // raté`, ['reject', 'fail', 'error', 'catch'], '`Promise.reject` crée une promesse déjà rejetée, comme `Promise.resolve` en crée une déjà tenue.'),
+        out(`Promise.resolve(2)\n  .then((n) => n * 3)\n  .then((n) => console.log(n + 1));`, ['7', '6', '3', 'undefined'], 'Le premier `then` renvoie 6 et le second le reçoit : 6 + 1 = 7.'),
+        mc('Que fait `Promise.all` si l’une des promesses est rejetée ?', ['Elle est rejetée dès qu’une échoue', 'Elle ignore celle qui échoue', 'Elle les attend toutes et renvoie les erreurs', 'Elle la relance'], 'Si tu as besoin du résultat de toutes, même en cas d’échec, utilise `Promise.allSettled`.'),
+        typ('Attrape l’erreur de la chaîne', `demanderDonnees()\n  .then(afficher)\n  .___((erreur) => console.log(erreur.message));`, 'catch', 'Un `catch` à la fin attrape l’erreur de n’importe quelle étape précédente.'),
+        out(`Promise.reject(new Error("x"))\n  .then(() => console.log("A"))\n  .catch((e) => console.log("B", e.message))\n  .finally(() => console.log("C"));`, ['B x\nC', 'A\nB x\nC', 'B x', 'A\nC'], 'La promesse rejetée saute le `then` et arrive au `catch`. `finally` s’exécute toujours.'),
+        out(`const attendre = (ms, v) => new Promise((r) => setTimeout(() => r(v), ms));\nconst journal = [];\nPromise.all([attendre(30, "a"), attendre(10, "b"), 5]).then((r) => journal.push(r.join("")));\nPromise.race([attendre(20, "x"), attendre(5, "y")]).then((v) => journal.push(v));\nPromise.allSettled([Promise.reject(new Error("non")), 1]).then((r) => journal.push(r.map((s) => s.status[0]).join("")));\nsetTimeout(() => console.log(journal.join(" ")), 50);`, ['rf y ab5', 'ab5 y rf', 'y rf ab5', 'rf x ab5'], '`allSettled` n’attend aucun minuteur : il finit en premier avec "rejected" et "fulfilled" (rf). `race` garde celle de 5 ms (y). `all` attend la plus lente et respecte l’ordre d’origine : ab5.'),
+      ],
+    },
     // Jour 24
     {
       id: 'js-async',
-      t: 'Async/await et fetch',
-      d: 'Fonctions async, await, erreurs avec try...catch et requêtes vers des API avec fetch.',
+      t: 'async/await et fetch',
+      d: 'Écrire du code asynchrone qui se lit de haut en bas et demander des données à une API avec fetch.',
       guide: [
         { h: 'async et await', p: [
           'Une fonction `async` renvoie toujours une promesse. À l’intérieur, `await` attend qu’une promesse soit tenue et renvoie sa valeur, comme si le code était synchrone.',
@@ -905,8 +920,8 @@
     // Jour 25
     {
       id: 'js-modules',
-      t: 'Modules ES',
-      d: 'export, import, exports par défaut, type="module" et import dynamique.',
+      t: 'Modules',
+      d: 'Répartir le code en fichiers avec export et import, et les utiliser dans le navigateur.',
       guide: [
         { h: 'Pourquoi utiliser des modules', p: [
           'Un module est un fichier avec sa propre portée : ses variables ne se mélangent pas avec celles des autres fichiers. Il ne partage que ce qu’il exporte.',
@@ -942,7 +957,7 @@
     {
       id: 'js-iterators',
       t: 'Itérateurs et générateurs',
-      d: 'Le protocole itérable, Symbol.iterator, function*, yield et next().',
+      d: 'Ce qui permet de parcourir quelque chose avec for...of, et les générateurs avec function* et yield.',
       guide: [
         { h: 'Itérables et itérateurs', p: [
           'Un itérable est tout ce qu’on peut parcourir avec `for...of` ou étaler avec `...` : tableaux, textes, Map, Set. Les objets classiques ne le sont pas.',
@@ -979,7 +994,7 @@
     {
       id: 'js-node',
       t: 'Node.js',
-      d: 'JavaScript côté serveur : process, modules de Node, npm et Express.',
+      d: 'JavaScript hors du navigateur : process, les modules de Node, npm et un serveur avec Express.',
       guide: [
         { h: 'Ce qu’est Node.js', p: [
           'Node.js exécute JavaScript en dehors du navigateur, avec le même moteur V8 que Chrome. Il sert pour les serveurs, les outils en ligne de commande et les scripts.',
@@ -1050,10 +1065,22 @@
     },
     // Jour 29
     {
-      id: 'js-performance',
-      t: 'Performance et patterns',
-      d: 'Mesurer, debounce, throttle, mémoïsation, un DOM efficace et Web Workers.',
+      id: 'js-clean-code',
+      t: 'Code propre et performance',
+      d: 'Des noms clairs, de petites fonctions et des retours anticipés, et mesurer avant d’optimiser avec debounce et throttle.',
       guide: [
+        { h: 'Des noms qui s’expliquent tout seuls', p: [
+          'Le code est lu bien plus souvent qu’il n’est écrit. Un bon nom évite un commentaire : `utilisateursActifs` en dit plus que `arr2`.',
+          'Conventions de JavaScript : `camelCase` pour les variables et les fonctions, `PascalCase` pour les classes et `MAJUSCULES_AVEC_TIRETS` pour les constantes fixes. Les booléens sonnent comme une question : `estActif`, `aLaPermission`.' ],
+          code: `// Difficile à lire\nconst d = u.filter((x) => x.a && x.e > 17);\n\n// Clair\nconst utilisateursAdultesActifs = utilisateurs.filter(\n  (utilisateur) => utilisateur.actif && utilisateur.age >= 18\n);` },
+        { h: 'De petites fonctions, sans nombres magiques', p: [
+          'Chaque fonction devrait faire une seule chose et avoir un nom qui la décrit. Si tu as besoin du mot « et » pour l’expliquer, ce sont sûrement deux fonctions.',
+          'Un nombre magique est une valeur sans explication au milieu du code, comme `0.2` ou `86400000`. Donne-lui un nom avec une constante.' ],
+          code: `const TVA = 0.2;\nconst MS_PAR_JOUR = 24 * 60 * 60 * 1000;\n\nconst avecTva = (prix) => prix * (1 + TVA);\nconst joursEntre = (a, b) => Math.round((b - a) / MS_PAR_JOUR);` },
+        { h: 'Les retours anticipés', p: [
+          'Beaucoup de `if` imbriqués obligent à retenir toutes les conditions à la fois. Vérifie d’abord les cas particuliers et sors de la fonction avec `return`.',
+          'Le chemin principal reste à la fin, sans indentation et facile à suivre.' ],
+          code: `// Imbriqué\nfunction remise(utilisateur) {\n  if (utilisateur) {\n    if (utilisateur.estMembre) {\n      return 0.1;\n    } else {\n      return 0;\n    }\n  } else {\n    return 0;\n  }\n}\n\n// Avec des retours anticipés\nfunction remise(utilisateur) {\n  if (!utilisateur?.estMembre) return 0;\n  return 0.1;\n}` },
         { h: 'D’abord, mesurer', p: [
           'N’optimise pas à l’aveugle : mesure où part le temps. `performance.now()` donne un horodatage précis en millisecondes et l’onglet Performance des DevTools montre ce qui est lent.',
           'Le problème se trouve presque toujours à quelques endroits : une boucle qui se répète trop, trop de requêtes ou des changements du DOM un par un.' ],
@@ -1062,62 +1089,59 @@
           'Le debounce attend qu’une action arrête de se répéter pendant un moment avant d’exécuter la fonction : idéal pour rechercher pendant que l’utilisateur tape.',
           'Le throttle exécute la fonction au plus une fois par intervalle de temps, même si l’événement se déclenche des centaines de fois : idéal pour `scroll` ou `resize`.' ],
           code: `function debounce(fn, ms) {\n  let minuteur;\n  return (...args) => {\n    clearTimeout(minuteur);\n    minuteur = setTimeout(() => fn(...args), ms);\n  };\n}\n\nfunction throttle(fn, ms) {\n  let dernier = 0;\n  return (...args) => {\n    const maintenant = Date.now();\n    if (maintenant - dernier >= ms) {\n      dernier = maintenant;\n      fn(...args);\n    }\n  };\n}\n\nwindow.addEventListener("scroll", throttle(() => console.log(scrollY), 100));` },
-        { h: 'La mémoïsation', p: [
-          'Mémoïser, c’est garder le résultat d’une fonction pour ne pas le recalculer quand les mêmes arguments reviennent. Ça marche avec les fonctions pures : même argument, même résultat.',
-          'Une `Map` comme cache est la façon la plus simple. Attention à la mémoire si les arguments possibles sont infinis.' ],
-          code: `function memo(fn) {\n  const cache = new Map();\n  return (n) => {\n    if (!cache.has(n)) cache.set(n, fn(n));\n    return cache.get(n);\n  };\n}\n\nconst lent = (n) => { for (let i = 0; i < 1e8; i++); return n * 2; };\nconst rapide = memo(lent);\nrapide(21);  // prend du temps\nrapide(21);  // instantané : sort du cache` },
-        { h: 'DOM efficace et Web Workers', p: [
-          'Chaque changement du DOM peut obliger le navigateur à recalculer la mise en page. Regroupe les changements : crée les éléments dans un `DocumentFragment` et ajoute-les en une fois, ou change une classe au lieu de nombreux styles.',
-          'Un calcul lourd bloque la page. Un Web Worker l’exécute dans un autre fil et communique par messages : `postMessage` pour envoyer et l’événement `message` pour recevoir. `loading="lazy"` sur les images retarde leur chargement jusqu’à ce qu’elles soient visibles.' ],
-          code: `// main.js\nconst worker = new Worker("premiers.js");\nworker.postMessage(5_000_000);\nworker.addEventListener("message", (e) => {\n  console.log("Nombres premiers trouvés :", e.data);\n});\n\n// premiers.js (autre fil : la page continue de répondre)\nself.addEventListener("message", (e) => {\n  let compte = 0;\n  for (let n = 2; n < e.data; n++) if (estPremier(n)) compte++;\n  self.postMessage(compte);\n});` },
         { h: 'Exemple réel : une recherche qui ne sature pas l’API', real: true, p: [
           'Sans précaution, chercher « javascript » lettre par lettre fait dix requêtes. Avec un debounce, on ne demande que quand l’utilisateur s’arrête, et un cache évite de refaire des recherches déjà faites.' ],
           code: `const cache = new Map();\n\nasync function rechercher(texte) {\n  if (cache.has(texte)) return cache.get(texte);\n  const res = await fetch("/api/recherche?q=" + encodeURIComponent(texte));\n  const donnees = await res.json();\n  cache.set(texte, donnees);\n  return donnees;\n}\n\nconst input = document.querySelector("#recherche");\ninput.addEventListener("input", debounce(async () => {\n  const texte = input.value.trim();\n  if (texte.length < 2) return;\n  const resultats = await rechercher(texte);\n  afficherResultats(resultats);\n}, 300));` },
       ],
       x: [
+        mc('Quel nom est le plus clair pour un tableau d’utilisateurs actifs ?', ['utilisateursActifs', 'arr', 'donnees2', 'x'], 'Un bon nom dit ce que contient la variable sans devoir lire le reste du code.'),
+        mc('Qu’est-ce qu’un nombre magique ?', ['Une valeur sans explication au milieu du code', 'Un nombre aléatoire', 'Un très grand nombre', 'Un nombre négatif'], 'On le corrige en lui donnant un nom avec une constante, comme `TVA`.'),
+        fill(`___ TVA = 0.2;  // ne change jamais`, ['const', 'let', 'var', 'static'], 'Ce qui n’est pas réaffecté se déclare avec `const`.'),
+        out(`function prixLivraison(total, estMembre) {\n  if (estMembre) return 0;\n  if (total >= 50) return 0;\n  return 4.99;\n}\nconsole.log(prixLivraison(30, false), prixLivraison(30, true), prixLivraison(60, false));`, ['4.99 0 0', '0 0 4.99', '4.99 4.99 0', '4.99 0 4.99'], 'Chaque cas particulier sort tôt ; seul le cas normal arrive à la fin.'),
         mc('Quelle différence y a-t-il entre debounce et throttle ?', ['Le debounce attend que l’action s’arrête ; le throttle limite combien de fois elle s’exécute dans le temps', 'C’est la même chose', 'Le throttle ne marche qu’avec le clavier', 'Le debounce exécute la fonction immédiatement'], 'Debounce pour les recherches pendant la saisie ; throttle pour `scroll` ou `resize`.'),
-        out(`function memo(fn) {\n  const cache = new Map();\n  return (n) => {\n    if (!cache.has(n)) cache.set(n, fn(n));\n    return cache.get(n);\n  };\n}\nlet calculs = 0;\nconst carre = memo((n) => {\n  calculs++;\n  return n * n;\n});\ncarre(4);\ncarre(4);\ncarre(5);\nconsole.log(calculs, carre(5));`, ['2 25', '3 25', '4 25', '2 16'], 'Le deuxième `carre(4)` et le dernier `carre(5)` sortent du cache : seuls 4 et 5 ont été calculés.'),
         fill(`const debut = performance.___();\nfaireQuelqueChose();\nconsole.log(performance.now() - debut, "ms");`, ['now', 'time', 'start', 'clock'], '`performance.now()` donne un horodatage précis.'),
         out(`function debounce(fn, ms) {\n  let t;\n  return (...args) => {\n    clearTimeout(t);\n    t = setTimeout(() => fn(...args), ms);\n  };\n}\nconst journal = [];\nconst rechercher = debounce((txt) => journal.push(txt), 20);\nrechercher("j");\nrechercher("ja");\nrechercher("jav");\nsetTimeout(() => rechercher("java"), 50);\nsetTimeout(() => console.log(journal.join(",")), 100);`, ['jav,java', 'j,ja,jav,java', 'java', 'j,java'], 'Les trois premiers appels arrivent d’affilée : chacun annule le précédent et seul "jav" s’exécute. "java" arrive plus tard et s’exécute aussi.'),
-        typ('Crée un fil séparé pour un calcul lourd', `const worker = new ___("calcul.js");`, 'Worker', 'Un Web Worker exécute le script dans un autre fil et communique par messages.'),
-        mc('Pourquoi vaut-il mieux regrouper les changements du DOM ?', ['Chaque changement peut obliger à recalculer la mise en page', 'Parce que le DOM n’accepte qu’un changement par seconde', 'Pour utiliser moins de mémoire sur le serveur', 'Ce n’est pas utile : mieux vaut les faire un par un'], 'Un `DocumentFragment` ou le changement d’une classe permet de tout faire en une fois.'),
-        mc('Quelle technique utiliserais-tu pour qu’une fonction liée au `scroll` s’exécute au plus toutes les 100 ms ?', ['throttle', 'debounce', 'la mémoïsation', 'Un Web Worker'], 'Avec un debounce, elle ne s’exécuterait qu’à l’arrêt du défilement.'),
         out(`const fib = (n) => (n < 2 ? n : fib(n - 1) + fib(n - 2));\nlet appels = 0;\nconst cache = {};\nfunction fibMemo(n) {\n  appels++;\n  if (n in cache) return cache[n];\n  return (cache[n] = n < 2 ? n : fibMemo(n - 1) + fibMemo(n - 2));\n}\nconsole.log(fib(10), fibMemo(10), appels);`, ['55 55 19', '55 55 177', '55 55 11', '89 89 19'], 'Les deux donnent le même résultat, mais la version avec cache calcule chaque nombre une seule fois : 11 calculs (de 10 à 0) plus 8 lectures du cache. La version sans cache ferait 177 appels.'),
       ],
     },
     // Jour 30
     {
-      id: 'js-wrapup',
-      t: 'Conclusions',
-      d: 'Révision finale, outils du quotidien et prochaines étapes.',
+      id: 'js-workshop-shop',
+      t: 'L’atelier de Kibi : la boutique complète',
+      d: 'Projet final : la boutique de Kibi avec une classe Produit, un catalogue chargé avec fetch, des modules, un générateur et des tests Vitest.',
       guide: [
-        { h: 'Ce que tu as appris', p: [
-          'Tu as parcouru JavaScript de `console.log` jusqu’aux serveurs : types, conditions, boucles, fonctions, objets, tableaux et leurs méthodes, classes, erreurs, JSON, le DOM et les événements, promesses et `async/await`, modules, générateurs, Node.js et tests.',
-          'L’idée qui relie tout : JavaScript est un langage de fonctions et d’objets qui réagit à des événements. Presque tout ce que fait un site moderne se construit avec ces pièces.' ] },
-        { h: 'JavaScript moderne en quelques lignes', p: [
-          'Ce fragment réunit plusieurs pièces du cours : déstructuration, méthodes de tableaux, fonctions fléchées, gabarits de texte, `??` et `async/await`.',
-          'Remarque ce qui manque : ni `var`, ni boucles avec indices, ni `==`.' ],
-          code: 'const commandes = [\n  { client: "Ana", total: 40, payee: true },\n  { client: "Leo", total: 25, payee: false },\n  { client: "Eva", total: 60, payee: true },\n];\n\nconst encaisse = commandes\n  .filter(({ payee }) => payee)\n  .reduce((somme, { total }) => somme + total, 0);\n\nconst enAttente = commandes.filter((c) => !c.payee).map((c) => c.client);\nconsole.log(`Encaissé : ${encaisse} €. En attente : ${enAttente.join(", ") || "aucune"}`);\n// Encaissé : 100 €. En attente : Leo' },
-        { h: 'Outils du quotidien', p: [
-          'Les DevTools du navigateur (console, débogueur, réseau, performance) sont tes meilleurs alliés. Vite crée et sert des projets en quelques secondes, ESLint et Prettier gardent le code propre et Git conserve l’historique.',
-          'TypeScript ajoute des types à JavaScript et détecte beaucoup d’erreurs avant l’exécution. C’est l’étape suivante naturelle.' ],
-          code: `# Créer un nouveau projet avec Vite\nnpm create vite@latest mon-app\ncd mon-app\nnpm install\nnpm run dev\n\n# Vérifier et formater\nnpx eslint .\nnpx prettier --write .` },
-        { h: 'Erreurs typiques et prochaines étapes', p: [
-          'Les bugs les plus courants : utiliser `==` au lieu de `===`, oublier un `await`, perdre le `this` en passant une méthode comme callback, modifier des tableaux ou objets partagés et comparer des décimaux avec `===`.',
-          'Pour continuer : construis de petits projets (une liste de tâches avec localStorage, une recherche avec une API, un jeu en canvas), consulte MDN et javascript.info, apprends TypeScript puis un framework comme React, Vue ou Svelte, ou Node.js avec une base de données pour le back-end.' ] },
-        { h: 'Exemple réel : un gestionnaire de dépenses', real: true, p: [
-          'Une petite application réunit ce que tu as appris : une classe avec un champ privé, une validation avec des erreurs, `reduce` pour regrouper, `localStorage` avec JSON pour enregistrer et `Intl.NumberFormat` pour afficher des euros.' ],
-          code: `class Depenses {\n  #liste;\n  constructor(liste = []) {\n    this.#liste = liste;\n  }\n  ajouter(libelle, montant, categorie = "autres") {\n    if (!(montant > 0)) throw new RangeError("Montant invalide");\n    this.#liste.push({ libelle, montant, categorie, date: new Date().toISOString() });\n    return this;\n  }\n  parCategorie() {\n    return this.#liste.reduce((acc, { categorie, montant }) => {\n      acc[categorie] = (acc[categorie] ?? 0) + montant;\n      return acc;\n    }, {});\n  }\n  enregistrer() {\n    localStorage.setItem("depenses", JSON.stringify(this.#liste));\n  }\n  static charger() {\n    return new Depenses(JSON.parse(localStorage.getItem("depenses")) ?? []);\n  }\n}\n\nconst euros = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" });\nconst d = Depenses.charger().ajouter("Cinéma", 9, "loisirs").ajouter("Fruits", 6.5, "alimentation");\nd.enregistrer();\nfor (const [cat, total] of Object.entries(d.parCategorie())) {\n  console.log(cat, euros.format(total));   // loisirs 9,00 €  ·  alimentation 6,50 €\n}` },
+        { h: 'La commande', p: [
+          'Quatre semaines plus tard, la boutique de Kibi passe vraiment en ligne : un catalogue qui arrive en JSON, une page qui montre les produits en stock et des tests qui préviennent si quelque chose casse.',
+          'On réunit la dernière semaine avec tout ce qui précède. Chaque fichier est un module avec une seule tâche : c’est plus facile à comprendre et à tester morceau par morceau. Node.js et npm s’occupent d’installer et de lancer les tests.' ],
+          code: `boutique/\n├── package.json         # "type": "module" et vitest\n├── index.html\n├── catalogue.json\n├── src/\n│   ├── produit.js       # la classe Produit\n│   ├── catalogue.js     # charger le catalogue avec fetch\n│   └── app.js           # la page\n└── test/\n    └── produit.test.js` },
+        { h: 'Étape 1 : la classe Produit', p: [
+          'Le stock est un champ privé (`#stock`) : seule la classe peut le modifier, et de l’extérieur on le lit avec un getter. `vendre()` lève une `RangeError` s’il n’y en a pas assez, au lieu de laisser le stock en négatif.',
+          '`export` permet d’importer la classe depuis d’autres fichiers.' ],
+          code: `// src/produit.js\nexport class Produit {\n  #stock;\n\n  constructor(nom, prix, stock = 0) {\n    this.nom = nom;\n    this.prix = prix;\n    this.#stock = stock;\n  }\n\n  get stock() {\n    return this.#stock;\n  }\n\n  disponible(quantite) {\n    return quantite > 0 && quantite <= this.#stock;\n  }\n\n  vendre(quantite) {\n    if (!this.disponible(quantite)) throw new RangeError("Pas de stock");\n    this.#stock -= quantite;\n    return Math.round(this.prix * quantite * 100) / 100;\n  }\n}` },
+        { h: 'Étape 2 : charger le catalogue avec fetch', p: [
+          'Une fonction `async` demande le JSON avec `fetch` et attend la réponse avec `await`. Si le serveur répond par une erreur, `reponse.ok` vaut `false` et on en lève une nous-mêmes.',
+          'Chaque objet du JSON devient un `Produit` avec `map`, ainsi le reste du code travaille avec des objets qui savent vendre.' ],
+          code: `// src/catalogue.js\nimport { Produit } from "./produit.js";\n\nexport async function chargerCatalogue(url = "catalogue.json") {\n  const reponse = await fetch(url);\n  if (!reponse.ok) throw new Error("HTTP " + reponse.status);\n  const donnees = await reponse.json();\n  return donnees.map((d) => new Produit(d.nom, d.prix, d.stock));\n}` },
+        { h: 'Étape 3 : la page', p: [
+          'Un générateur (`function*`) ne fournit que les produits en stock, un par un, sans créer de tableau intermédiaire. `for...of` le parcourt comme n’importe quel itérable.',
+          'Dans un module, on peut utiliser `await` hors d’une fonction : la page attend le catalogue puis affiche la liste.' ],
+          code: `// src/app.js\nimport { chargerCatalogue } from "./catalogue.js";\n\nfunction* disponibles(catalogue) {\n  for (const p of catalogue) if (p.stock > 0) yield p;\n}\n\nconst liste = document.querySelector("#produits");\nfor (const p of disponibles(await chargerCatalogue())) {\n  const li = document.createElement("li");\n  li.textContent = \`\${p.nom} · \${p.prix.toFixed(2)} €\`;\n  liste.append(li);\n}` },
+        { h: 'Exemple réel : tester la boutique avant l’ouverture', real: true, p: [
+          'Avec `npm install -D vitest` et `npx vitest`, Node.js lance les tests en une seconde à chaque modification. Le premier vérifie que vendre diminue le stock ; le second, qu’on ne peut pas vendre plus que ce qu’il y a.' ],
+          code: `// test/produit.test.js\nimport { describe, test, expect } from "vitest";\nimport { Produit } from "../src/produit.js";\n\ndescribe("Produit", () => {\n  test("vend et diminue le stock", () => {\n    const graines = new Produit("Graines", 4.5, 10);\n    expect(graines.vendre(3)).toBe(13.5);\n    expect(graines.stock).toBe(7);\n  });\n\n  test("ne vend pas plus que ce qu'il y a", () => {\n    expect(() => new Produit("Foin", 7.25, 2).vendre(3)).toThrow(RangeError);\n  });\n});` },
+        { h: 'Et maintenant ?', p: [
+          'En quatre semaines, tu as fait le chemin de `console.log("Bonjour, le monde")` à une application web avec des classes, des données asynchrones, des modules et des tests. C’est la même structure que beaucoup de projets professionnels, en plus petit.',
+          'Prochaines étapes : mets le projet dans Git, ajoute ESLint et Prettier, crée avec Express l’API qui sert `catalogue.json` et publie la page chez un hébergeur. Choisis un problème à toi et résous-le avec ce que tu sais : c’est la façon la plus rapide de continuer à apprendre.' ] },
       ],
       x: [
-        out(`console.log(0.1 + 0.2 === 0.3, [] == false, null ?? "x");`, ['false true x', 'true false x', 'false false null', 'true true x'], 'Les décimaux ne sont pas exacts. Avec `==`, `[]` et `false` sont convertis en 0, d’où la recommandation d’utiliser `===`. `??` remplace `null`.'),
-        mc('Avec quel mot déclares-tu une variable qui ne sera pas réaffectée ?', ['const', 'let', 'var', 'static'], 'Utilise `const` par défaut et `let` seulement si tu dois réaffecter.'),
-        out(`const o = {\n  n: "Ana",\n  saluer() {\n    return this.n;\n  },\n};\nconst f = o.saluer;\nconsole.log(o.saluer(), f.call({ n: "Leo" }));`, ['Ana Leo', 'Ana Ana', 'Ana undefined', 'Leo Leo'], '`this` dépend de la façon dont la fonction est appelée, pas de l’endroit où elle a été écrite. `call` fixe le `this`.'),
-        fill(`const prix = [5, 10, 15];\nconst total = prix.___((s, p) => s + p, 0);`, ['reduce', 'map', 'filter', 'sum'], '`reduce` combine le tableau en une seule valeur.'),
-        typ('Attends que les données arrivent', `async function charger(url) {\n  const donnees = ___ fetch(url).then((r) => r.json());\n  return donnees;\n}`, 'await', 'Sans `await`, `donnees` serait une promesse en attente.'),
-        out(`const [a, ...b] = new Set([3, 3, 1, 2]);\nconsole.log(a, b.length, Array.isArray(b));`, ['3 2 true', '3 3 true', '3 2 false', '1 2 true'], 'Le Set vaut {3, 1, 2}. La déstructuration marche avec n’importe quel itérable et le rest crée toujours un tableau.'),
-        ord('Garde seulement les personnes majeures', ['const majeurs', '=', 'personnes.filter(', '(p) => p.age >= 18', ');'], ['.map(', 'function'], '`filter` renvoie un nouveau tableau avec les éléments qui remplissent la condition.'),
-        out(`class Depenses {\n  #liste = [];\n  ajouter(libelle, montant, categorie = "autres") {\n    if (montant <= 0) throw new RangeError("Montant invalide");\n    this.#liste.push({ libelle, montant, categorie });\n    return this;\n  }\n  parCategorie() {\n    return this.#liste.reduce((acc, { categorie, montant }) => {\n      acc[categorie] = (acc[categorie] ?? 0) + montant;\n      return acc;\n    }, {});\n  }\n}\nconst d = new Depenses().ajouter("Pain", 2).ajouter("Cinéma", 9, "loisirs").ajouter("Fruits", 6, "alimentation");\ntry {\n  d.ajouter("Erreur", -1);\n} catch (e) {\n  console.log(e.name);\n}\nconst resume = Object.entries(d.parCategorie()).sort((a, b) => b[1] - a[1]);\nconsole.log(resume.map(([c, t]) => c + ":" + t).join(" "), JSON.stringify(d));`, ['RangeError\nloisirs:9 alimentation:6 autres:2 {}', 'Error\nloisirs:9 alimentation:6 autres:2 {}', 'RangeError\nautres:2 loisirs:9 alimentation:6 {}', 'RangeError\nloisirs:9 alimentation:6 autres:2 {"#liste":[]}'], 'Le montant négatif lève une `RangeError`. On regroupe par catégorie et on trie du plus grand au plus petit. `JSON.stringify` ignore les champs privés, il donne donc "{}".'),
+        mc('Que signifie le dièse de `#stock` dans la classe ?', ['Que c’est un champ privé : on ne peut le modifier que depuis la classe', 'Que c’est un commentaire', 'Que le nombre doit être entier', 'Que le navigateur l’exige pour exporter la classe'], 'Les champs avec `#` ne peuvent être ni lus ni modifiés de l’extérieur ; c’est pourquoi la classe propose le getter `stock`.'),
+        out(`class Produit {\n  #stock;\n  constructor(nom, stock) {\n    this.nom = nom;\n    this.#stock = stock;\n  }\n  disponible(n) {\n    return n > 0 && n <= this.#stock;\n  }\n}\nconst p = new Produit("Graines", 3);\nconsole.log(p.disponible(3), p.disponible(0), p.disponible(4));`, ['true false false', 'true true false', 'false false false', 'true false true'], '3 est dans le stock ; 0 n’est pas une quantité positive et 4 dépasse le stock.'),
+        fill(`const reponse = ___ fetch("catalogue.json");`, ['await', 'async', 'then', 'yield'], '`await` attend que la promesse de `fetch` soit résolue et donne son résultat.'),
+        mc('Une fonction `async` se termine par `return donnees`. Que reçoit celui qui l’appelle sans `await` ?', ['Une promesse résolue avec donnees', 'Les données directement', 'undefined', 'Une erreur'], 'Une fonction `async` renvoie toujours une promesse ; `await` ou `then` en extraient la valeur.'),
+        out(`function* disponibles(stocks) {\n  for (const s of stocks) if (s > 0) yield s;\n}\nconsole.log([...disponibles([3, 0, 5, 0, 1])].join("-"));`, ['3-5-1', '3-0-5-0-1', '3', '0-0'], 'Le générateur ne fournit que les valeurs supérieures à 0, et le spread les rassemble dans un tableau.'),
+        typ('Complète la ligne pour que d’autres fichiers puissent importer la classe', `___ class Produit {\n  // ...\n}`, 'export', '`export` rend la classe publique ; les autres modules la récupèrent avec `import { Produit } from "./produit.js"`.'),
+        mc('Pourquoi le test écrit-il `expect(() => p.vendre(3)).toThrow()` avec une fonction fléchée ?', ['Pour qu’expect exécute l’appel et attrape l’erreur ; sinon, l’erreur serait levée avant', 'Parce que les fonctions fléchées sont plus rapides', 'Parce que vendre est asynchrone', 'Pour ne pas avoir à importer Produit'], 'Sans la flèche, `p.vendre(3)` s’exécuterait en préparant les arguments et l’erreur casserait le test avant d’atteindre `toThrow`.'),
+        out(`class Produit {\n  #stock;\n  constructor(nom, prix, stock = 0) {\n    this.nom = nom;\n    this.prix = prix;\n    this.#stock = stock;\n  }\n  get stock() {\n    return this.#stock;\n  }\n  vendre(n) {\n    if (n <= 0 || n > this.#stock) throw new RangeError("Pas de stock");\n    this.#stock -= n;\n    return this.prix * n;\n  }\n}\nconst graines = new Produit("Graines", 4.5, 5);\nlet caisse = 0;\nfor (const n of [2, 4, 3]) {\n  try {\n    caisse += graines.vendre(n);\n  } catch (e) {\n    console.log(e.name);\n  }\n}\nconsole.log(caisse, graines.stock);`, ['RangeError\n22.5 0', 'RangeError\n40.5 0', '22.5 0', 'RangeError\n9 3'], 'On en vend 2 (9 €, il en reste 3). En demander 4 lève `RangeError` et ne change rien. Puis on en vend 3 (13.5 €) : 22.5 en caisse et un stock de 0.'),
       ],
     },
   ],

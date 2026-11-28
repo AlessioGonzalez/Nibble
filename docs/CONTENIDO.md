@@ -45,7 +45,9 @@ Cada día tiene un `id` fijo (`py-loops`, `java-maps`…), igual en los 4 idioma
 4. Si fusionas dos días en uno, el día fusionado conserva uno de los dos ids y el otro se añade a `NibbleAlias` en `order.js` (`'id-antiguo': 'id-que-lo-contiene'`). Así el progreso del día que desaparece pasa al que lo contiene.
 5. No toques `NibbleOrderV3`: es el orden con el que se numeró el progreso antiguo (v3) y solo sirve para convertirlo.
 
-El temario de Python va por semanas: seis días de temas y un **Taller de Kibi** al final de cada una (días 7, 14, 21 y 30), un proyecto que junta lo de la semana sobre la tienda de Kibi.
+Los temarios de Python y JavaScript van por semanas (`NibbleWeeks` en `order.js`): días de temas y un **Taller de Kibi** al final de cada una (días 7, 14, 21 y 30), un proyecto que junta lo de la semana sobre la tienda de Kibi. En JavaScript, la tercera semana es entera de navegador (DOM, eventos y localStorage).
+
+Los días cuyo código no se puede ejecutar en el navegador (pip, entornos virtuales, Node.js, peticiones a webs externas, servidores) usan ejercicios de elegir y de escribir, sin simular la ejecución.
 
 ### Temario y textos propios
 

@@ -51,8 +51,8 @@
     },
     javascript: {
       print: 'js-intro', arith: 'js-intro', chain: 'js-intro', concat: 'js-types', vars: 'js-types', varw: 'js-types',
-      str: 'js-types', arith2: 'js-booleans', cmp: 'js-booleans', cond: 'js-conditionals', ifw: 'js-conditionals', cond3: 'js-arrays',
-      list: 'js-arrays', appendw: 'js-arrays', loop: 'js-loops', loopw: 'js-loops', loopif: 'js-functions', func: 'js-functions',
+      str: 'js-types', arith2: 'js-booleans', cmp: 'js-booleans', cond: 'js-conditionals', ifw: 'js-conditionals', cond3: 'js-conditionals',
+      list: 'js-arrays', appendw: 'js-arrays', loop: 'js-loops', loopw: 'js-loops', loopif: 'js-loops', func: 'js-functions',
       callw: 'js-functions', retw: 'js-functions', dict: 'js-objects', dictw: 'js-objects', hof: 'js-higher-order', setf: 'js-sets-maps',
       exc: 'js-errors', cls: 'js-classes', inh: 'js-classes',
     },
