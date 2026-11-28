@@ -1,7 +1,7 @@
 /* Nibble: interfaz. Depende de content-api.js, i18n.js y store.js. */
 (function () {
 'use strict';
-const VERSION = '4.8.0';
+const VERSION = '4.9.0';
 const Store = window.SintaxisStore;
 const P = window.NibbleProgress;
 const t = (k, v) => window.I18N.t(k, v);
@@ -352,24 +352,34 @@ function syncHTML() {
   return `<div class="sync ${st === 'ok' ? 'ok' : st === 'busy' ? 'busy' : st === 'err' ? 'err' : ''}" data-sync><i></i>${t('sync.' + st)}</div>`;
 }
 
-// El nivel extra está en el panel de vidas y Sugerencias en el perfil (en el móvil no caben en el menú).
+// Cada entrada lleva su color (--c): el icono va en una pastilla de ese color. El nivel extra está en el panel de vidas;
+// Sugerencias, al pie del lateral y en el perfil (en el móvil no cabe en el menú).
 function navItems() {
   const cd = currentDay(S.course);
   return [
-    ['map', t('nav.map'), I.map, '#map'],
-    ['today', t('nav.today'), I.play, '#' + dayHash(cd)],
-    ['courses', t('nav.courses'), I.grid, '#courses'],
-    ['kibi', t('nav.kibi'), I.hanger, '#kibi'],
-    ['profile', t('nav.profile'), I.user, '#profile'],
-    ['suggest', t('nav.suggest'), I.chat, '#sugerencias'],
+    ['map', t('nav.map'), I.map, '#map', 'var(--lang)'],
+    ['today', t('nav.today'), I.play, '#' + dayHash(cd), 'var(--ok)'],
+    ['courses', t('nav.courses'), I.grid, '#courses', 'var(--gem)'],
+    ['kibi', t('nav.kibi'), I.hanger, '#kibi', 'var(--kibi)'],
+    ['profile', t('nav.profile'), I.user, '#profile', '#8B6CEF'],
+    ['suggest', t('nav.suggest'), I.chat, '#sugerencias', 'var(--muted)'],
   ];
 }
+const navOn = id => { const cd = currentDay(S.course); return (id === 'map' && route.v === 'map') || (id === 'today' && route.v === 'day' && route.d === cd) || id === route.v; };
+const navBtn = ([id, label, ic, href, c], cls = '') => { const on = navOn(id);
+  return `<button class="navbtn ${cls} ${on ? 'on' : ''}" style="--c:${c}" data-go="${href.slice(1)}" ${on ? 'aria-current="page"' : ''}><span class="nico">${ic}</span><span class="lbl">${label}</span></button>`; };
+// Lateral: por secciones. Móvil (compact): cinco botones con Continuar en el centro, destacado.
 function navHTML(compact) {
-  const cd = currentDay(S.course);
-  return navItems().filter(([id]) => !compact || id !== 'suggest').map(([id, label, ic, href]) => {
-    const on = (id === 'map' && route.v === 'map') || (id === 'today' && route.v === 'day' && route.d === cd) || id === route.v;
-    return `<button class="navbtn ${on ? 'on' : ''}" data-go="${href.slice(1)}" ${on ? 'aria-current="page"' : ''}>${ic}<span class="lbl">${label}</span></button>`;
-  }).join('') + (compact ? '' : `<button class="navbtn" data-act="palette">${I.search}<span class="lbl">${t('nav.search')}</span><span class="kbd">Ctrl K</span></button>`);
+  const it = Object.fromEntries(navItems().map(r => [r[0], r]));
+  if (compact) return ['map', 'courses', 'today', 'kibi', 'profile'].map(id => navBtn(it[id], id === 'today' ? 'navcta' : '')).join('');
+  return `<p class="navsec">${t('nav.sec.learn')}</p>${['map', 'today', 'courses'].map(id => navBtn(it[id])).join('')}
+    <p class="navsec">${t('nav.sec.you')}</p>${['kibi', 'profile'].map(id => navBtn(it[id])).join('')}`;
+}
+// Selector de curso del lateral (en pantallas estrechas va en la barra superior).
+function sideCourseHTML() {
+  const c = S.course, p = Math.round(doneCount(c) / (DAYS * PER_DAY) * 100);
+  return `<div class="dropwrap side-course"><button class="cswitch big" data-act="coursemenu" aria-haspopup="menu" aria-expanded="${menuOpen}">${badge(c)}
+    <span class="cinfo"><b>${META[c].name}</b><small>${t('map.dayOf2', { d: currentDay(c) + 1 })} · ${p}%</small></span>${I.caret}</button>${menuOpen ? courseMenu() : ''}</div>`;
 }
 
 /* Indicadores de la barra superior: cada uno con su nombre accesible y una ficha al tocarlo que explica qué es. */
@@ -400,7 +410,7 @@ function courseMenu() {
 let menuOpen = false;
 function topbarHTML() {
   return `<div class="dropwrap"><button class="cswitch" data-act="coursemenu" aria-haspopup="menu" aria-expanded="${menuOpen}">${badge(S.course)}<span class="cname">${META[S.course].name}</span>${I.caret}</button>${menuOpen ? courseMenu() : ''}</div>
-  <button class="searchbtn" data-act="palette" aria-label="${t('nav.search')}">${I.search}<span class="lbl">${t('nav.search')}</span><span class="kbd">Ctrl K</span></button>
+  <button class="searchbtn" data-act="palette" aria-label="${t('nav.search')}">${I.search}<span class="lbl">${t('nav.searchHint')}</span><span class="kbd">Ctrl K</span></button>
   <span class="grow"></span><div class="stats">${statsHTML()}${statPopHTML()}</div>`;
 }
 function railHTML() {
@@ -415,13 +425,13 @@ function railHTML() {
 }
 function renderChrome() {
   $('#brand').innerHTML = `${kibi('idle', 36)}<span class="lbl">Nibble</span>`;
-  $('#sidenav').innerHTML = navHTML();
+  $('#sidenav').innerHTML = sideCourseHTML() + navHTML();
   $('#bottomnav').innerHTML = navHTML(true);
   $('#topbar').innerHTML = topbarHTML();
   $('#rail').innerHTML = railHTML();
   // El estado del guardado está solo en el panel derecho (antes salía también aquí).
   const who = Store.user ? `<div class="who"><span class="av">${esc((Store.user.email || '?')[0].toUpperCase())}</span><span class="em">${esc(Store.user.email || '')}</span><button class="iconbtn" data-act="signout" title="${t('profile.signout')}" aria-label="${t('profile.signout')}">${I.logout}</button></div>` : '';
-  $('#sidefoot').innerHTML = langPick() + who;
+  $('#sidefoot').innerHTML = navBtn(navItems().find(r => r[0] === 'suggest'), 'small') + langPick() + who;
 }
 
 /* ---------- vista: mapa ---------- */
