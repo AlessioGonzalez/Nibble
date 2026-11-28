@@ -8,6 +8,7 @@ Thumbs.db
 .env
 .env.*
 *.zip
+!assets/vendor/pyodide-*/python_stdlib.zip
 backups/
 test-results/
 playwright-report/
