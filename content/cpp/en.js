@@ -1,5 +1,5 @@
 /* C++ · English */
-(({ mc, out, fill, ord, typ, addCourse }) => addCourse('cpp', 'en', {
+(({ mc, out, fill, ord, typ, code, addCourse }) => addCourse('cpp', 'en', {
   tag: 'Performance and direct control of memory.',
   days: [
     // ───────────── Day 1 ─────────────
@@ -40,6 +40,9 @@
         typ('Write the operator that moves the typed value into the variable', `int age;\nstd::cin ___ age;`, '>>', '`std::cin` uses `>>`: the data goes from the keyboard into the variable.'),
         // Final challenge
         out(`std::cout << 3 + 4 << " " << "3 + 4" << "\\n";\nstd::cout << 10 / 4;`, ['7 3 + 4\n2', '7 7\n2.5', '3 + 4 3 + 4\n2', '7 3 + 4\n2.5'], 'Without quotes, `3 + 4` is calculated; in quotes it is text. `10 / 4` between integers drops the decimals: 2.'),
+      ],
+      lab: [
+        code('Write a program that shows `Hello, Kibi` on one line and, on the next, the result of `7 * 6`.', `#include <iostream>\n\nint main() {\n    // Write your program here\n    return 0;\n}\n`, [{ in: '', out: 'Hello, Kibi\n42' }], `#include <iostream>\n\nint main() {\n    std::cout << "Hello, Kibi" << "\\n";\n    std::cout << 7 * 6 << "\\n";\n    return 0;\n}`, '`std::cout` with `"\\n"` writes each value on a new line: first the text in quotes and then the result of `7 * 6`, which is worked out before it is shown.'),
       ],
     },
     // ───────────── Day 2 ─────────────

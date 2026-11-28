@@ -1,5 +1,5 @@
 /* C++ · Italiano */
-(({ mc, out, fill, ord, typ, addCourse }) => addCourse('cpp', 'it', {
+(({ mc, out, fill, ord, typ, code, addCourse }) => addCourse('cpp', 'it', {
   tag: 'Prestazioni e controllo diretto della memoria.',
   days: [
     // ───────────── Giorno 1 ─────────────
@@ -40,6 +40,9 @@
         typ('Scrivi l’operatore che porta il valore digitato nella variabile', `int eta;\nstd::cin ___ eta;`, '>>', '`std::cin` usa `>>`: il dato va dalla tastiera alla variabile.'),
         // Sfida finale
         out(`std::cout << 3 + 4 << " " << "3 + 4" << "\\n";\nstd::cout << 10 / 4;`, ['7 3 + 4\n2', '7 7\n2.5', '3 + 4 3 + 4\n2', '7 3 + 4\n2.5'], 'Senza virgolette, `3 + 4` viene calcolato; tra virgolette è testo. `10 / 4` tra interi scarta i decimali: 2.'),
+      ],
+      lab: [
+        code('Scrivi un programma che mostri `Ciao, Kibi` su una riga e, su quella dopo, il risultato di `7 * 6`.', `#include <iostream>\n\nint main() {\n    // Scrivi qui il tuo programma\n    return 0;\n}\n`, [{ in: '', out: 'Ciao, Kibi\n42' }], `#include <iostream>\n\nint main() {\n    std::cout << "Ciao, Kibi" << "\\n";\n    std::cout << 7 * 6 << "\\n";\n    return 0;\n}`, '`std::cout` con `"\\n"` scrive ogni valore su una nuova riga: prima il testo tra virgolette e poi il risultato di `7 * 6`, che viene calcolato prima di mostrarlo.'),
       ],
     },
     // ───────────── Giorno 2 ─────────────

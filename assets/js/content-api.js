@@ -9,6 +9,8 @@
   S.fill = (c, o, e, q = '') => ({ t: 'fill', q, c, o, e });
   S.ord = (q, w, x, e) => ({ t: 'order', q, w, x, e });
   S.typ = (q, c, a, e) => ({ t: 'type', q, c, a: Array.isArray(a) ? a : [a], e });
+  // Escribir un programa entero en el editor (day.lab). tests: [{ in: entrada, out: salida exacta }]; sol: una solución.
+  S.code = (q, start, tests, sol, e) => ({ t: 'code', q, start, tests, sol, e });
   S.addCourse = (course, locale, data) => {
     (S.content[course] = S.content[course] || {})[locale] = data;
     if (typeof S.onContent === 'function') S.onContent(course, locale);

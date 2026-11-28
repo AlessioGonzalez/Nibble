@@ -227,6 +227,23 @@ test('JavaScript: las copias v3 usan el orden de entonces y los días fusionados
   for (const c of ['python', 'javascript', 'java', 'cpp']) assert.equal(new Set(globalThis.NibbleOrderV3[c]).size, 30, c);
 });
 
+test('borradores del editor: 4 KB como mucho, 20 como mucho y gana el más reciente al unir', () => {
+  const a = P.totals(P.upgrade(null)), b = P.totals(P.upgrade(null));
+  a.savedAt = 1; b.savedAt = 2;
+  assert.ok(P.saveDraft(a, 'python:py-intro:lab:0', 'print(1)', 100));
+  assert.equal(P.saveDraft(a, 'python:py-intro:lab:0', 'x'.repeat(4097), 200), false);
+  assert.equal(P.draft(a, 'python:py-intro:lab:0'), 'print(1)');
+  for (let i = 0; i < 25; i++) P.saveDraft(b, 'k' + i, 'n' + i, 1000 + i);
+  assert.equal(Object.keys(b.drafts).length, 20);
+  assert.equal(P.draft(b, 'k0'), null);
+  assert.equal(Object.keys(P.merge(a, b).drafts).length, 20);
+  const c = P.totals(P.upgrade(null)); c.savedAt = 3;
+  P.saveDraft(c, 'python:py-intro:lab:0', 'print(2)', 50);
+  assert.equal(P.draft(P.merge(a, c), 'python:py-intro:lab:0'), 'print(1)');
+  P.saveDraft(c, 'python:py-intro:lab:0', 'print(3)', 300);
+  assert.equal(P.draft(P.merge(a, c), 'python:py-intro:lab:0'), 'print(3)');
+});
+
 test('v4: los ids de order.js son únicos y hay 30 por curso', () => {
   for (const c of ['python', 'javascript', 'java', 'cpp']) {
     const ids = globalThis.NibbleOrder[c];

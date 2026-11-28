@@ -1,5 +1,5 @@
 /* Python · Italiano */
-(({ mc, out, fill, ord, typ, addCourse }) => addCourse('python', 'it', {
+(({ mc, out, fill, ord, typ, code, addCourse }) => addCourse('python', 'it', {
   tag: 'Dal tuo primo print() a un negozio con database, API e test: quattro settimane, con un progetto alla fine di ognuna.',
   days: [
     // ───────────── Giorno 1 ─────────────
@@ -39,6 +39,9 @@
         ord('Scrivi il codice che mostra Ciao, mondo', ['print', '(', '"Ciao, mondo"', ')'], ['echo', '{'], 'Si chiama `print` con il testo tra virgolette dentro le parentesi.'),
         out(`print("Ciao" * 3)`, ['CiaoCiaoCiao', 'Ciao 3', 'Errore', 'Ciao*3'], 'Moltiplicare una stringa per un intero la ripete.'),
         out(`a = 10\nb = 3\nprint(a + b * 2, (a + b) * 2)`, ['16 26', '26 16', '16 16', '26 26'], 'La moltiplicazione viene prima dell’addizione; le parentesi cambiano l’ordine. `print` separa i valori con uno spazio.'),
+      ],
+      lab: [
+        code('Scrivi un programma che mostri `Ciao, Kibi` su una riga e, su quella dopo, il risultato di `7 * 6`.', `# Scrivi qui il tuo programma\n`, [{ in: '', out: 'Ciao, Kibi\n42' }], `print("Ciao, Kibi")\nprint(7 * 6)`, '`print()` scrive ogni valore su una nuova riga: prima il testo tra virgolette e poi il risultato di `7 * 6`, che viene calcolato prima di mostrarlo.'),
       ],
     },
     // ───────────── Giorno 2 ─────────────

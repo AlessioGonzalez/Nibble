@@ -1,7 +1,7 @@
 /* Nibble: interfaz. Depende de content-api.js, i18n.js y store.js. */
 (function () {
 'use strict';
-const VERSION = '4.5.0';
+const VERSION = '4.6.0';
 const Store = window.SintaxisStore;
 const P = window.NibbleProgress;
 const t = (k, v) => window.I18N.t(k, v);
@@ -230,6 +230,7 @@ const dayTitle = d => (dayData(d) ? dayData(d).t : t('day.soon'));
 function parseHash() {
   const h = location.hash.replace(/^#/, '');
   let m;
+  if ((m = h.match(/^day-(\d+)-code-(\d+)$/))) return { v: 'code', d: Math.max(0, Math.min(DAYS - 1, +m[1] - 1)), i: +m[2] };
   if ((m = h.match(/^day-(\d+)(?:-(guide|practice))?$/))) return { v: 'day', d: Math.max(0, Math.min(DAYS - 1, +m[1] - 1)), tab: m[2] || null };
   if (h === 'courses' || h === 'profile') return { v: h };
   if (h === 'sugerencias') return { v: 'suggest' };
@@ -425,6 +426,8 @@ function renderDay() {
       <h2>${esc(s.h)}${s.real ? `<span class="tag-real">${I.bulb}${t('day.real')}</span>` : ''}</h2>
       ${s.p.map(p => `<p>${rich(p)}</p>`).join('')}
       ${s.code ? `<div class="codewrap">${codeBlock(s.code, c)}<button class="copybtn" data-copy="${d}:${i}">${t('day.copy')}</button></div>` : ''}</section>`).join('')}
+      ${(day.lab || []).map((ex, i) => `<section class="labcard"><span class="ex-kind write">${I.code}${t('code.kind')}</span><h2>${t('code.title')}</h2><p>${rich(ex.q)}</p>
+        <button class="btn" data-go="${dayHash(d)}-code-${i}">${I.code}${t('code.open')}</button></section>`).join('')}
       <div class="guide-end">${kibi('happy', 64)}<p>${t('day.guideEnd')}</p><button class="btn primary" data-go="${dayHash(d, 'practice')}">${I.target}${t('day.startPractice')}</button></div></div>
       <div class="practice-fab" id="fab"><button class="btn primary block" data-go="${dayHash(d, 'practice')}">${I.target}${t('day.startPractice')}</button></div>`;
   } else if (!unlocked) {
@@ -446,6 +449,60 @@ function renderDay() {
   }
   return h + `</div>`;
 }
+/* ---------- vista: escribir un programa (day.lab) ---------- */
+// CodeMirror solo se descarga al abrir esta vista. Al cambiar de versión: node scripts/build-vendor.mjs y actualiza CM_SRC.
+const CM_SRC = 'assets/vendor/codemirror-6.44.2.js';
+const SYMBOLS = ['(', ')', '[', ']', '{', '}', ':', ';', '"', "'", '=', '<', '>', '\t'];
+let cm = null, cmLoad = null, cmPending = null, draftTimer = 0;
+const labKey = (c, d, i) => `${c}:${dayId(c, d)}:lab:${i}`;
+const labEx = () => { const day = dayData(route.d); return day && day.lab ? day.lab[route.i] : null; };
+function loadCM() {
+  if (window.NibbleCM) return Promise.resolve(window.NibbleCM);
+  return cmLoad || (cmLoad = new Promise((ok, ko) => {
+    const s = document.createElement('script'); s.src = CM_SRC;
+    s.onload = () => ok(window.NibbleCM);
+    s.onerror = () => { cmLoad = null; s.remove(); ko(new Error('cm')); };
+    document.head.append(s);
+  }));
+}
+// Guarda el borrador pendiente (al escribir se espera un momento; al salir de la vista, al instante).
+function flushDraft() {
+  clearTimeout(draftTimer);
+  if (!cmPending) return;
+  const [key, start, code] = cmPending; cmPending = null;
+  let ok = true;
+  if (code === start) P.dropDraft(S, key); else ok = P.saveDraft(S, key, code);
+  Store.save();
+  const note = $('#draftNote'); if (note) note.textContent = ok ? t('code.saved') : t('code.tooLong');
+}
+function renderCode() {
+  const c = S.course, d = route.d, day = dayData(d), ex = labEx();
+  if (!ex) return renderDay();
+  return `<div class="wrap codeview">
+    <header class="dayhead"><div class="top"><button class="crumb" data-go="${dayHash(d, 'guide')}">${I.left}${esc(day.t)}</button></div>
+      <p class="eyebrow">${t('day.nOf', { d: d + 1 })} · ${t('code.kind')}</p><h1>${t('code.title')}</h1><p class="lead">${rich(ex.q)}</p></header>
+    <div class="expect"><span>${t('code.expected')}</span><pre>${esc(ex.tests[0].out)}</pre></div>
+    <div class="editor" id="editor"><p class="editor-msg">${t('code.loading')}</p></div>
+    <div class="symbar" role="toolbar" aria-label="${t('code.symbols')}">${SYMBOLS.map(s => `<button type="button" data-sym="${esc(s)}" aria-label="${s === '\t' ? t('code.tab') : esc(s)}">${s === '\t' ? '⇥' : esc(s)}</button>`).join('')}</div>
+    <div class="code-actions"><small class="mono" id="draftNote" aria-live="polite">${P.draft(S, labKey(c, d, route.i)) !== null ? t('code.saved') : ''}</small>
+      <button class="btn ghost" data-act="code-reset">${t('code.reset')}</button>
+      <button class="btn primary" disabled title="${t('code.soon')}">${I.play}${t('code.run')}<small>${t('code.soon')}</small></button></div>
+    <section class="outpanel"><h2>${t('code.output')}</h2><p>${t('code.outputSoon')}</p></section></div>`;
+}
+async function mountEditor() {
+  const host = $('#editor'), ex = labEx(); if (!host || !ex) return;
+  const key = labKey(S.course, route.d, route.i);
+  try {
+    const CM = await loadCM();
+    if (!host.isConnected) return;
+    host.replaceChildren();
+    cm = CM.create(host, { doc: P.draft(S, key) ?? ex.start, lang: S.course, label: t('code.editor'),
+      onChange: code => { cmPending = [key, ex.start, code]; clearTimeout(draftTimer); draftTimer = setTimeout(flushDraft, 700); } });
+  } catch (e) {
+    host.innerHTML = `<p class="editor-msg">${t('code.loadError')}</p>`;
+  }
+}
+
 // Indicador de lectura de la guía y botón fijo "Empezar la práctica" al acercarse al final.
 function onScroll() {
   const g = document.querySelector('#main .guide'); if (!g) return;
@@ -637,10 +694,12 @@ function render(swap) {
   if (!CUR) return;
   normalizeDay(); regen(); applyTheme(); renderChrome();
   const m = $('#main');
+  if (cm) { flushDraft(); cm.destroy(); cm = null; }
   m.classList.toggle('swap', !!swap && !firstRender);
   if (!CUR.data && !['profile', 'courses', 'suggest'].includes(route.v)) m.innerHTML = `<div class="wrap"><div class="nextday">${kibi('sad', 90)}<h2>${t('content.missing')}</h2><button class="btn primary" data-go="courses">${t('nav.courses')}</button></div></div>`;
-  else m.innerHTML = route.v === 'day' ? renderDay() : route.v === 'courses' ? renderCourses() : route.v === 'profile' ? renderProfile() : route.v === 'suggest' ? renderSuggest() : renderMap();
+  else m.innerHTML = route.v === 'day' ? renderDay() : route.v === 'code' ? renderCode() : route.v === 'courses' ? renderCourses() : route.v === 'profile' ? renderProfile() : route.v === 'suggest' ? renderSuggest() : renderMap();
   firstRender = false;
+  if (route.v === 'code' && CUR.data) mountEditor();
 }
 async function onRoute() {
   route = parseHash(); openPop = null; menuOpen = false; statOpen = null;
@@ -1323,6 +1382,8 @@ document.addEventListener('click', async e => {
     try { await navigator.clipboard.writeText(code); toast(t('day.copied')); } catch (err) { toast(t('day.copyFail')); }
     return;
   }
+  if (d.sym !== undefined) { if (cm) cm.insert(d.sym); return; }
+  if (d.act === 'code-reset') { const ex = labEx(); if (cm && ex) { cm.set(ex.start); cmPending = [labKey(S.course, route.d, route.i), ex.start, ex.start]; flushDraft(); $('#draftNote').textContent = ''; cm.focus(); } return; }
   if (d.opt !== undefined && L) { selectOpt(+d.opt); return; }
   if (d.bank !== undefined && L && L.phase === 'answer') { const ex = L.queue[0], bb = ex.bank.find(x => x.id === +d.bank); if (bb && !bb.used) { bb.used = true; ex.picked.push(bb.id); renderOrder(); } return; }
   if (d.pick !== undefined && L && L.phase === 'answer') { const ex = L.queue[0], id = +d.pick; ex.picked = ex.picked.filter(x => x !== id); ex.bank.find(x => x.id === id).used = false; renderOrder(); return; }
@@ -1369,6 +1430,8 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Enter') { const btn = $('#checkBtn'); if (!btn || btn.disabled || document.activeElement === btn) return; e.preventDefault(); btn.click(); return; }
   if (L.phase === 'answer' && /^[1-9]$/.test(e.key) && document.activeElement.tagName !== 'INPUT') { const ex = L.queue[0]; if (ex.opts) selectOpt(+e.key - 1); }
 });
+// La barra de símbolos no se lleva el foco: el editor lo conserva y el teclado del móvil no se cierra.
+for (const ev of ['pointerdown', 'mousedown']) document.addEventListener(ev, e => { if (e.target.closest('.symbar button')) e.preventDefault(); });
 window.addEventListener('hashchange', () => {
   if (location.hash === '#inicio') { if (L) closeLesson(); closeModal(); showLanding(); return; }
   if (!$('#shell').hidden && CUR) onRoute();

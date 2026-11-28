@@ -1,5 +1,5 @@
 /* Java · Français */
-(({ mc, out, fill, ord, typ, addCourse }) => addCourse('java', 'fr', {
+(({ mc, out, fill, ord, typ, code, addCourse }) => addCourse('java', 'fr', {
   tag: 'Orienté objet et fortement typé, d’Android aux serveurs.',
   days: [
     // ───────────── Jour 1 ─────────────
@@ -39,6 +39,9 @@
         out(`System.out.print("A");\nSystem.out.println("B");\nSystem.out.print("C");`, ['AB\nC', 'A\nB\nC', 'ABC', 'A\nBC'], '`print` ne saute pas de ligne, donc A et B restent collés ; `println` saute après le B.'),
         typ('Complète la ligne pour afficher le prix et passer à la ligne', `double prix = 9.99;\nSystem.out.___(prix);`, 'println', '`println` affiche et ajoute un saut de ligne ; `print` ne l’ajoute pas.'),
         out(`System.out.println("Total : " + 2 + 3);\nSystem.out.println(2 + 3 + " total");`, ['Total : 23\n5 total', 'Total : 5\n5 total', 'Total : 23\n23 total', 'Total : 5\n23 total'], 'Java évalue de gauche à droite : dans la première ligne le texte vient d’abord et tout est concaténé ; dans la seconde, 2 + 3 est additionné avant d’arriver au texte.'),
+      ],
+      lab: [
+        code('Écris un programme qui affiche `Bonjour, Kibi` sur une ligne et, sur la suivante, le résultat de `7 * 6`.', `public class Main {\n    public static void main(String[] args) {\n        // Écris ton programme ici\n    }\n}\n`, [{ in: '', out: 'Bonjour, Kibi\n42' }], `public class Main {\n    public static void main(String[] args) {\n        System.out.println("Bonjour, Kibi");\n        System.out.println(7 * 6);\n    }\n}`, '`System.out.println()` écrit chaque valeur sur une nouvelle ligne : d’abord le texte entre guillemets, puis le résultat de `7 * 6`, calculé avant d’être affiché.'),
       ],
     },
     // ───────────── Jour 2 ─────────────

@@ -5,6 +5,7 @@ Nibble incluye estos componentes, que conservan sus propias licencias. La licenc
 | Componente | Archivo | Licencia |
 |---|---|---|
 | [supabase-js](https://github.com/supabase/supabase-js) 2.45.4 | `assets/vendor/supabase-js-2.45.4.min.js` | MIT, © Supabase |
+| [CodeMirror](https://codemirror.net) 6.44.2 y sus paquetes de lenguaje (Python, JavaScript, Java, C++), con Lezer | `assets/vendor/codemirror-6.44.2.js` (generado con `scripts/build-vendor.mjs`) | MIT, © Marijn Haverbeke y colaboradores |
 | [Figtree](https://github.com/erikdkennedy/figtree) | `assets/fonts/figtree-latin.woff2` | SIL Open Font License 1.1 (texto completo en `assets/fonts/OFL-Figtree.txt`), © The Figtree Project Authors |
 | [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono) | `assets/fonts/jetbrains-mono-latin.woff2` | SIL Open Font License 1.1 (texto completo en `assets/fonts/OFL-JetBrainsMono.txt`), © The JetBrains Mono Project Authors |
 

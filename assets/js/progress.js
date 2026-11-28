@@ -37,7 +37,7 @@
     v: V, course: 'python', locale: null, theme: 'auto', xp: 0, hearts: MAXH, heartsTs: 0,
     streak: 0, maxStreak: 0, lastDay: null, daily: { day: null, xp: 0 }, goal: 30,
     done: {}, courseXp: {}, sound: true, savedAt: 0, resetAt: 0,
-    stats: zeroStats(), dev: {}, run: { cur: 0, best: 0, at: 0 }, passed: {}, review: {}, ach: {}, skill: {},
+    stats: zeroStats(), dev: {}, run: { cur: 0, best: 0, at: 0 }, passed: {}, review: {}, ach: {}, skill: {}, drafts: {},
   });
 
   // v3 → v4: cambia el número de día de cada clave ('curso:número:...') por su identificador. off: 0 si el
@@ -71,7 +71,7 @@
     const st = Object.assign(fresh(), s ? clone(s) : {});
     st.stats = Object.assign(zeroStats(), st.stats);
     st.run = Object.assign({ cur: 0, best: 0, at: 0 }, st.run);
-    for (const k of ['passed', 'review', 'ach']) if (!st[k] || typeof st[k] !== 'object') st[k] = {};
+    for (const k of ['passed', 'review', 'ach', 'drafts']) if (!st[k] || typeof st[k] !== 'object') st[k] = {};
     if (!s || !s.dev || typeof s.dev !== 'object') {
       // Estado de antes de los contadores por dispositivo: lo que había pasa a la cuenta "base".
       st.dev = {};
@@ -144,6 +144,7 @@
     m.run.best = Math.max(A.run.best || 0, B.run.best || 0, m.run.cur || 0);
     m.maxStreak = Math.max(A.maxStreak || 0, B.maxStreak || 0);
     m.review = maxPairs(A.review, B.review);
+    m.drafts = keepDrafts(Object.assign({}, A.drafts, ...Object.keys(B.drafts).filter(k => !A.drafts[k] || B.drafts[k][0] > A.drafts[k][0]).map(k => ({ [k]: B.drafts[k] }))));
     m.ach = {};
     for (const k of new Set([...Object.keys(A.ach), ...Object.keys(B.ach)])) m.ach[k] = Math.min(A.ach[k] || Infinity, B.ach[k] || Infinity);
     const s = (A.lastDay || '') >= (B.lastDay || '') ? A : B;
@@ -219,6 +220,25 @@
   // Guarda la fecha de los logros que se cumplen ahora y no tenían fecha. Devuelve los nuevos.
   function unlock(s, ids, now = Date.now()) { const fresh = ids.filter(id => !s.ach[id]); fresh.forEach(id => { s.ach[id] = now; }); return fresh; }
 
-  g.NibbleProgress = { MAXH, STATS, V, fresh, upgrade, totals, merge, add, section, levelDone, dayStr, today,
+  /* ---------- borradores del editor ---------- */
+  // { 'curso:día:lab:índice': [fecha, código] }. Límites por la fila de progreso en la nube (512 KB): 20 borradores de 4 KB.
+  const DRAFT_MAX = 20, DRAFT_BYTES = 4096;
+  const bytes = t => new TextEncoder().encode(t).length;
+  function keepDrafts(d) {
+    const keys = Object.keys(d).sort((a, b) => d[b][0] - d[a][0]);
+    for (const k of keys.slice(DRAFT_MAX)) delete d[k];
+    return d;
+  }
+  // Devuelve false si el código pasa de 4 KB (no se guarda y se conserva el borrador anterior).
+  function saveDraft(s, key, code, now = Date.now()) {
+    if (bytes(code) > DRAFT_BYTES) return false;
+    s.drafts[key] = [now, code];
+    keepDrafts(s.drafts);
+    return true;
+  }
+  const draft = (s, key) => (s.drafts[key] ? s.drafts[key][1] : null);
+  function dropDraft(s, key) { delete s.drafts[key]; }
+
+  g.NibbleProgress = { MAXH, saveDraft, draft, dropDraft, DRAFT_MAX, DRAFT_BYTES, STATS, V, fresh, upgrade, totals, merge, add, section, levelDone, dayStr, today,
     miss, fix, pending, fixedCount, weak, history, studySeconds, unlock };
 })(typeof window !== 'undefined' ? window : globalThis);

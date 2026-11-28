@@ -1,5 +1,5 @@
 /* JavaScript · Español */
-(({ mc, out, fill, ord, typ, addCourse }) => addCourse('javascript', 'es', {
+(({ mc, out, fill, ord, typ, code, addCourse }) => addCourse('javascript', 'es', {
   tag: 'Del primer console.log a una tienda en la web con datos, pruebas y Node.js: cuatro semanas con un proyecto al final de cada una.',
   days: [
     // Día 1
@@ -44,6 +44,9 @@
         mc('¿En qué se diferencia `console.error` de `console.log`?', ['Escribe en la salida de errores y el navegador lo marca como error', 'Detiene el programa', 'Lanza una excepción', 'No hay ninguna diferencia'], 'Para lanzar un error de verdad se usa `throw`.'),
         out(`const n = 5;\nconsole.log("Total:", n, "items");`, ['Total: 5 items', 'Total:5items', 'Total: n items', 'Total: 5, items'], 'Los argumentos se muestran separados por un espacio.'),
         out(`let precio = 10;\nprecio = precio * 2;\nconst envio = 5;\nconsole.log("Total:", precio + envio);`, ['Total: 25', 'Total: 15', 'Total:25', 'Error'], '`precio` pasa a valer 20 y se suma el envío: 25. `console.log` separa sus argumentos con un espacio.'),
+      ],
+      lab: [
+        code('Escribe un programa que muestre `Hola, Kibi` en una línea y, en la siguiente, el resultado de `7 * 6`.', `// Escribe aquí tu programa\n`, [{ in: '', out: 'Hola, Kibi\n42' }], `console.log("Hola, Kibi");\nconsole.log(7 * 6);`, '`console.log()` escribe cada valor en una línea nueva: primero el texto entre comillas y después el resultado de `7 * 6`, que se calcula antes de mostrarlo.'),
       ],
     },
     // Día 2

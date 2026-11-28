@@ -8,6 +8,17 @@
     "e2e": "playwright test --config scripts/e2e/playwright.config.mjs"
   },
   "devDependencies": {
-    "@playwright/test": "1.65.1"
+    "@codemirror/autocomplete": "6.20.4",
+    "@codemirror/commands": "6.11.2",
+    "@codemirror/lang-cpp": "6.0.3",
+    "@codemirror/lang-java": "6.0.2",
+    "@codemirror/lang-javascript": "6.2.5",
+    "@codemirror/lang-python": "6.2.1",
+    "@codemirror/language": "6.13.1",
+    "@codemirror/state": "6.7.6",
+    "@codemirror/view": "6.44.2",
+    "@lezer/highlight": "1.2.5",
+    "@playwright/test": "1.65.1",
+    "esbuild": "0.28.2"
   }
 }

@@ -1,5 +1,5 @@
 /* Python · English */
-(({ mc, out, fill, ord, typ, addCourse }) => addCourse('python', 'en', {
+(({ mc, out, fill, ord, typ, code, addCourse }) => addCourse('python', 'en', {
   tag: 'From your first print() to a shop with a database, an API and tests: four weeks, with a project at the end of each one.',
   days: [
     // ───────────── Day 1 ─────────────
@@ -39,6 +39,9 @@
         ord('Write the code that displays Hello, world', ['print', '(', '"Hello, world"', ')'], ['echo', '{'], 'You call `print` with the text in quotes inside the parentheses.'),
         out(`print("Hi" * 3)`, ['HiHiHi', 'Hi 3', 'Error', 'Hi*3'], 'Multiplying a string by an integer repeats it.'),
         out(`a = 10\nb = 3\nprint(a + b * 2, (a + b) * 2)`, ['16 26', '26 16', '16 16', '26 26'], 'Multiplication comes before addition; parentheses change the order. `print` separates values with a space.'),
+      ],
+      lab: [
+        code('Write a program that shows `Hello, Kibi` on one line and, on the next, the result of `7 * 6`.', `# Write your program here\n`, [{ in: '', out: 'Hello, Kibi\n42' }], `print("Hello, Kibi")\nprint(7 * 6)`, '`print()` writes each value on a new line: first the text in quotes and then the result of `7 * 6`, which is worked out before it is shown.'),
       ],
     },
     // ───────────── Day 2 ─────────────

@@ -1,5 +1,5 @@
 /* C++ · Français */
-(({ mc, out, fill, ord, typ, addCourse }) => addCourse('cpp', 'fr', {
+(({ mc, out, fill, ord, typ, code, addCourse }) => addCourse('cpp', 'fr', {
   tag: 'Performance et contrôle direct de la mémoire.',
   days: [
     // ───────────── Jour 1 ─────────────
@@ -40,6 +40,9 @@
         typ('Écris l’opérateur qui place la saisie dans la variable', `int age;\nstd::cin ___ age;`, '>>', '`std::cin` utilise `>>` : la donnée va du clavier vers la variable.'),
         // Défi final
         out(`std::cout << 3 + 4 << " " << "3 + 4" << "\\n";\nstd::cout << 10 / 4;`, ['7 3 + 4\n2', '7 7\n2.5', '3 + 4 3 + 4\n2', '7 3 + 4\n2.5'], 'Sans guillemets, `3 + 4` est calculé ; entre guillemets, c’est du texte. `10 / 4` entre entiers supprime les décimales : 2.'),
+      ],
+      lab: [
+        code('Écris un programme qui affiche `Bonjour, Kibi` sur une ligne et, sur la suivante, le résultat de `7 * 6`.', `#include <iostream>\n\nint main() {\n    // Écris ton programme ici\n    return 0;\n}\n`, [{ in: '', out: 'Bonjour, Kibi\n42' }], `#include <iostream>\n\nint main() {\n    std::cout << "Bonjour, Kibi" << "\\n";\n    std::cout << 7 * 6 << "\\n";\n    return 0;\n}`, '`std::cout` avec `"\\n"` écrit chaque valeur sur une nouvelle ligne : d’abord le texte entre guillemets, puis le résultat de `7 * 6`, calculé avant d’être affiché.'),
       ],
     },
     // ───────────── Jour 2 ─────────────

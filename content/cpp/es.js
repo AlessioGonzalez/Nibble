@@ -1,5 +1,5 @@
 /* C++ · Español */
-(({ mc, out, fill, ord, typ, addCourse }) => addCourse('cpp', 'es', {
+(({ mc, out, fill, ord, typ, code, addCourse }) => addCourse('cpp', 'es', {
   tag: 'Rendimiento y control directo de la memoria.',
   days: [
     // ───────────────────────── Día 1
@@ -40,6 +40,9 @@
         typ('Escribe el operador que lleva lo tecleado a la variable', `int edad;\nstd::cin ___ edad;`, '>>', '`std::cin` usa `>>`: el dato va del teclado hacia la variable.'),
         // Reto final
         out(`std::cout << 3 + 4 << " " << "3 + 4" << "\\n";\nstd::cout << 10 / 4;`, ['7 3 + 4\n2', '7 7\n2.5', '3 + 4 3 + 4\n2', '7 3 + 4\n2.5'], 'Sin comillas, `3 + 4` se calcula; entre comillas es texto. `10 / 4` entre enteros descarta los decimales: 2.'),
+      ],
+      lab: [
+        code('Escribe un programa que muestre `Hola, Kibi` en una línea y, en la siguiente, el resultado de `7 * 6`.', `#include <iostream>\n\nint main() {\n    // Escribe aquí tu programa\n    return 0;\n}\n`, [{ in: '', out: 'Hola, Kibi\n42' }], `#include <iostream>\n\nint main() {\n    std::cout << "Hola, Kibi" << "\\n";\n    std::cout << 7 * 6 << "\\n";\n    return 0;\n}`, '`std::cout` con `"\\n"` escribe cada valor en una línea nueva: primero el texto entre comillas y después el resultado de `7 * 6`, que se calcula antes de mostrarlo.'),
       ],
     },
     // ───────────────────────── Día 2

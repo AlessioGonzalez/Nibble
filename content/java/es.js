@@ -1,5 +1,5 @@
 /* Java · Español */
-(({ mc, out, fill, ord, typ, addCourse }) => addCourse('java', 'es', {
+(({ mc, out, fill, ord, typ, code, addCourse }) => addCourse('java', 'es', {
   tag: 'Orientado a objetos y con tipado fuerte, de Android a servidores.',
   days: [
     // ───────────── Día 1 ─────────────
@@ -39,6 +39,9 @@
         out(`System.out.print("A");\nSystem.out.println("B");\nSystem.out.print("C");`, ['AB\nC', 'A\nB\nC', 'ABC', 'A\nBC'], '`print` no salta de línea, así que A y B quedan juntas; `println` salta después de la B.'),
         typ('Completa la línea para imprimir el precio y saltar de línea', `double precio = 9.99;\nSystem.out.___(precio);`, 'println', '`println` imprime y añade un salto de línea; `print` no lo añade.'),
         out(`System.out.println("Total: " + 2 + 3);\nSystem.out.println(2 + 3 + " total");`, ['Total: 23\n5 total', 'Total: 5\n5 total', 'Total: 23\n23 total', 'Total: 5\n23 total'], 'Java evalúa de izquierda a derecha: en la primera línea el texto va primero y todo se concatena; en la segunda, 2 + 3 se suma antes de llegar al texto.'),
+      ],
+      lab: [
+        code('Escribe un programa que muestre `Hola, Kibi` en una línea y, en la siguiente, el resultado de `7 * 6`.', `public class Main {\n    public static void main(String[] args) {\n        // Escribe aquí tu programa\n    }\n}\n`, [{ in: '', out: 'Hola, Kibi\n42' }], `public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hola, Kibi");\n        System.out.println(7 * 6);\n    }\n}`, '`System.out.println()` escribe cada valor en una línea nueva: primero el texto entre comillas y después el resultado de `7 * 6`, que se calcula antes de mostrarlo.'),
       ],
     },
     // ───────────── Día 2 ─────────────

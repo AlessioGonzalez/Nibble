@@ -1,5 +1,5 @@
 /* Python · Español */
-(({ mc, out, fill, ord, typ, addCourse }) => addCourse('python', 'es', {
+(({ mc, out, fill, ord, typ, code, addCourse }) => addCourse('python', 'es', {
   tag: 'De tu primer print() a una tienda con base de datos, API y pruebas: cuatro semanas con un proyecto al final de cada una.',
   days: [
     // ───────────── Día 1 ─────────────
@@ -39,6 +39,9 @@
         ord('Escribe el código que muestra Hola, mundo', ['print', '(', '"Hola, mundo"', ')'], ['echo', '{'], 'Llamas a `print` con el texto entre comillas dentro de los paréntesis.'),
         out(`print("Hola" * 3)`, ['HolaHolaHola', 'Hola 3', 'Error', 'Hola*3'], 'Multiplicar un texto por un entero lo repite.'),
         out(`a = 10\nb = 3\nprint(a + b * 2, (a + b) * 2)`, ['16 26', '26 16', '16 16', '26 26'], 'La multiplicación va antes que la suma; los paréntesis cambian el orden. `print` separa los valores con un espacio.'),
+      ],
+      lab: [
+        code('Escribe un programa que muestre `Hola, Kibi` en una línea y, en la siguiente, el resultado de `7 * 6`.', `# Escribe aquí tu programa\n`, [{ in: '', out: 'Hola, Kibi\n42' }], `print("Hola, Kibi")\nprint(7 * 6)`, '`print()` escribe cada valor en una línea nueva: primero el texto entre comillas y después el resultado de `7 * 6`, que se calcula antes de mostrarlo.'),
       ],
     },
     // ───────────── Día 2 ─────────────

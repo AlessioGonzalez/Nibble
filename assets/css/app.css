@@ -824,3 +824,47 @@ main.swap > *{animation:swapIn .28s var(--ease)}
 }
 :root[data-motion="reduce"] *,:root[data-motion="reduce"] *::before,:root[data-motion="reduce"] *::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
 :root[data-motion="reduce"] .reveal,:root[data-motion="reduce"] .reveal [style*="--i"]{opacity:1;transform:none}
+
+/* ---------- editor de código (day.lab): CodeMirror se carga solo en esta vista ---------- */
+.labcard{display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:20px;border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--line)}
+.labcard h2{font-size:1.125rem}
+.labcard p{color:var(--ink-2)}
+.codeview{display:flex;flex-direction:column;gap:16px}
+.expect{display:flex;flex-direction:column;gap:6px}
+.expect span{font:500 .8125rem var(--f-mono);color:var(--muted)}
+.expect pre{margin:0;padding:12px 14px;border-radius:var(--r);background:var(--sunk);font:450 .9375rem/1.6 var(--f-mono);color:var(--ink);white-space:pre-wrap}
+.editor{min-height:220px;border-radius:var(--r);border:1px solid var(--code-border);background:var(--code-bg);overflow:hidden}
+.editor-msg{padding:16px;color:var(--code-ln);font:450 .875rem var(--f-mono)}
+.editor .cm-editor{min-height:220px;background:var(--code-bg);color:var(--code-fg);font:450 .9375rem/1.65 var(--f-mono)}
+.editor .cm-editor.cm-focused{outline:2px solid var(--focus);outline-offset:-2px}
+.editor .cm-scroller{font-family:var(--f-mono);line-height:1.65}
+.editor .cm-content{padding:12px 0;caret-color:var(--code-fg)}
+.editor .cm-gutters{background:var(--code-bg);color:var(--code-ln);border-right:1px solid var(--code-chrome)}
+.editor .cm-activeLine,.editor .cm-activeLineGutter{background:var(--code-chrome)}
+.editor .cm-cursor{border-left-color:var(--code-fg)}
+.editor .cm-selectionBackground,.editor .cm-focused .cm-selectionBackground{background:color-mix(in srgb, var(--hl-fn) 30%, transparent)}
+.editor .cm-matchingBracket{background:var(--code-chrome);outline:1px solid var(--code-ln)}
+.editor .tok-keyword,.editor .tok-operatorKeyword{color:var(--hl-kw)}
+.editor .tok-string,.editor .tok-string2{color:var(--hl-st)}
+.editor .tok-number,.editor .tok-bool,.editor .tok-atom{color:var(--hl-nu)}
+.editor .tok-comment{color:var(--hl-cm);font-style:italic}
+.editor .tok-typeName,.editor .tok-className,.editor .tok-namespace{color:var(--hl-ty)}
+.editor .tok-meta,.editor .tok-macroName{color:var(--hl-pp)}
+.editor .tok-definition{color:var(--hl-fn)}
+/* Barra de símbolos: solo en pantallas táctiles, pegada abajo para quedar sobre el teclado. */
+.symbar{display:none}
+@media (pointer:coarse){
+  /* Mientras se escribe, el menú inferior se oculta y la barra queda pegada encima del teclado. */
+  body:has(.cm-editor.cm-focused) .bottomnav{display:none}
+  .codeview:has(.cm-focused) .symbar{position:sticky;bottom:0}
+  .symbar{z-index:5;display:flex;gap:6px;overflow-x:auto;padding:8px;margin:0 -8px;background:var(--bg);border-top:1px solid var(--line);scrollbar-width:none}
+  .symbar button{flex:0 0 auto;min-width:44px;min-height:44px;border-radius:8px;border:1px solid var(--line-2);background:var(--surface);color:var(--ink);font:500 1rem var(--f-mono)}
+  .symbar button:active{transform:scale(.97);background:var(--sunk)}
+}
+.code-actions{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:10px}
+.code-actions>small{margin-right:auto;color:var(--muted)}
+.code-actions .btn[disabled]{opacity:.6;cursor:not-allowed}
+.code-actions .btn small{font:500 .75rem var(--f-mono);opacity:.8;margin-left:4px}
+.outpanel{padding:16px;border-radius:var(--r);border:1px dashed var(--line-2);display:flex;flex-direction:column;gap:6px}
+.outpanel h2{font:500 .8125rem var(--f-mono);color:var(--muted)}
+.outpanel p{color:var(--ink-2)}

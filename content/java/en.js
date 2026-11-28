@@ -1,5 +1,5 @@
 /* Java · English */
-(({ mc, out, fill, ord, typ, addCourse }) => addCourse('java', 'en', {
+(({ mc, out, fill, ord, typ, code, addCourse }) => addCourse('java', 'en', {
   tag: 'Object-oriented and strongly typed, from Android to servers.',
   days: [
     // ───────────── Day 1 ─────────────
@@ -39,6 +39,9 @@
         out(`System.out.print("A");\nSystem.out.println("B");\nSystem.out.print("C");`, ['AB\nC', 'A\nB\nC', 'ABC', 'A\nBC'], '`print` does not break the line, so A and B stay together; `println` breaks after the B.'),
         typ('Complete the line to print the price and move to a new line', `double price = 9.99;\nSystem.out.___(price);`, 'println', '`println` prints and adds a line break; `print` does not.'),
         out(`System.out.println("Total: " + 2 + 3);\nSystem.out.println(2 + 3 + " total");`, ['Total: 23\n5 total', 'Total: 5\n5 total', 'Total: 23\n23 total', 'Total: 5\n23 total'], 'Java evaluates from left to right: in the first line the text comes first and everything is concatenated; in the second, 2 + 3 is added before reaching the text.'),
+      ],
+      lab: [
+        code('Write a program that shows `Hello, Kibi` on one line and, on the next, the result of `7 * 6`.', `public class Main {\n    public static void main(String[] args) {\n        // Write your program here\n    }\n}\n`, [{ in: '', out: 'Hello, Kibi\n42' }], `public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, Kibi");\n        System.out.println(7 * 6);\n    }\n}`, '`System.out.println()` writes each value on a new line: first the text in quotes and then the result of `7 * 6`, which is worked out before it is shown.'),
       ],
     },
     // ───────────── Day 2 ─────────────

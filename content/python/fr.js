@@ -1,5 +1,5 @@
 /* Python · Français */
-(({ mc, out, fill, ord, typ, addCourse }) => addCourse('python', 'fr', {
+(({ mc, out, fill, ord, typ, code, addCourse }) => addCourse('python', 'fr', {
   tag: 'De ton premier print() à une boutique avec base de données, API et tests : quatre semaines, avec un projet à la fin de chacune.',
   days: [
     // ───────────── Jour 1 ─────────────
@@ -39,6 +39,9 @@
         ord('Écris le code qui affiche Bonjour, le monde', ['print', '(', '"Bonjour, le monde"', ')'], ['echo', '{'], 'On appelle `print` avec le texte entre guillemets à l’intérieur des parenthèses.'),
         out(`print("Salut" * 3)`, ['SalutSalutSalut', 'Salut 3', 'Erreur', 'Salut*3'], 'Multiplier une chaîne par un entier la répète.'),
         out(`a = 10\nb = 3\nprint(a + b * 2, (a + b) * 2)`, ['16 26', '26 16', '16 16', '26 26'], 'La multiplication passe avant l’addition ; les parenthèses changent l’ordre. `print` sépare les valeurs par un espace.'),
+      ],
+      lab: [
+        code('Écris un programme qui affiche `Bonjour, Kibi` sur une ligne et, sur la suivante, le résultat de `7 * 6`.', `# Écris ton programme ici\n`, [{ in: '', out: 'Bonjour, Kibi\n42' }], `print("Bonjour, Kibi")\nprint(7 * 6)`, '`print()` écrit chaque valeur sur une nouvelle ligne : d’abord le texte entre guillemets, puis le résultat de `7 * 6`, calculé avant d’être affiché.'),
       ],
     },
     // ───────────── Jour 2 ─────────────

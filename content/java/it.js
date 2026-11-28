@@ -1,5 +1,5 @@
 /* Java · Italiano */
-(({ mc, out, fill, ord, typ, addCourse }) => addCourse('java', 'it', {
+(({ mc, out, fill, ord, typ, code, addCourse }) => addCourse('java', 'it', {
   tag: 'Orientato agli oggetti e fortemente tipizzato, da Android ai server.',
   days: [
     // ───────────── Giorno 1 ─────────────
@@ -39,6 +39,9 @@
         out(`System.out.print("A");\nSystem.out.println("B");\nSystem.out.print("C");`, ['AB\nC', 'A\nB\nC', 'ABC', 'A\nBC'], '`print` non va a capo, quindi A e B restano attaccate; `println` va a capo dopo la B.'),
         typ('Completa la riga per stampare il prezzo e andare a capo', `double prezzo = 9.99;\nSystem.out.___(prezzo);`, 'println', '`println` stampa e va a capo; `print` no.'),
         out(`System.out.println("Totale: " + 2 + 3);\nSystem.out.println(2 + 3 + " totale");`, ['Totale: 23\n5 totale', 'Totale: 5\n5 totale', 'Totale: 23\n23 totale', 'Totale: 5\n23 totale'], 'Java valuta da sinistra a destra: nella prima riga il testo viene prima e tutto si concatena; nella seconda, 2 + 3 si somma prima di arrivare al testo.'),
+      ],
+      lab: [
+        code('Scrivi un programma che mostri `Ciao, Kibi` su una riga e, su quella dopo, il risultato di `7 * 6`.', `public class Main {\n    public static void main(String[] args) {\n        // Scrivi qui il tuo programma\n    }\n}\n`, [{ in: '', out: 'Ciao, Kibi\n42' }], `public class Main {\n    public static void main(String[] args) {\n        System.out.println("Ciao, Kibi");\n        System.out.println(7 * 6);\n    }\n}`, '`System.out.println()` scrive ogni valore su una nuova riga: prima il testo tra virgolette e poi il risultato di `7 * 6`, che viene calcolato prima di mostrarlo.'),
       ],
     },
     // ───────────── Giorno 2 ─────────────

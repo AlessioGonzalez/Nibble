@@ -106,3 +106,21 @@ test('5. el progreso sigue ahí al recargar', async ({ page }) => {
   await page.goto('/?e2e=1#map');
   await expect(page.locator('.dayrow').first().locator('.hex')).toHaveText('0x80');
 });
+
+test('6. el editor se carga solo al abrirlo y el borrador sigue tras recargar', async ({ page }) => {
+  const vendor = [];
+  page.on('request', r => { if (r.url().includes('/assets/vendor/codemirror-')) vendor.push(r.url()); });
+  await start(page);
+  await page.goto('/?e2e=1#day-1-guide');
+  await page.locator('.labcard [data-go]').click();
+  await expect(page.locator('#editor .cm-content')).toBeVisible();
+  expect(vendor.length).toBe(1);
+  await page.locator('#editor .cm-content').click();
+  await page.keyboard.press('Control+End');
+  await page.keyboard.type('print(42)');
+  await expect(page.locator('#draftNote')).not.toBeEmpty();
+  await page.reload();
+  await expect(page.locator('#editor .cm-content')).toContainText('print(42)');
+  await page.locator('[data-act="code-reset"]').click();
+  await expect(page.locator('#editor .cm-content')).not.toContainText('print(42)');
+});

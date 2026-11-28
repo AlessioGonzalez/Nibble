@@ -66,6 +66,16 @@ for (const course of courses) {
         if (g.filter(s => s.code).length < 2) err(w, 'la guía necesita al menos 2 secciones con código');
         if (!g.some(s => s.real)) err(w, 'la guía necesita al menos una sección con real: true');
       }
+      // Programas para el editor (opcionales): enunciado, código inicial, pruebas con su salida, solución y explicación.
+      if (d.lab !== undefined) {
+        if (!Array.isArray(d.lab)) err(w, 'lab debe ser una lista');
+        else d.lab.forEach((e, j) => {
+          const we = `${w} lab ${j + 1}`;
+          if (e.t !== 'code') err(we, 'solo admite ejercicios code');
+          if (!e.q || !e.e || typeof e.start !== 'string' || !e.sol) err(we, 'necesita q, start, sol y e');
+          if (!Array.isArray(e.tests) || !e.tests.length || e.tests.some(c => typeof c.in !== 'string' || typeof c.out !== 'string')) err(we, 'tests: al menos uno, con in y out de texto');
+        });
+      }
       if (!Array.isArray(d.x) || d.x.length !== 8) { err(w, `debe tener 8 ejercicios: 7 prácticas + 1 reto (tiene ${d.x?.length})`); return; }
       if (new Set(d.x.map(e => e.t)).size < 3) err(w, 'usa al menos 3 tipos de ejercicio distintos');
       d.x.forEach((e, j) => {
@@ -89,6 +99,7 @@ for (const course of courses) {
   if (base) for (const loc of locales) {
     const other = ctx.Sintaxis.content[course]?.[loc];
     if (!other || loc === 'es' || !Array.isArray(other.days)) continue;
+    other.days.forEach((d, i) => { if ((d.lab || []).length !== (base.days[i]?.lab || []).length) err(`${course}/${loc} día ${i + 1}`, 'número de programas (lab) distinto del español'); });
     other.days.forEach((d, i) => (d.x || []).forEach((e, j) => {
       const b = base.days[i]?.x?.[j];
       if (!b) return;

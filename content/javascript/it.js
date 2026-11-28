@@ -1,5 +1,5 @@
 /* JavaScript · Italiano */
-(({ mc, out, fill, ord, typ, addCourse }) => addCourse('javascript', 'it', {
+(({ mc, out, fill, ord, typ, code, addCourse }) => addCourse('javascript', 'it', {
   tag: 'Dal primo console.log a un negozio sul web con dati, test e Node.js: quattro settimane, con un progetto alla fine di ognuna.',
   days: [
     // Giorno 1
@@ -44,6 +44,9 @@
         mc('In cosa si differenzia `console.error` da `console.log`?', ['Scrive nell’output degli errori e il browser lo segna come errore', 'Ferma il programma', 'Lancia un’eccezione', 'Non c’è nessuna differenza'], 'Per lanciare davvero un errore si usa `throw`.'),
         out(`const n = 5;\nconsole.log("Totale:", n, "articoli");`, ['Totale: 5 articoli', 'Totale:5articoli', 'Totale: n articoli', 'Totale: 5, articoli'], 'Gli argomenti si mostrano separati da uno spazio.'),
         out(`let prezzo = 10;\nprezzo = prezzo * 2;\nconst spedizione = 5;\nconsole.log("Totale:", prezzo + spedizione);`, ['Totale: 25', 'Totale: 15', 'Totale:25', 'Errore'], '`prezzo` diventa 20 e si aggiunge la spedizione: 25. `console.log` separa i suoi argomenti con uno spazio.'),
+      ],
+      lab: [
+        code('Scrivi un programma che mostri `Ciao, Kibi` su una riga e, su quella dopo, il risultato di `7 * 6`.', `// Scrivi qui il tuo programma\n`, [{ in: '', out: 'Ciao, Kibi\n42' }], `console.log("Ciao, Kibi");\nconsole.log(7 * 6);`, '`console.log()` scrive ogni valore su una nuova riga: prima il testo tra virgolette e poi il risultato di `7 * 6`, che viene calcolato prima di mostrarlo.'),
       ],
     },
     // Giorno 2
