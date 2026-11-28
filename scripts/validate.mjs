@@ -40,7 +40,7 @@ let exercises = 0;
 const err = (where, msg) => errors.push(`${where}: ${msg}`);
 
 // Programas de Python: la solución debe pasar sus propias pruebas (como en el botón Comprobar).
-const pyLabs = [];
+const pyLabs = [], jsLabs = [];
 for (const course of courses) {
   for (const loc of locales) {
     const file = path.join(root, 'content', course, `${loc}.js`);
@@ -78,6 +78,7 @@ for (const course of courses) {
           if (!e.q || !e.e || typeof e.start !== 'string' || !e.sol) err(we, 'necesita q, start, sol y e');
           if (!Array.isArray(e.tests) || !e.tests.length || e.tests.some(c => typeof c.in !== 'string' || typeof c.out !== 'string')) err(we, 'tests: al menos uno, con in y out de texto');
           else if (course === 'python' && e.sol) pyLabs.push([we, e.sol, e.tests]);
+          else if (course === 'javascript' && e.sol) jsLabs.push([we, e.sol, e.tests]);
         });
       }
       if (!Array.isArray(d.x) || d.x.length !== 8) { err(w, `debe tener 8 ejercicios: 7 prácticas + 1 reto (tiene ${d.x?.length})`); return; }
@@ -125,6 +126,16 @@ if (pyBin) for (const [we, sol, tests] of pyLabs) tests.forEach((tc, k) => {
   if (r.status !== 0) errors.push(`${we} caso ${k + 1}: la solución falla: ${(r.stderr || '').trim().split('\n').pop()}`);
   else if (normOut(r.stdout) !== normOut(tc.out)) errors.push(`${we} caso ${k + 1}: la solución muestra "${normOut(r.stdout)}" y se espera "${normOut(tc.out)}"`);
 });
+// JavaScript: como en sandbox.html, con console.log y prompt() (que lee la entrada del caso línea a línea).
+for (const [we, sol, tests] of jsLabs) for (const [k, tc] of tests.entries()) {
+  let out = '';
+  const lines = tc.in.split('\n'); if (lines[lines.length - 1] === '') lines.pop();
+  const show = v => typeof v === 'string' ? v : JSON.stringify(v);
+  const box = vm.createContext({ console: { log: (...a) => { out += a.map(show).join(' ') + '\n'; } }, prompt: () => (lines.length ? lines.shift() : null), setTimeout });
+  try { await vm.runInContext(`(async () => {\n${sol}\n})()`, box, { timeout: 5000 }); }
+  catch (e) { errors.push(`${we} caso ${k + 1}: la solución falla: ${e.message}`); continue; }
+  if (normOut(out) !== normOut(tc.out)) errors.push(`${we} caso ${k + 1}: la solución muestra "${normOut(out)}" y se espera "${normOut(tc.out)}"`);
+}
 if (errors.length) {
   console.error(`\n${errors.length} problemas:\n  ${errors.slice(0, 200).join('\n  ')}`);
   process.exit(1);

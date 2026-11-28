@@ -46,10 +46,10 @@ jobs:
       - name: Probar la lógica del progreso
         run: node --test scripts/test-progress.mjs scripts/test-app.mjs scripts/test-security.mjs
 
-      # Pruebas de interfaz con Playwright (5 recorridos a 375 y 1280 px), antes de poner la configuración
+      # Pruebas de interfaz con Playwright (10 recorridos a 375 y 1280 px; los marcados @motores también en Firefox y WebKit), antes de poner la configuración
       # de Supabase: la app se prueba en modo local.
       - name: Instalar Playwright
-        run: npm ci && npx playwright install --with-deps chromium
+        run: npm ci && npx playwright install --with-deps chromium firefox webkit
 
       - name: Pruebas de interfaz
         run: npm run e2e

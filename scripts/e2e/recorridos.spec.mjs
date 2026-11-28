@@ -165,3 +165,66 @@ test('8. Python: Comprobar marca los casos, un error se explica y un bucle infin
   await page.locator('[data-act="code-run"]').click();
   await expect(out.locator('.stdout')).toHaveText('otra vez', { timeout: 30000 });
 });
+
+// Abre sandbox.html como lo hace la web y ejecuta programas sueltos en él.
+async function sandbox(page) {
+  await page.goto('/?e2e=1');
+  await page.evaluate(() => new Promise((ok, ko) => {
+    const f = window.__sb = document.createElement('iframe');
+    f.setAttribute('sandbox', 'allow-scripts'); f.src = 'sandbox.html'; f.hidden = true;
+    addEventListener('message', function h(e) { if (e.source === f.contentWindow && e.data && e.data.ready) { removeEventListener('message', h); ok(); } });
+    setTimeout(() => ko(new Error('sandbox sin respuesta')), 10000);
+    document.body.append(f);
+  }));
+  return (code, input = '') => page.evaluate(([code, input]) => new Promise(ok => {
+    const f = window.__sb, id = Math.random();
+    addEventListener('message', function h(e) { if (e.source === f.contentWindow && e.data && e.data.id === id) { removeEventListener('message', h); ok(e.data); } });
+    f.contentWindow.postMessage({ id, code, input }, '*');
+  }), [code, input]);
+}
+
+test('9. @motores JavaScript aislado: no lee localStorage, cookies ni la propia web', async ({ page }) => {
+  const run = await sandbox(page);
+  await page.evaluate(() => { localStorage.setItem('nibble.secreto', 'no-debe-salir'); document.cookie = 'secreto=1'; });
+  for (const code of ["console.log(localStorage.getItem('nibble.secreto'))", 'console.log(document.cookie)',
+    "const r = await fetch('/index.html'); console.log(r.status, await r.text())", "console.log(parent.document.title)",
+    "indexedDB.open('x')"]) {
+    const r = await run(code);
+    expect(r.type, code).toBeTruthy();
+    expect(r.out + r.err, code).not.toContain('no-debe-salir');
+    expect(r.out, code).not.toMatch(/^200/);
+  }
+  const ok = await run("console.log('Hola, Kibi'); console.log(7 * 6); console.log([1, 'a'], { b: 2 })");
+  expect(ok.type).toBeNull();
+  expect(ok.out).toBe("Hola, Kibi\n42\n[ 1, 'a' ] { b: 2 }\n");
+  const io = await run("const n = prompt(); setTimeout(() => console.log('Hola ' + n), 30); console.log('primero')", 'Ana\n');
+  expect(io.out).toBe('primero\nHola Ana\n');
+  const bad = await run('let a = 1\nconsole.log(b)');
+  expect(bad.type).toBe('ReferenceError');
+  expect(bad.line).toBe(2);
+  // Abierta directamente (con el origen de la web), la página no ejecuta nada.
+  await page.goto('/sandbox.html');
+  expect(await page.evaluate(() => typeof window.__nibbleSandbox)).toBe('undefined');
+});
+
+test('10. @motores JavaScript en el editor: Comprobar y un bucle infinito cortado en 5 s', async ({ page }) => {
+  test.setTimeout(60000);
+  await start(page);
+  await page.goto('/?e2e=1#courses');
+  await page.locator('[data-course="javascript"][data-open]').click();
+  await page.goto('/?e2e=1#day-1-code-0');
+  const editor = page.locator('#editor .cm-content'), out = page.locator('#outpanel');
+  const write = async code => { await editor.click(); await page.keyboard.press('Control+A'); await page.keyboard.press('Delete'); await page.keyboard.insertText(code); };
+  const greet = (await page.locator('.expect pre').innerText()).split('\n')[0];
+  await write(`console.log(${JSON.stringify(greet)});\nconsole.log(7 * 6);\n`);
+  await page.locator('[data-act="code-check"]').click();
+  await expect(out.locator('.case.ok')).toHaveCount(1);
+  await write('while (true) {}\n');
+  await page.locator('[data-act="code-run"]').click();
+  await expect(out.locator('.runstate.busy')).toBeVisible();
+  expect(await page.evaluate(() => 1 + 1)).toBe(2); // la página sigue respondiendo
+  await expect(out.locator('.runhelp')).toBeVisible({ timeout: 9000 });
+  await write("console.log('otra vez')\n");
+  await page.locator('[data-act="code-run"]').click();
+  await expect(out.locator('.stdout')).toHaveText('otra vez');
+});

@@ -1,7 +1,7 @@
 /* Nibble: interfaz. Depende de content-api.js, i18n.js y store.js. */
 (function () {
 'use strict';
-const VERSION = '4.9.0';
+const VERSION = '4.10.0';
 const Store = window.SintaxisStore;
 const P = window.NibbleProgress;
 const t = (k, v) => window.I18N.t(k, v);
@@ -535,7 +535,7 @@ function flushDraft() {
   const note = $('#draftNote'); if (note) note.textContent = ok ? t('code.saved') : t('code.tooLong');
 }
 function renderCode() {
-  const c = S.course, d = route.d, day = dayData(d), ex = labEx(), canRun = c === 'python';
+  const c = S.course, d = route.d, day = dayData(d), ex = labEx(), canRun = c === 'python' || c === 'javascript';
   if (!ex) return renderDay();
   return `<div class="wrap codeview">
     <header class="dayhead"><div class="top"><button class="crumb" data-go="${dayHash(d, 'guide')}">${I.left}${esc(day.t)}</button></div>
@@ -592,9 +592,41 @@ async function pyRun(code, input) {
 // Se compara la salida sin \r ni espacios al final de cada línea ni líneas vacías al final.
 const normOut = s => String(s || '').replace(/\r\n?/g, '\n').split('\n').map(l => l.trimEnd()).join('\n').trimEnd();
 const preOut = (txt, cls) => `<pre class="${cls}">${esc(txt)}</pre>`;
+/* ---------- ejecutar JavaScript: iframe aislado (sandbox.html) con un Worker dentro ---------- */
+// <iframe sandbox="allow-scripts">: origen opaco, sin sesión, localStorage, IndexedDB ni cookies de la web; sandbox.html
+// tiene su propia CSP sin red. Solo se habla por postMessage. Si una ejecución pasa de RUN_MS, se destruye el iframe.
+let jsF = null, jsReady = null;
+function jsFrame() {
+  if (jsF) return jsReady;
+  const f = jsF = document.createElement('iframe');
+  f.setAttribute('sandbox', 'allow-scripts'); f.src = 'sandbox.html'; f.hidden = true; f.title = 'sandbox'; f.setAttribute('aria-hidden', 'true'); f.tabIndex = -1;
+  jsReady = new Promise((ok, ko) => {
+    const onMsg = e => { if (e.source === f.contentWindow && e.data && e.data.ready) { removeEventListener('message', onMsg); ok(); } };
+    addEventListener('message', onMsg);
+    setTimeout(() => { removeEventListener('message', onMsg); ko(new Error('sandbox')); }, 10000);
+  });
+  jsReady.catch(() => { f.remove(); if (jsF === f) jsF = null; });
+  document.body.append(f);
+  return jsReady;
+}
+async function jsRun(code, input) {
+  await jsFrame();
+  const f = jsF, id = ++pySeq;
+  return new Promise(ok => {
+    const done = r => { clearTimeout(timer); removeEventListener('message', onMsg); ok(r); };
+    const onMsg = e => { if (e.source === f.contentWindow && e.data && e.data.id === id) done(e.data); };
+    const timer = setTimeout(() => { f.remove(); if (jsF === f) jsF = null; done({ type: 'Timeout', out: '', err: '' }); }, RUN_MS);
+    addEventListener('message', onMsg);
+    f.contentWindow.postMessage({ id, code, input }, '*');
+  });
+}
+const JSERR = ['ReferenceError', 'TypeError', 'SyntaxError', 'RangeError'];
+// Lo que el entorno aislado no tiene (página, almacenamiento, cookies, red) se explica aparte.
+const SANDBOXED = /localStorage|sessionStorage|indexedDB|document|window|cookie|fetch|XMLHttpRequest|NetworkError|Content Security Policy|SecurityError/i;
 function errHelp(r) {
-  const k = r.type === 'Timeout' ? 'Timeout' : PYERR.includes(r.type) ? r.type : 'other';
-  return `<div class="runhelp">${kibi('sad', 44)}${bubble(`${r.line ? `<b>${t('run.line', { n: r.line })}</b> ` : ''}${esc(t('pyerr.' + k, { type: r.type }))}`)}</div>`;
+  const js = S.course === 'javascript';
+  const k = r.type === 'Timeout' ? 'Timeout' : js && SANDBOXED.test(r.err || '') ? 'Sandbox' : (js ? JSERR : PYERR).includes(r.type) ? r.type : 'other';
+  return `<div class="runhelp">${kibi('sad', 44)}${bubble(`${r.line ? `<b>${t('run.line', { n: r.line })}</b> ` : ''}${esc(t((js ? 'jserr.' : 'pyerr.') + k, { type: r.type }))}`)}</div>`;
 }
 function setOut(html) { const o = $('#outpanel'); if (o) o.innerHTML = `<h2>${t('code.output')}</h2>${html}`; }
 function setRunBusy(on) { runBusy = on; document.querySelectorAll('.code-actions .btn').forEach(b => { if (!b.hasAttribute('data-soon')) b.disabled = on; }); }
@@ -602,19 +634,21 @@ function setRunBusy(on) { runBusy = on; document.querySelectorAll('.code-actions
 async function runCode(check) {
   const ex = labEx(); if (runBusy || !cm || !ex) return;
   setRunBusy(true); flushDraft();
-  const code = cm.get();
-  let first = true; try { first = !localStorage.getItem('nibble.py'); } catch (e) { /* */ }
-  setOut(`<p class="runstate busy">${t(first && !pyW ? 'run.first' : 'run.loading', { mb: PY_MB })}</p>`);
-  try { await pyWorker(); try { localStorage.setItem('nibble.py', '1'); } catch (e) { /* */ } }
-  catch (e) { setOut(`<p class="runstate bad">${t('run.bootError')}</p>`); setRunBusy(false); return; }
+  const code = cm.get(), py = S.course === 'python', run = py ? pyRun : jsRun;
+  if (py) {
+    let first = true; try { first = !localStorage.getItem('nibble.py'); } catch (e) { /* */ }
+    setOut(`<p class="runstate busy">${t(first && !pyW ? 'run.first' : 'run.loading', { mb: PY_MB })}</p>`);
+  }
+  try { await (py ? pyWorker() : jsFrame()); if (py) try { localStorage.setItem('nibble.py', '1'); } catch (e) { /* */ } }
+  catch (e) { setOut(`<p class="runstate bad">${t(py ? 'run.bootError' : 'run.jsError')}</p>`); setRunBusy(false); return; }
   setOut(`<p class="runstate busy">${t('run.running')}</p>`);
   if (!check) {
-    const t0 = performance.now(), r = await pyRun(code, ex.tests[0].in || ''), ms = Math.round(performance.now() - t0);
+    const t0 = performance.now(), r = await run(code, ex.tests[0].in || ''), ms = Math.round(performance.now() - t0);
     setOut(`<p class="runstate ${r.type ? 'bad' : 'ok'}">${r.type ? t('run.failed') : t('run.done', { ms })}</p>${r.out ? preOut(r.out, 'stdout') : ''}${r.err ? preOut(r.err, 'stderr') : ''}
-      ${r.cut ? `<p class="note">${t('run.cut')}</p>` : ''}${r.type ? errHelp(r) : r.out ? '' : `<p class="note">${t('run.empty')}</p>`}`);
+      ${r.cut ? `<p class="note">${t('run.cut')}</p>` : ''}${r.type ? errHelp(r) : r.out ? '' : `<p class="note">${t('run.empty', { fn: py ? 'print()' : 'console.log()' })}</p>`}`);
   } else {
     const rows = [];
-    for (const tc of ex.tests) { const r = await pyRun(code, tc.in || ''); rows.push({ tc, r, ok: !r.type && normOut(r.out) === normOut(tc.out) }); }
+    for (const tc of ex.tests) { const r = await run(code, tc.in || ''); rows.push({ tc, r, ok: !r.type && normOut(r.out) === normOut(tc.out) }); }
     const pass = rows.filter(x => x.ok).length, all = pass === rows.length;
     setOut(`<div class="runhelp">${kibi(all ? 'happy' : 'sad', 44)}${bubble(all ? t('run.allPass') : t('run.somePass', { n: pass, m: rows.length }))}</div>
       <ol class="cases">${rows.map(({ tc, r, ok }, i) => `<li class="case ${ok ? 'ok' : 'bad'}"><span class="mark">${ok ? I.check : I.x}</span><div><b>${t('run.case', { n: i + 1 })}</b>

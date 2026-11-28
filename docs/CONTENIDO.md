@@ -47,7 +47,7 @@ Cada día tiene un `id` fijo (`py-loops`, `java-maps`…), igual en los 4 idioma
 
 Los temarios de Python y JavaScript van por semanas (`NibbleWeeks` en `order.js`): días de temas y un **Taller de Kibi** al final de cada una (días 7, 14, 21 y 30), un proyecto que junta lo de la semana sobre la tienda de Kibi. En JavaScript, la tercera semana es entera de navegador (DOM, eventos y localStorage).
 
-Los programas del editor (`lab: [code(...)]`) llevan pruebas con entrada (`in`, lo que lee `input()`) y salida esperada (`out`). En Python, `node scripts/validate.mjs` ejecuta la solución (`sol`) con cada prueba y falla si no da la salida esperada; el botón Comprobar compara igual (sin espacios al final de línea ni líneas vacías al final). En el navegador solo está la biblioteca estándar de Python: nada de pip, archivos del disco ni red.
+Los programas del editor (`lab: [code(...)]`) llevan pruebas con entrada (`in`, lo que lee `input()`) y salida esperada (`out`). En Python y JavaScript, `node scripts/validate.mjs` ejecuta la solución (`sol`) con cada prueba y falla si no da la salida esperada; el botón Comprobar compara igual (sin espacios al final de línea ni líneas vacías al final). En el navegador solo está la biblioteca estándar de Python: nada de pip, archivos del disco ni red. En JavaScript, la salida es `console.log`, la entrada se lee con `prompt()` (una línea cada vez) y no hay página (DOM), almacenamiento ni red.
 
 Los días cuyo código no se puede ejecutar en el navegador (pip, entornos virtuales, Node.js, peticiones a webs externas, servidores) usan ejercicios de elegir y de escribir, sin simular la ejecución.
 
