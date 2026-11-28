@@ -1,12 +1,12 @@
 /* Python · Italiano */
 (({ mc, out, fill, ord, typ, addCourse }) => addCourse('python', 'it', {
-  tag: 'Da zero all’analisi dei dati e alla creazione di API in 30 giorni, con il linguaggio più facile da leggere.',
+  tag: 'Dal tuo primo print() a un negozio con database, API e test: quattro settimane, con un progetto alla fine di ognuna.',
   days: [
     // ───────────── Giorno 1 ─────────────
     {
       id: 'py-intro',
-      t: 'Introduzione',
-      d: 'Che cos’è Python, il tuo primo programma, l’indentazione e i commenti.',
+      t: 'Il tuo primo programma',
+      d: 'Che cos’è Python, come eseguire un file, print(), l’indentazione e i commenti.',
       guide: [
         { h: 'Che cos’è Python?', p: [
           'Python è un linguaggio di programmazione di alto livello creato da Guido van Rossum e pubblicato nel 1991. Si legge quasi come l’inglese, ed è per questo che è uno dei primi linguaggi più popolari.',
@@ -44,8 +44,8 @@
     // ───────────── Giorno 2 ─────────────
     {
       id: 'py-vars',
-      t: 'Variabili e funzioni integrate',
-      d: 'Salvare dati in variabili, dare loro un buon nome e usare input(), len() e le conversioni di tipo.',
+      t: 'Variabili e tipi',
+      d: 'Salvare dati con un nome, i tipi di base, input() e passare dal testo ai numeri.',
       guide: [
         { h: 'Che cos’è una variabile?', p: [
           'Una variabile è un nome che punta a un valore. La crei con `=`, che in Python significa «assegnare», non «uguale».',
@@ -86,8 +86,8 @@
     // ───────────── Giorno 3 ─────────────
     {
       id: 'py-operators',
-      t: 'Operatori',
-      d: 'Operatori aritmetici, di confronto, logici e di assegnazione, e il loro ordine di esecuzione.',
+      t: 'Operazioni e confronti',
+      d: 'Calcolare, confrontare e combinare condizioni con and, or e not, e in che ordine Python valuta tutto.',
       guide: [
         { h: 'Operatori aritmetici', p: [
           'Oltre a `+ - * /`, Python ha la divisione intera `//` (scarta i decimali), il resto `%` e la potenza `**`.',
@@ -126,8 +126,8 @@
     // ───────────── Giorno 4 ─────────────
     {
       id: 'py-strings',
-      t: 'Stringhe',
-      d: 'Il testo in Python: virgolette, indici, slicing, f-string e i metodi più utili.',
+      t: 'Lavorare con il testo',
+      d: 'Indici, slicing, f-string e i metodi che puliscono e trasformano il testo.',
       guide: [
         { h: 'Creare testo', p: [
           'Una stringa (`str`) è una sequenza di caratteri tra virgolette singole o doppie. Usa il tipo di virgolette che non compare nel testo.',
@@ -164,158 +164,9 @@
     },
     // ───────────── Giorno 5 ─────────────
     {
-      id: 'py-lists',
-      t: 'Liste',
-      d: 'Creare, percorrere, modificare, tagliare e ordinare liste, e la trappola delle copie.',
-      guide: [
-        { h: 'Creare e accedere', p: [
-          'Una lista è una collezione ordinata e modificabile. Si scrive tra parentesi quadre e può mescolare tipi, anche se di solito tutti gli elementi sono dello stesso tipo.',
-          'Accedi agli elementi tramite l’indice, come con le stringhe. Un indice inesistente solleva `IndexError`. A differenza delle stringhe, puoi cambiare un elemento assegnandogli un valore.' ],
-          code: `spesa = ["latte", "pane", "uova"]\nprint(spesa[0])    # latte\nprint(spesa[-1])   # uova\nprint(len(spesa))  # 3\nspesa[1] = "pane integrale"\nprint(spesa)       # ['latte', 'pane integrale', 'uova']` },
-        { h: 'Aggiungere e togliere elementi', p: [
-          '`append()` aggiunge in fondo, `insert(i, x)` in una posizione ed `extend()` ne aggiunge diversi. `remove(x)` elimina il primo elemento uguale a `x`, e `pop()` toglie e restituisce l’ultimo (o quello all’indice che passi).',
-          '`in` controlla se un elemento è nella lista.' ],
-          code: `compiti = ["studiare"]\ncompiti.append("correre")\ncompiti.insert(0, "colazione")\ncompiti.extend(["leggere", "dormire"])\nprint(compiti)  # ['colazione', 'studiare', 'correre', 'leggere', 'dormire']\ncompiti.remove("correre")\nultimo = compiti.pop()\nprint(ultimo, compiti)     # dormire ['colazione', 'studiare', 'leggere']\nprint("leggere" in compiti)  # True` },
-        { h: 'Slicing e ordinamento', p: [
-          'Lo slicing funziona esattamente come con le stringhe e restituisce una nuova lista.',
-          '`sort()` ordina la lista sul posto e restituisce `None`; `sorted()` restituisce una nuova lista e lascia intatta l’originale. Un errore classico è scrivere `lista = lista.sort()` e ritrovarsi con `None`.',
-          '`sum()`, `min()` e `max()` funzionano direttamente sulle liste di numeri.' ],
-          code: `voti = [7, 4, 9, 6]\nprint(sorted(voti))  # [4, 6, 7, 9]\nprint(voti)          # [7, 4, 9, 6]\nvoti.sort(reverse=True)\nprint(voti)          # [9, 7, 6, 4]\nprint(voti[:2])      # [9, 7]\nprint(sum(voti) / len(voti))  # 6.5` },
-        { h: 'Copie e riferimenti', p: [
-          '`b = a` non copia la lista: crea un altro nome per lo stesso oggetto. Se modifichi `b`, modifichi `a`.',
-          'Per una copia indipendente usa `a.copy()`, `list(a)` o `a[:]`.' ],
-          code: `a = [1, 2, 3]\nb = a           # stesso oggetto\nc = a.copy()    # copia indipendente\na.append(4)\nprint(b)  # [1, 2, 3, 4]\nprint(c)  # [1, 2, 3]` },
-        { h: 'Esempio reale: lo scontrino della spesa', real: true, p: [
-          'Con una lista di prezzi hai già il numero di articoli, il totale e il prodotto più caro di uno scontrino.' ],
-          code: `prezzi = [2.35, 1.20, 4.99, 0.89]\ntotale = sum(prezzi)\nprint("Articoli:", len(prezzi))        # Articoli: 4\nprint("Totale:", round(totale, 2))     # Totale: 9.43\nprint("Il più caro:", max(prezzi))     # Il più caro: 4.99` },
-      ],
-      x: [
-        out(`frutti = ["mela", "pera", "uva"]\nprint(frutti[1])`, ['pera', 'mela', 'uva', 'Errore'], 'Gli indici partono da 0: `frutti[1]` è il secondo elemento.'),
-        ord('Aggiungi 4 in fondo alla lista nums', ['nums', '.', 'append', '(', '4', ')'], ['push', 'add'], 'Le liste di Python usano `.append()`. `push` è di JavaScript.'),
-        out(`nums = [10, 20, 30, 40, 50]\nprint(nums[1:3])`, ['[20, 30]', '[10, 20, 30]', '[20, 30, 40]', '[20]'], 'Lo slicing va dall’indice 1 fino all’indice 3 senza includerlo.'),
-        out(`nums = [3, 1, 2]\nnums.sort()\nprint(nums)`, ['[1, 2, 3]', '[3, 2, 1]', 'None', '[3, 1, 2]'], '`sort()` ordina la lista sul posto, dal più piccolo al più grande.'),
-        out(`nums = [1, 2, 3]\nultimo = nums.pop()\nprint(ultimo, nums)`, ['3 [1, 2]', '1 [2, 3]', '3 [1, 2, 3]', '[1, 2] 3'], '`pop()` senza argomenti toglie e restituisce l’ultimo elemento.'),
-        mc('Che cosa restituisce `nums.sort()`?', ['None', 'La lista ordinata', 'Una copia ordinata', 'True'], '`sort()` ordina sul posto e restituisce `None`. Se vuoi una nuova lista, usa `sorted(nums)`.'),
-        out(`a = [1, 2, 3]\nb = a\nb.append(4)\nprint(a)`, ['[1, 2, 3, 4]', '[1, 2, 3]', '[4]', 'Errore'], '`b = a` non copia la lista: entrambi i nomi puntano allo stesso oggetto. Usa `a.copy()` per duplicarla.'),
-        out(`nums = [5, 3, 8, 1]\nordinata = sorted(nums)\nnums.append(ordinata[0] + ordinata[-1])\nprint(nums[-1], len(nums), nums[:2])`, ['9 5 [5, 3]', '6 5 [5, 3]', '9 4 [1, 3]', '9 5 [1, 3]'], '`sorted()` non tocca `nums`; `ordinata` è [1, 3, 5, 8], quindi 1 + 8 = 9 viene aggiunto a `nums`.'),
-      ],
-    },
-    // ───────────── Giorno 6 ─────────────
-    {
-      id: 'py-tuples',
-      t: 'Tuple',
-      d: 'Collezioni immutabili, spacchettamento e quando preferire una tupla a una lista.',
-      guide: [
-        { h: 'Che cos’è una tupla?', p: [
-          'Una tupla è come una lista, ma immutabile: una volta creata non puoi aggiungere, togliere o cambiare elementi. Si scrive tra parentesi tonde.',
-          'Usala per dati che vanno insieme e non devono cambiare: coordinate, un colore RGB, una data. Essendo immutabile, può anche fare da chiave di un dizionario.',
-          'Si indicizza e si taglia come una lista, e ha due metodi: `count()` e `index()`.' ],
-          code: `colore = (255, 128, 0)\nprint(colore[0])          # 255\nprint(len(colore))        # 3\nprint(colore.count(0))    # 1\nprint(colore.index(128))  # 1` },
-        { h: 'Immutabilità', p: [
-          'Provare a cambiare un elemento solleva `TypeError`. Se proprio devi modificarla, convertila in lista, cambiala e riconvertila.',
-          'Questa protezione è il suo vantaggio: nessuno può alterare i dati per sbaglio in un’altra parte del programma.' ],
-          code: `giorni = ("lun", "mar", "mer")\n# giorni[0] = "dom"  # TypeError: 'tuple' object does not support item assignment\nelementi = list(giorni)\nelementi.append("gio")\ngiorni = tuple(elementi)\nprint(giorni)  # ('lun', 'mar', 'mer', 'gio')` },
-        { h: 'Spacchettamento', p: [
-          'Puoi distribuire gli elementi di una tupla in variabili: `x, y = punto`. Il numero di variabili deve coincidere con quello degli elementi, a meno che usi `*` per raccogliere il resto in una lista.',
-          'Attenzione: le parentesi da sole non creano una tupla. Una tupla di un solo elemento ha bisogno della virgola: `(5,)`.' ],
-          code: `punto = (3, 4)\nx, y = punto\nprint(x, y)          # 3 4\nprimo, *resto = (1, 2, 3, 4)\nprint(primo, resto)  # 1 [2, 3, 4]\nprint(type((5,)), type((5)))  # <class 'tuple'> <class 'int'>` },
-        { h: 'Funzioni che restituiscono più valori', p: [
-          'Quando una funzione restituisce più valori, in realtà restituisce una tupla. `divmod(a, b)` ne è un esempio integrato: dà quoziente e resto in un colpo solo.' ],
-          code: `quoziente, resto = divmod(17, 5)\nprint(quoziente, resto)  # 3 2\nprint(divmod(17, 5))     # (3, 2)` },
-        { h: 'Esempio reale: le righe di un ordine', real: true, p: [
-          'Ogni riga di un ordine ha un nome, un prezzo e una quantità. Salvarla in una tupla evita che venga modificata per errore dopo la fatturazione.' ],
-          code: `riga1 = ("Tastiera", 25.0, 2)\nriga2 = ("Mouse", 12.5, 1)\nnome, prezzo, unita = riga1\nprint(nome, prezzo * unita)      # Tastiera 50.0\ntotale = riga1[1] * riga1[2] + riga2[1] * riga2[2]\nprint("Totale ordine:", totale)  # Totale ordine: 62.5` },
-      ],
-      x: [
-        mc('Quale collezione è immutabile?', ['tuple', 'list', 'dict', 'set'], 'Una tupla non può essere modificata dopo la creazione.'),
-        out(`t = (10, 20, 30)\nprint(t[1])`, ['20', '10', '30', 'Errore'], 'Le tuple si indicizzano come le liste, partendo da 0.'),
-        out(`x, y = (3, 4)\nprint(x * y)`, ['12', '7', '(3, 4)', 'Errore'], 'Lo spacchettamento assegna 3 a `x` e 4 a `y`.'),
-        fill(`punto = (3, 4)\n___ = punto\nprint(x, y)  # 3 4`, ['x, y', 'x y', 'x; y', 'x & y'], 'Per spacchettare, scrivi le variabili separate da virgole a sinistra dell’`=`.'),
-        out(`t = (1, 2, 3)\nt[0] = 9\nprint(t)`, ['TypeError', '(9, 2, 3)', '(1, 2, 3)', 'None'], 'Le tuple non permettono di assegnare elementi, quindi Python solleva `TypeError`.'),
-        out(`print(type((5)), type((5,)))`, ["<class 'int'> <class 'tuple'>", "<class 'tuple'> <class 'tuple'>", "<class 'int'> <class 'int'>", 'Errore'], 'Le parentesi da sole non creano una tupla; è la virgola a farlo.'),
-        out(`t = (1, 2) + (3,)\nprint(t)`, ['(1, 2, 3)', '(1, 2, (3,))', 'Errore', '(4, 2)'], '`+` concatena le tuple e ne crea una nuova; le originali non cambiano.'),
-        out(`dati = (10, 20, 30, 40)\na, *b, c = dati\nprint(a + c, len(b), dati.index(30))`, ['50 2 2', '50 2 3', '30 3 2', 'Errore'], '`a` prende 10, `c` prende 40 e `*b` raccoglie [20, 30]. Il 30 è all’indice 2.'),
-      ],
-    },
-    // ───────────── Giorno 7 ─────────────
-    {
-      id: 'py-sets',
-      t: 'Insiemi',
-      d: 'Collezioni senza duplicati: crearli, modificarli e combinarli con unione, intersezione e differenza.',
-      guide: [
-        { h: 'Che cos’è un insieme?', p: [
-          'Un insieme (`set`) è una collezione non ordinata senza elementi ripetuti. Si scrive con le graffe: `{1, 2, 3}`. Se aggiungi duplicati, ne resta solo uno.',
-          'Un insieme vuoto si crea con `set()`: `{}` crea un dizionario vuoto.',
-          'Controllare se qualcosa è in un insieme con `in` è velocissimo, anche con milioni di elementi. Per questo si usano per le liste di «già visti».' ],
-          code: `tag = {"python", "web", "python", "dati"}\nprint(len(tag))      # 3\nprint("web" in tag)  # True\nvuoto = set()\nprint(type({}))      # <class 'dict'>` },
-        { h: 'Aggiungere e togliere', p: [
-          '`add()` aggiunge un elemento. Per toglierne uno, `remove()` solleva `KeyError` se non esiste, mentre `discard()` non fa nulla. Usa `discard()` quando non sei sicuro.',
-          'Non avendo un ordine, gli insiemi non ammettono indici: `s[0]` è un errore.' ],
-          code: `s = {1, 2, 3}\ns.add(4)\ns.discard(10)   # non c'è: non succede nulla\ns.remove(1)\nprint(s)        # {2, 3, 4}\n# s.remove(10)  # KeyError: 10` },
-        { h: 'Operazioni sugli insiemi', p: [
-          'Unione `|` (tutti), intersezione `&` (quelli in comune), differenza `-` (quelli di uno ma non dell’altro) e differenza simmetrica `^` (quelli che stanno in uno solo dei due).',
-          '`issubset()` controlla se tutti gli elementi di un insieme stanno in un altro.' ],
-          code: `a = {1, 2, 3, 4}\nb = {3, 4, 5}\nprint(a | b)  # {1, 2, 3, 4, 5}\nprint(a & b)  # {3, 4}\nprint(a - b)  # {1, 2}\nprint(a ^ b)  # {1, 2, 5}\nprint({1, 2}.issubset(a))  # True` },
-        { h: 'Togliere i duplicati da una lista', p: [
-          'Trasformare una lista in insieme elimina all’istante gli elementi ripetuti. Dato che gli insiemi non hanno ordine, usa `sorted()` se vuoi un risultato stabile e ordinato.' ],
-          code: `email = ["ana@x.com", "luis@x.com", "ana@x.com"]\nuniche = sorted(set(email))\nprint(uniche)  # ['ana@x.com', 'luis@x.com']` },
-        { h: 'Esempio reale: i clienti fedeli', real: true, p: [
-          'Un negozio vuole sapere quali clienti hanno comprato a gennaio e a febbraio, quali hanno smesso e quali sono nuovi. Sono tre operazioni sugli insiemi.' ],
-          code: `gennaio = {"Ana", "Luis", "Eva", "Marta"}\nfebbraio = {"Luis", "Marta", "Pedro"}\nfedeli = gennaio & febbraio\npersi = gennaio - febbraio\nnuovi = febbraio - gennaio\nprint(sorted(fedeli))  # ['Luis', 'Marta']\nprint(sorted(persi))   # ['Ana', 'Eva']\nprint(sorted(nuovi))   # ['Pedro']` },
-      ],
-      x: [
-        out(`s = {1, 2, 2, 3, 3, 3}\nprint(len(s))`, ['3', '6', '4', '1'], 'Un insieme elimina i duplicati: resta {1, 2, 3}.'),
-        mc('Come si crea un insieme vuoto?', ['set()', '{}', '[]', 'set[]'], '`{}` crea un dizionario vuoto, non un insieme.'),
-        out(`s = {1, 2}\ns.add(2)\ns.add(5)\nprint(len(s))`, ['3', '4', '2', 'Errore'], 'Aggiungere un 2 già presente non cambia nulla; il 5 viene aggiunto.'),
-        out(`a = {1, 2, 3}\nb = {2, 3, 4}\nprint(a & b)`, ['{2, 3}', '{1, 2, 3, 4}', '{1}', '{4}'], '`&` è l’intersezione: gli elementi presenti in entrambi.'),
-        fill(`a = {1, 2, 3}\nb = {3, 4}\nprint(a ___ b)  # {1, 2, 3, 4}`, ['|', '&', '-', '^'], '`|` è l’unione: riunisce tutti gli elementi dei due insiemi senza ripetizioni.'),
-        out(`a = {1, 2, 3}\nb = {2, 3, 4}\nprint(a - b)`, ['{1}', '{4}', '{1, 4}', '{2, 3}'], 'La differenza tiene gli elementi di `a` che non sono in `b`.'),
-        out(`print(sorted(set("banana")))`, ["['a', 'b', 'n']", "['b', 'a', 'n', 'a', 'n', 'a']", "{'a', 'b', 'n'}", 'abn'], 'L’insieme elimina i duplicati e `sorted()` restituisce una lista ordinata.'),
-        out(`a = {1, 2, 3, 4}\nb = {3, 4, 5}\nprint(len(a | b), sorted(a ^ b), {3}.issubset(a & b))`, ['5 [1, 2, 5] True', '7 [1, 2, 5] True', '5 [3, 4] True', '5 [1, 2, 5] False'], 'L’unione ha 5 elementi, la differenza simmetrica lascia 1, 2 e 5, e il 3 è nell’intersezione {3, 4}.'),
-      ],
-    },
-    // ───────────── Giorno 8 ─────────────
-    {
-      id: 'py-dicts',
-      t: 'Dizionari',
-      d: 'Coppie chiave-valore: accedere, aggiungere, eliminare, percorrere e annidare dati.',
-      guide: [
-        { h: 'Creare e accedere', p: [
-          'Un dizionario associa chiavi uniche a valori, come una rubrica: cerchi un nome e ottieni il numero. Si scrive `{chiave: valore}`.',
-          '`d["chiave"]` restituisce il valore ma solleva `KeyError` se la chiave non esiste. `d.get("chiave", predefinito)` è più sicuro: restituisce il valore predefinito (o `None`).' ],
-          code: `persona = {"nome": "Ana", "eta": 30, "citta": "Bologna"}\nprint(persona["nome"])                     # Ana\nprint(persona.get("email"))                # None\nprint(persona.get("email", "senza email"))  # senza email` },
-        { h: 'Aggiungere, modificare ed eliminare', p: [
-          'Assegnare un valore a una chiave la crea se non esiste, o ne cambia il valore se esiste. `update()` unisce un altro dizionario.',
-          '`pop(chiave)` elimina e restituisce il valore; `del d[chiave]` elimina soltanto. `in` controlla se esiste una chiave (non un valore).' ],
-          code: `magazzino = {"mele": 10}\nmagazzino["pere"] = 5        # aggiungere\nmagazzino["mele"] -= 3       # modificare\nmagazzino.update({"uva": 8})\ndel magazzino["pere"]\nprint(magazzino)             # {'mele': 7, 'uva': 8}\nprint("uva" in magazzino)    # True` },
-        { h: 'Percorrere un dizionario', p: [
-          '`keys()` dà le chiavi, `values()` i valori e `items()` le coppie. Con `for chiave, valore in d.items()` percorri tutto in una volta (vedrai i cicli a fondo il giorno 10).',
-          'Da Python 3.7 i dizionari mantengono l’ordine in cui hai inserito le chiavi.' ],
-          code: `voti = {"Ana": 9, "Luis": 6, "Eva": 8}\nfor studente, voto in voti.items():\n    print(studente, "->", voto)\nprint(list(voti.keys()))  # ['Ana', 'Luis', 'Eva']\nprint(sum(voti.values()) / len(voti))  # 7.666666666666667` },
-        { h: 'Dati annidati', p: [
-          'I valori possono essere liste o altri dizionari. È così che si rappresentano quasi tutti i dati reali, ed è proprio la forma del JSON che restituiscono le API.',
-          'Le chiavi devono essere immutabili: stringhe, numeri o tuple. Una lista non può essere una chiave.' ],
-          code: `utente = {\n    "nome": "Eva",\n    "lingue": ["it", "en"],\n    "indirizzo": {"citta": "Torino", "cap": "10121"},\n}\nprint(utente["indirizzo"]["citta"])  # Torino\nprint(utente["lingue"][-1])          # en` },
-        { h: 'Esempio reale: contare le parole di un testo', real: true, p: [
-          'Contare quante volte compare ogni parola è la base dei motori di ricerca e dell’analisi del sentiment. Il trucco è `get(parola, 0) + 1`: una parola nuova parte da 0.' ],
-          code: `testo = "il gatto e il cane e il pesce"\nconteggio = {}\nfor parola in testo.split():\n    conteggio[parola] = conteggio.get(parola, 0) + 1\nprint(conteggio)  # {'il': 3, 'gatto': 1, 'e': 2, 'cane': 1, 'pesce': 1}` },
-      ],
-      x: [
-        fill(`eta = {"ana": 30, "luis": 25}\nprint(eta___)  # 30`, ['["ana"]', '.ana', '("ana")', '{ana}'], 'Si accede a un valore del dizionario con le parentesi quadre e la chiave.'),
-        out(`d = {"a": 1}\nd["b"] = 2\nprint(len(d))`, ['2', '1', '3', 'Errore'], 'Assegnare un valore a una nuova chiave la aggiunge al dizionario.'),
-        out(`d = {"x": 1}\nprint(d.get("y", 0))`, ['0', 'None', 'KeyError', '1'], '`get()` restituisce il valore predefinito quando la chiave non esiste.'),
-        out(`d = {"a": 1, "b": 2}\nprint(list(d.keys()))`, ["['a', 'b']", '[1, 2]', "[('a', 1), ('b', 2)]", 'ab'], '`keys()` restituisce le chiavi del dizionario.'),
-        out(`d = {"a": 1}\nprint(d["z"])`, ['KeyError', 'None', '0', 'Niente'], 'Usare le parentesi quadre con una chiave inesistente solleva `KeyError`.'),
-        typ('Elimina la chiave "pane" e conserva il suo valore', `carrello = {"pane": 1.2, "latte": 0.9}\nprezzo = carrello.___("pane")`, 'pop', '`pop(chiave)` toglie la chiave e restituisce il suo valore.'),
-        out(`prezzi = {"pane": 1, "latte": 2}\nprint(sum(prezzi.values()))`, ['3', '2', 'pane latte', 'Errore'], '`values()` dà i valori e `sum()` li somma.'),
-        out(`magazzino = {"pane": 2, "latte": 0}\nmagazzino["uova"] = magazzino.get("uova", 0) + 12\nmagazzino["pane"] += 1\nprint(len(magazzino), magazzino["pane"] + magazzino["uova"], "latte" in magazzino)`, ['3 15 True', '2 15 True', '3 14 True', '3 15 False'], '"uova" viene aggiunto con 12 e "pane" diventa 3: ci sono 3 chiavi e 3 + 12 = 15. "latte" resta una chiave anche se vale 0.'),
-      ],
-    },
-    // ───────────── Giorno 9 ─────────────
-    {
       id: 'py-conditionals',
-      t: 'Condizioni',
-      d: 'Prendere decisioni con if, elif ed else, i valori veri e falsi, e l’operatore ternario.',
+      t: 'Prendere decisioni',
+      d: 'if, elif ed else, cosa conta come vero e l’if su una riga.',
       guide: [
         { h: 'if ed else', p: [
           '`if` esegue un blocco solo quando la condizione è vera. `else` copre il caso contrario. La condizione è seguita dai due punti e il blocco è indentato di 4 spazi.',
@@ -349,15 +200,16 @@
         out(`punti = 85\nvip = False\nif punti >= 90 or vip:\n    livello = "oro"\nelif punti >= 80 and not vip:\n    livello = "argento"\nelse:\n    livello = "bronzo"\nprint(livello.upper() if punti % 2 else livello)`, ['ARGENTO', 'argento', 'ORO', 'bronzo'], '85 non arriva a 90 e non è VIP, ma soddisfa l’`elif`: "argento". 85 % 2 vale 1, che è vero, quindi viene stampato in maiuscolo.'),
       ],
     },
-    // ───────────── Giorno 10 ─────────────
+    // ───────────── Giorno 6 ─────────────
     {
       id: 'py-loops',
-      t: 'Cicli',
-      d: 'Ripetere compiti con for e while, range(), enumerate(), break e continue.',
+      t: 'Ripetere con i cicli',
+      d: 'for e while, range(), break e continue: lascia che il programma ripeta il lavoro al posto tuo.',
       guide: [
         { h: 'Il ciclo for', p: [
           '`for` percorre gli elementi di qualsiasi sequenza: una lista, una stringa, un dizionario... A ogni giro, la variabile prende l’elemento successivo.',
-          'Usalo quando sai cosa devi percorrere. È il ciclo che userai di più in Python.' ],
+          'Usalo quando sai cosa devi percorrere. È il ciclo che userai di più in Python.',
+          'In alcuni esempi compare una lista, più valori tra parentesi quadre. Per ora basta sapere che `for` li percorre uno alla volta; vedrai le liste a fondo nel giorno 8.' ],
           code: `frutti = ["mela", "pera", "kiwi"]\nfor frutto in frutti:\n    print(frutto.upper())\n\nfor lettera in "sole":\n    print(lettera)` },
         { h: 'range()', p: [
           '`range(n)` genera i numeri da 0 a n-1. `range(inizio, fine)` parte da dove dici tu, e `range(inizio, fine, passo)` avanza di `passo` alla volta; con un passo negativo conta all’indietro.',
@@ -386,11 +238,166 @@
         out(`totale = 0\nfor i in range(1, 4):\n    for j in range(i):\n        totale += j\nprint(totale)`, ['4', '6', '10', '3'], 'Con i = 1 somma 0; con i = 2, 0 + 1; con i = 3, 0 + 1 + 2. In totale 0 + 1 + 3 = 4.'),
       ],
     },
+    // ───────────── Giorno 7 ─────────────
+    {
+      id: 'py-workshop-register',
+      t: 'Il laboratorio di Kibi: il registratore di cassa',
+      d: 'Progetto della settimana 1: una cassa che chiede i prezzi, somma il totale, applica gli sconti e stampa lo scontrino.',
+      guide: [
+        { h: 'L’incarico', p: [
+          'Kibi apre un negozio di semi e ha bisogno di un registratore di cassa nel terminale. Scrivi il prezzo di ogni articolo, la cassa somma, applica uno sconto quando serve e stampa lo scontrino.',
+          'Questo laboratorio mette insieme tutta la settimana: variabili, `input()`, conversioni, condizioni, cicli e f-string. Lo costruiamo passo dopo passo e ogni passo funziona già da solo, così puoi eseguirlo e controllarlo prima di andare avanti.' ] },
+        { h: 'Passo 1: chiedere prezzi finché non si scrive 0', p: [
+          'Non sappiamo quanti articoli ci saranno, quindi usiamo `while True` e usciamo con `break` quando il cassiere scrive 0.',
+          'Teniamo due conti insieme: il totale in euro e il numero di articoli. `+=` aggiunge al valore che c’era già.' ],
+          code: `totale = 0\narticoli = 0\nwhile True:\n    prezzo = float(input("Prezzo (0 per finire): "))\n    if prezzo == 0:\n        break\n    totale += prezzo\n    articoli += 1\nprint(f"{articoli} articoli, totale {totale:.2f} €")` },
+        { h: 'Passo 2: resistere a ciò che si scrive', p: [
+          'Se il cassiere scrive `2,50` o `ciao`, `float()` fallisce e il programma si ferma. Prima sostituiamo la virgola con un punto e poi controlliamo che restino solo cifre con al massimo un punto.',
+          '`continue` torna all’inizio del ciclo senza sommare nulla. Nel giorno 15 vedrai `try` ed `except`, il modo abituale di gestire questi errori.' ],
+          code: `while True:\n    testo = input("Prezzo (0 per finire): ").replace(",", ".")\n    if not testo.replace(".", "", 1).isdigit():\n        print("Questo non è un prezzo, riprova")\n        continue\n    prezzo = float(testo)\n    if prezzo == 0:\n        break` },
+        { h: 'Passo 3: sconti a fasce', p: [
+          'Il negozio sconta il 10 % da 50 € e il 5 % da 20 €. Con `elif` l’ordine conta: si controlla prima la fascia più alta, perché anche 60 € soddisfa `>= 20`.',
+          'Il formato `:.2f` mostra sempre due decimali, come su qualsiasi scontrino.' ],
+          code: `totale = 42.8\nif totale >= 50:\n    sconto = totale * 0.10\nelif totale >= 20:\n    sconto = totale * 0.05\nelse:\n    sconto = 0\nprint(f"Sconto: {sconto:.2f} €")         # Sconto: 2.14 €\nprint(f"Da pagare: {totale - sconto:.2f} €")  # Da pagare: 40.66 €` },
+        { h: 'Esempio reale: lo scontrino completo', real: true, p: [
+          'Mettiamo insieme i tre passi. `:<10` allinea il testo a sinistra su 10 caratteri e `:>8.2f` allinea il numero a destra, così le cifre restano in colonna.',
+          'Idee per ampliarlo: chiedere anche la quantità di ogni articolo, o calcolare il resto a partire da quello che consegna il cliente.' ],
+          code: `totale = 0\narticoli = 0\nwhile True:\n    testo = input("Prezzo (0 per finire): ").replace(",", ".")\n    if not testo.replace(".", "", 1).isdigit():\n        print("Questo non è un prezzo")\n        continue\n    prezzo = float(testo)\n    if prezzo == 0:\n        break\n    totale += prezzo\n    articoli += 1\n\nsconto = totale * 0.10 if totale >= 50 else totale * 0.05 if totale >= 20 else 0\nprint("-" * 18)\nprint(f"{'Articoli':<10}{articoli:>8}")\nprint(f"{'Totale':<10}{totale:>8.2f}")\nprint(f"{'Sconto':<10}{sconto:>8.2f}")\nprint(f"{'Da pagare':<10}{totale - sconto:>8.2f}")` },
+      ],
+      x: [
+        mc('Che cosa fa `break` dentro il `while True` della cassa?', ['Esce dal ciclo e continua con quello che viene dopo', 'Torna all’inizio del ciclo', 'Chiude tutto il programma', 'Salta solo il giro attuale'], '`break` termina il ciclo; il programma continua dalla prima riga dopo. Saltare il giro attuale è quello che fa `continue`.'),
+        out(`totale = 0\ntotale += 2.5\ntotale += 1.25\nprint(f"{totale:.2f}")`, ['3.75', '3.8', '3.750', '375'], '`+=` continua a sommare al totale, e `:.2f` mostra esattamente due decimali.'),
+        fill(`prezzo = ___(input("Prezzo: "))`, ['float', 'str', 'print', 'len'], '`input()` restituisce testo. Per fare conti con i decimali bisogna convertirlo con `float()`.'),
+        out(`totale = 25\nif totale >= 50:\n    print("10%")\nelif totale >= 20:\n    print("5%")\nelse:\n    print("0%")`, ['5%', '10%', '0%', '5%\n0%'], '25 non arriva a 50, ma arriva a 20. Con `elif` si esegue solo il primo ramo vero.'),
+        out(`n = 0\ntotale = 0\nwhile totale < 10:\n    totale += 4\n    n += 1\nprint(n, totale)`, ['3 12', '2 8', '3 10', '4 16'], 'Il ciclo somma 4 finché il totale è minore di 10: 4, 8 e 12. A 12 la condizione è falsa e i giri sono stati 3.'),
+        typ('Scrivi la parola che esce dal ciclo quando il prezzo è 0', `while True:\n    prezzo = float(input())\n    if prezzo == 0:\n        ___\n    totale += prezzo`, 'break', '`break` termina il ciclo non appena la condizione è vera.'),
+        out(`print(f"{'Total':<8}|{9.5:>6.2f}")`, ['Total   |  9.50', 'Total|9.50', '   Total|9.50  ', 'Total   |9.5'], '`:<8` riempie il testo di spazi a destra fino a 8 caratteri; `:>6.2f` mette il numero con due decimali allineato a destra su 6.'),
+        out(`totale = 0\nfor prezzo in range(5, 30, 10):\n    if prezzo > 20:\n        continue\n    totale += prezzo\nsconto = totale * 0.1 if totale >= 20 else 0\nprint(totale, round(totale - sconto, 2))`, ['20 18.0', '45 40.5', '20 20', '20 18'], '`range(5, 30, 10)` dà 5, 15 e 25; il 25 si salta con `continue`, quindi il totale è 20. Arriva a 20, perciò c’è il 10 % di sconto, e il risultato è un decimale: 18.0.'),
+      ],
+    },
+    // ───────────── Giorno 8 ─────────────
+    {
+      id: 'py-lists',
+      t: 'Liste',
+      d: 'Tenere molti valori in ordine: aggiungere, togliere, tagliare, ordinare e copiare senza sorprese.',
+      guide: [
+        { h: 'Creare e accedere', p: [
+          'Una lista è una collezione ordinata e modificabile. Si scrive tra parentesi quadre e può mescolare tipi, anche se di solito tutti gli elementi sono dello stesso tipo.',
+          'Accedi agli elementi tramite l’indice, come con le stringhe. Un indice inesistente solleva `IndexError`. A differenza delle stringhe, puoi cambiare un elemento assegnandogli un valore.' ],
+          code: `spesa = ["latte", "pane", "uova"]\nprint(spesa[0])    # latte\nprint(spesa[-1])   # uova\nprint(len(spesa))  # 3\nspesa[1] = "pane integrale"\nprint(spesa)       # ['latte', 'pane integrale', 'uova']` },
+        { h: 'Aggiungere e togliere elementi', p: [
+          '`append()` aggiunge in fondo, `insert(i, x)` in una posizione ed `extend()` ne aggiunge diversi. `remove(x)` elimina il primo elemento uguale a `x`, e `pop()` toglie e restituisce l’ultimo (o quello all’indice che passi).',
+          '`in` controlla se un elemento è nella lista.' ],
+          code: `compiti = ["studiare"]\ncompiti.append("correre")\ncompiti.insert(0, "colazione")\ncompiti.extend(["leggere", "dormire"])\nprint(compiti)  # ['colazione', 'studiare', 'correre', 'leggere', 'dormire']\ncompiti.remove("correre")\nultimo = compiti.pop()\nprint(ultimo, compiti)     # dormire ['colazione', 'studiare', 'leggere']\nprint("leggere" in compiti)  # True` },
+        { h: 'Slicing e ordinamento', p: [
+          'Lo slicing funziona esattamente come con le stringhe e restituisce una nuova lista.',
+          '`sort()` ordina la lista sul posto e restituisce `None`; `sorted()` restituisce una nuova lista e lascia intatta l’originale. Un errore classico è scrivere `lista = lista.sort()` e ritrovarsi con `None`.',
+          '`sum()`, `min()` e `max()` funzionano direttamente sulle liste di numeri.' ],
+          code: `voti = [7, 4, 9, 6]\nprint(sorted(voti))  # [4, 6, 7, 9]\nprint(voti)          # [7, 4, 9, 6]\nvoti.sort(reverse=True)\nprint(voti)          # [9, 7, 6, 4]\nprint(voti[:2])      # [9, 7]\nprint(sum(voti) / len(voti))  # 6.5` },
+        { h: 'Copie e riferimenti', p: [
+          '`b = a` non copia la lista: crea un altro nome per lo stesso oggetto. Se modifichi `b`, modifichi `a`.',
+          'Per una copia indipendente usa `a.copy()`, `list(a)` o `a[:]`.' ],
+          code: `a = [1, 2, 3]\nb = a           # stesso oggetto\nc = a.copy()    # copia indipendente\na.append(4)\nprint(b)  # [1, 2, 3, 4]\nprint(c)  # [1, 2, 3]` },
+        { h: 'Esempio reale: lo scontrino della spesa', real: true, p: [
+          'Con una lista di prezzi hai già il numero di articoli, il totale e il prodotto più caro di uno scontrino.' ],
+          code: `prezzi = [2.35, 1.20, 4.99, 0.89]\ntotale = sum(prezzi)\nprint("Articoli:", len(prezzi))        # Articoli: 4\nprint("Totale:", round(totale, 2))     # Totale: 9.43\nprint("Il più caro:", max(prezzi))     # Il più caro: 4.99` },
+      ],
+      x: [
+        out(`frutti = ["mela", "pera", "uva"]\nprint(frutti[1])`, ['pera', 'mela', 'uva', 'Errore'], 'Gli indici partono da 0: `frutti[1]` è il secondo elemento.'),
+        ord('Aggiungi 4 in fondo alla lista nums', ['nums', '.', 'append', '(', '4', ')'], ['push', 'add'], 'Le liste di Python usano `.append()`. `push` è di JavaScript.'),
+        out(`nums = [10, 20, 30, 40, 50]\nprint(nums[1:3])`, ['[20, 30]', '[10, 20, 30]', '[20, 30, 40]', '[20]'], 'Lo slicing va dall’indice 1 fino all’indice 3 senza includerlo.'),
+        out(`nums = [3, 1, 2]\nnums.sort()\nprint(nums)`, ['[1, 2, 3]', '[3, 2, 1]', 'None', '[3, 1, 2]'], '`sort()` ordina la lista sul posto, dal più piccolo al più grande.'),
+        out(`nums = [1, 2, 3]\nultimo = nums.pop()\nprint(ultimo, nums)`, ['3 [1, 2]', '1 [2, 3]', '3 [1, 2, 3]', '[1, 2] 3'], '`pop()` senza argomenti toglie e restituisce l’ultimo elemento.'),
+        mc('Che cosa restituisce `nums.sort()`?', ['None', 'La lista ordinata', 'Una copia ordinata', 'True'], '`sort()` ordina sul posto e restituisce `None`. Se vuoi una nuova lista, usa `sorted(nums)`.'),
+        out(`a = [1, 2, 3]\nb = a\nb.append(4)\nprint(a)`, ['[1, 2, 3, 4]', '[1, 2, 3]', '[4]', 'Errore'], '`b = a` non copia la lista: entrambi i nomi puntano allo stesso oggetto. Usa `a.copy()` per duplicarla.'),
+        out(`nums = [5, 3, 8, 1]\nordinata = sorted(nums)\nnums.append(ordinata[0] + ordinata[-1])\nprint(nums[-1], len(nums), nums[:2])`, ['9 5 [5, 3]', '6 5 [5, 3]', '9 4 [1, 3]', '9 5 [1, 3]'], '`sorted()` non tocca `nums`; `ordinata` è [1, 3, 5, 8], quindi 1 + 8 = 9 viene aggiunto a `nums`.'),
+      ],
+    },
+    // ───────────── Giorno 9 ─────────────
+    {
+      id: 'py-tuples',
+      t: 'Tuple e insiemi',
+      d: 'Tuple che non cambiano, lo spacchettamento e i set per eliminare i duplicati e confrontare gruppi.',
+      guide: [
+        { h: 'Che cos’è una tupla?', p: [
+          'Una tupla è come una lista, ma immutabile: una volta creata non puoi aggiungere, togliere o cambiare elementi. Si scrive tra parentesi tonde.',
+          'Usala per dati che vanno insieme e non devono cambiare: coordinate, un colore RGB, una data. Essendo immutabile, può anche fare da chiave di un dizionario.',
+          'Si indicizza e si taglia come una lista, e ha due metodi: `count()` e `index()`.' ],
+          code: `colore = (255, 128, 0)\nprint(colore[0])          # 255\nprint(len(colore))        # 3\nprint(colore.count(0))    # 1\nprint(colore.index(128))  # 1` },
+        { h: 'Immutabilità', p: [
+          'Provare a cambiare un elemento solleva `TypeError`. Se proprio devi modificarla, convertila in lista, cambiala e riconvertila.',
+          'Questa protezione è il suo vantaggio: nessuno può alterare i dati per sbaglio in un’altra parte del programma.' ],
+          code: `giorni = ("lun", "mar", "mer")\n# giorni[0] = "dom"  # TypeError: 'tuple' object does not support item assignment\nelementi = list(giorni)\nelementi.append("gio")\ngiorni = tuple(elementi)\nprint(giorni)  # ('lun', 'mar', 'mer', 'gio')` },
+        { h: 'Spacchettamento', p: [
+          'Puoi distribuire gli elementi di una tupla in variabili: `x, y = punto`. Il numero di variabili deve coincidere con quello degli elementi, a meno che usi `*` per raccogliere il resto in una lista.',
+          'Attenzione: le parentesi da sole non creano una tupla. Una tupla di un solo elemento ha bisogno della virgola: `(5,)`.' ],
+          code: `punto = (3, 4)\nx, y = punto\nprint(x, y)          # 3 4\nprimo, *resto = (1, 2, 3, 4)\nprint(primo, resto)  # 1 [2, 3, 4]\nprint(type((5,)), type((5)))  # <class 'tuple'> <class 'int'>` },
+        { h: 'Che cos’è un insieme?', p: [
+          'Un insieme (`set`) è una collezione non ordinata senza elementi ripetuti. Si scrive con le graffe: `{1, 2, 3}`. Se aggiungi duplicati, ne resta solo uno.',
+          'Un insieme vuoto si crea con `set()`: `{}` crea un dizionario vuoto.',
+          'Controllare se qualcosa è in un insieme con `in` è velocissimo, anche con milioni di elementi. Per questo si usano per le liste di «già visti».' ],
+          code: `tag = {"python", "web", "python", "dati"}\nprint(len(tag))      # 3\nprint("web" in tag)  # True\nvuoto = set()\nprint(type({}))      # <class 'dict'>` },
+        { h: 'Operazioni sugli insiemi', p: [
+          'Unione `|` (tutti), intersezione `&` (quelli in comune), differenza `-` (quelli di uno ma non dell’altro) e differenza simmetrica `^` (quelli che stanno in uno solo dei due).',
+          '`issubset()` controlla se tutti gli elementi di un insieme stanno in un altro.' ],
+          code: `a = {1, 2, 3, 4}\nb = {3, 4, 5}\nprint(a | b)  # {1, 2, 3, 4, 5}\nprint(a & b)  # {3, 4}\nprint(a - b)  # {1, 2}\nprint(a ^ b)  # {1, 2, 5}\nprint({1, 2}.issubset(a))  # True` },
+        { h: 'Esempio reale: i clienti fedeli', real: true, p: [
+          'Un negozio vuole sapere quali clienti hanno comprato a gennaio e a febbraio, quali hanno smesso e quali sono nuovi. Sono tre operazioni sugli insiemi.' ],
+          code: `gennaio = {"Ana", "Luis", "Eva", "Marta"}\nfebbraio = {"Luis", "Marta", "Pedro"}\nfedeli = gennaio & febbraio\npersi = gennaio - febbraio\nnuovi = febbraio - gennaio\nprint(sorted(fedeli))  # ['Luis', 'Marta']\nprint(sorted(persi))   # ['Ana', 'Eva']\nprint(sorted(nuovi))   # ['Pedro']` },
+      ],
+      x: [
+        mc('Quale collezione è immutabile?', ['tuple', 'list', 'dict', 'set'], 'Una tupla non può essere modificata dopo la creazione.'),
+        out(`t = (10, 20, 30)\nprint(t[1])`, ['20', '10', '30', 'Errore'], 'Le tuple si indicizzano come le liste, partendo da 0.'),
+        fill(`punto = (3, 4)\n___ = punto\nprint(x, y)  # 3 4`, ['x, y', 'x y', 'x; y', 'x & y'], 'Per spacchettare, scrivi le variabili separate da virgole a sinistra dell’`=`.'),
+        out(`t = (1, 2, 3)\nt[0] = 9\nprint(t)`, ['TypeError', '(9, 2, 3)', '(1, 2, 3)', 'None'], 'Le tuple non permettono di assegnare elementi, quindi Python solleva `TypeError`.'),
+        out(`s = {1, 2, 2, 3, 3, 3}\nprint(len(s))`, ['3', '6', '4', '1'], 'Un insieme elimina i duplicati: resta {1, 2, 3}.'),
+        out(`s = {1, 2}\ns.add(2)\ns.add(5)\nprint(len(s))`, ['3', '4', '2', 'Errore'], 'Aggiungere un 2 già presente non cambia nulla; il 5 viene aggiunto.'),
+        out(`a = {1, 2, 3}\nb = {2, 3, 4}\nprint(a & b)`, ['{2, 3}', '{1, 2, 3, 4}', '{1}', '{4}'], '`&` è l’intersezione: gli elementi presenti in entrambi.'),
+        out(`a = {1, 2, 3, 4}\nb = {3, 4, 5}\nprint(len(a | b), sorted(a ^ b), {3}.issubset(a & b))`, ['5 [1, 2, 5] True', '7 [1, 2, 5] True', '5 [3, 4] True', '5 [1, 2, 5] False'], 'L’unione ha 5 elementi, la differenza simmetrica lascia 1, 2 e 5, e il 3 è nell’intersezione {3, 4}.'),
+      ],
+    },
+    // ───────────── Giorno 10 ─────────────
+    {
+      id: 'py-dicts',
+      t: 'Dizionari',
+      d: 'Cercare valori per chiave: creare, modificare, scorrere e annidare dati.',
+      guide: [
+        { h: 'Creare e accedere', p: [
+          'Un dizionario associa chiavi uniche a valori, come una rubrica: cerchi un nome e ottieni il numero. Si scrive `{chiave: valore}`.',
+          '`d["chiave"]` restituisce il valore ma solleva `KeyError` se la chiave non esiste. `d.get("chiave", predefinito)` è più sicuro: restituisce il valore predefinito (o `None`).' ],
+          code: `persona = {"nome": "Ana", "eta": 30, "citta": "Bologna"}\nprint(persona["nome"])                     # Ana\nprint(persona.get("email"))                # None\nprint(persona.get("email", "senza email"))  # senza email` },
+        { h: 'Aggiungere, modificare ed eliminare', p: [
+          'Assegnare un valore a una chiave la crea se non esiste, o ne cambia il valore se esiste. `update()` unisce un altro dizionario.',
+          '`pop(chiave)` elimina e restituisce il valore; `del d[chiave]` elimina soltanto. `in` controlla se esiste una chiave (non un valore).' ],
+          code: `magazzino = {"mele": 10}\nmagazzino["pere"] = 5        # aggiungere\nmagazzino["mele"] -= 3       # modificare\nmagazzino.update({"uva": 8})\ndel magazzino["pere"]\nprint(magazzino)             # {'mele': 7, 'uva': 8}\nprint("uva" in magazzino)    # True` },
+        { h: 'Percorrere un dizionario', p: [
+          '`keys()` dà le chiavi, `values()` i valori e `items()` le coppie. Con `for chiave, valore in d.items()` percorri tutto in una volta (vedrai i cicli a fondo il giorno 10).',
+          'Da Python 3.7 i dizionari mantengono l’ordine in cui hai inserito le chiavi.' ],
+          code: `voti = {"Ana": 9, "Luis": 6, "Eva": 8}\nfor studente, voto in voti.items():\n    print(studente, "->", voto)\nprint(list(voti.keys()))  # ['Ana', 'Luis', 'Eva']\nprint(sum(voti.values()) / len(voti))  # 7.666666666666667` },
+        { h: 'Dati annidati', p: [
+          'I valori possono essere liste o altri dizionari. È così che si rappresentano quasi tutti i dati reali, ed è proprio la forma del JSON che restituiscono le API.',
+          'Le chiavi devono essere immutabili: stringhe, numeri o tuple. Una lista non può essere una chiave.' ],
+          code: `utente = {\n    "nome": "Eva",\n    "lingue": ["it", "en"],\n    "indirizzo": {"citta": "Torino", "cap": "10121"},\n}\nprint(utente["indirizzo"]["citta"])  # Torino\nprint(utente["lingue"][-1])          # en` },
+        { h: 'Esempio reale: contare le parole di un testo', real: true, p: [
+          'Contare quante volte compare ogni parola è la base dei motori di ricerca e dell’analisi del sentiment. Il trucco è `get(parola, 0) + 1`: una parola nuova parte da 0.' ],
+          code: `testo = "il gatto e il cane e il pesce"\nconteggio = {}\nfor parola in testo.split():\n    conteggio[parola] = conteggio.get(parola, 0) + 1\nprint(conteggio)  # {'il': 3, 'gatto': 1, 'e': 2, 'cane': 1, 'pesce': 1}` },
+      ],
+      x: [
+        fill(`eta = {"ana": 30, "luis": 25}\nprint(eta___)  # 30`, ['["ana"]', '.ana', '("ana")', '{ana}'], 'Si accede a un valore del dizionario con le parentesi quadre e la chiave.'),
+        out(`d = {"a": 1}\nd["b"] = 2\nprint(len(d))`, ['2', '1', '3', 'Errore'], 'Assegnare un valore a una nuova chiave la aggiunge al dizionario.'),
+        out(`d = {"x": 1}\nprint(d.get("y", 0))`, ['0', 'None', 'KeyError', '1'], '`get()` restituisce il valore predefinito quando la chiave non esiste.'),
+        out(`d = {"a": 1, "b": 2}\nprint(list(d.keys()))`, ["['a', 'b']", '[1, 2]', "[('a', 1), ('b', 2)]", 'ab'], '`keys()` restituisce le chiavi del dizionario.'),
+        out(`d = {"a": 1}\nprint(d["z"])`, ['KeyError', 'None', '0', 'Niente'], 'Usare le parentesi quadre con una chiave inesistente solleva `KeyError`.'),
+        typ('Elimina la chiave "pane" e conserva il suo valore', `carrello = {"pane": 1.2, "latte": 0.9}\nprezzo = carrello.___("pane")`, 'pop', '`pop(chiave)` toglie la chiave e restituisce il suo valore.'),
+        out(`prezzi = {"pane": 1, "latte": 2}\nprint(sum(prezzi.values()))`, ['3', '2', 'pane latte', 'Errore'], '`values()` dà i valori e `sum()` li somma.'),
+        out(`magazzino = {"pane": 2, "latte": 0}\nmagazzino["uova"] = magazzino.get("uova", 0) + 12\nmagazzino["pane"] += 1\nprint(len(magazzino), magazzino["pane"] + magazzino["uova"], "latte" in magazzino)`, ['3 15 True', '2 15 True', '3 14 True', '3 15 False'], '"uova" viene aggiunto con 12 e "pane" diventa 3: ci sono 3 chiavi e 3 + 12 = 15. "latte" resta una chiave anche se vale 0.'),
+      ],
+    },
     // ───────────── Giorno 11 ─────────────
     {
       id: 'py-functions',
       t: 'Funzioni',
-      d: 'Definire funzioni con def, restituire risultati, parametri predefiniti, *args, **kwargs e visibilità.',
+      d: 'Raggruppare codice con def: parametri, return, valori predefiniti, *args, **kwargs e ambito.',
       guide: [
         { h: 'Definire e chiamare una funzione', p: [
           'Una funzione è un blocco di codice con un nome che puoi riutilizzare. Si definisce con `def`, riceve parametri tra parentesi e restituisce un risultato con `return`.',
@@ -429,46 +436,9 @@
     },
     // ───────────── Giorno 12 ─────────────
     {
-      id: 'py-modules',
-      t: 'Moduli',
-      d: 'Organizzare il codice in moduli, i modi di importare e la libreria standard: math, random e altro.',
-      guide: [
-        { h: 'Che cos’è un modulo?', p: [
-          'Un modulo è semplicemente un file `.py`. Tutto ciò che vi definisci (funzioni, variabili, classi) si può usare da un altro file con `import`.',
-          'Dividere un programma in moduli lo rende più facile da mantenere: ogni file si occupa di una cosa sola.' ],
-          code: `# file: strumenti.py\nIVA = 0.22\n\ndef con_iva(prezzo):\n    return round(prezzo * (1 + IVA), 2)\n\n# file: main.py (nella stessa cartella)\nimport strumenti\nprint(strumenti.con_iva(50))  # 61.0` },
-        { h: 'Modi di importare', p: [
-          '`import math` carica il modulo e usi i suoi nomi con il prefisso: `math.sqrt()`. `from math import sqrt` porta solo quel nome e lo usi senza prefisso.',
-          '`import statistics as st` gli dà un alias breve. Evita `from modulo import *`: riempie il codice di nomi e non saprai più da dove viene ciascuno.' ],
-          code: `import math\nfrom math import sqrt, pi\nimport statistics as st\n\nprint(math.floor(3.7))     # 3\nprint(sqrt(81))            # 9.0\nprint(round(pi, 2))        # 3.14\nprint(st.mean([2, 4, 9]))  # 5` },
-        { h: 'La libreria standard', p: [
-          'Python arriva «con le batterie incluse»: `math` (matematica), `random` (caso), `datetime` (date), `os` e `pathlib` (file), `json`, `csv`, `re`, `statistics`... Non c’è niente da installare.',
-          '`random` serve per giochi e simulazioni: `randint(a, b)` include entrambi gli estremi, `choice()` sceglie un elemento e `shuffle()` mescola una lista sul posto.' ],
-          code: `import random\n\nprint(random.randint(1, 6))  # un numero da 1 a 6\nprint(random.choice(["sasso", "carta", "forbici"]))\ncarte = [1, 2, 3, 4]\nrandom.shuffle(carte)        # mescola la lista sul posto\nprint(carte)` },
-        { h: 'if __name__ == "__main__"', p: [
-          'Quando esegui un file direttamente, la variabile `__name__` vale `"__main__"`. Quando un altro file lo importa, contiene il nome del modulo.',
-          'Per questo il codice di prova o il punto d’ingresso va dentro quell’`if`: così importare il modulo non esegue nulla a sorpresa.' ],
-          code: `def main():\n    print("Esecuzione del programma")\n\nif __name__ == "__main__":\n    main()` },
-        { h: 'Esempio reale: generare una password sicura', real: true, p: [
-          'Per password e token non usare `random`, che è prevedibile. Il modulo standard `secrets` è pensato per questo, e `string` fornisce lettere e cifre già pronte.' ],
-          code: `import secrets\nimport string\n\ndef genera_password(lunghezza=12):\n    caratteri = string.ascii_letters + string.digits + "!@#$%"\n    password = ""\n    for _ in range(lunghezza):\n        password += secrets.choice(caratteri)\n    return password\n\nprint(genera_password())  # es. k7R!x2Qm@9Lz` },
-      ],
-      x: [
-        fill(`___ math\nprint(math.pi)`, ['import', 'include', 'using', 'require'], '`import` carica un modulo in Python.'),
-        out(`import math\nprint(math.sqrt(25))`, ['5.0', '5', '25', 'Errore'], '`math.sqrt` restituisce sempre un `float`.'),
-        mc('Che cosa fa `from math import pi`?', ['Importa solo il nome pi per usarlo direttamente', 'Importa tutto il modulo con il nome pi', 'Crea una variabile pi dentro math', 'Scarica il modulo math'], 'Poi puoi scrivere `pi` senza il prefisso `math.`.'),
-        fill(`import statistics ___ st\nprint(st.mean([1, 2, 3]))`, ['as', 'to', '=', 'alias'], '`as` dà un alias al modulo importato.'),
-        mc('Che cosa restituisce `random.randint(1, 6)`?', ['Un intero tra 1 e 6, estremi inclusi', 'Un intero tra 1 e 5', 'Un decimale tra 1 e 6', 'Sempre 1'], 'A differenza di `range`, `randint` include il limite superiore.'),
-        out(`from math import floor, ceil\nprint(floor(2.5), ceil(2.1))`, ['2 3', '3 3', '2 2', '3 2'], '`floor` arrotonda per difetto e `ceil` per eccesso, qualunque siano i decimali.'),
-        mc('A che cosa serve `if __name__ == "__main__":`?', ['A eseguire codice solo quando il file viene eseguito direttamente, non quando viene importato', 'A dichiarare la funzione principale obbligatoria', 'A importare il modulo main', 'A controllare la versione di Python'], 'Quando il file viene importato, `__name__` contiene il nome del modulo e quel blocco non si esegue.'),
-        out(`import math as m\nfrom statistics import mean\nlati = [3, 4]\nipotenusa = m.sqrt(lati[0] ** 2 + lati[1] ** 2)\nprint(ipotenusa, mean(lati + [ipotenusa]))`, ['5.0 4.0', '5 4', '5.0 4', '25.0 4.0'], '√(9 + 16) = 5.0, un `float`. La media di [3, 4, 5.0] è 4.0: siccome c’è un `float`, lo è anche il risultato.'),
-      ],
-    },
-    // ───────────── Giorno 13 ─────────────
-    {
       id: 'py-comprehensions',
-      t: 'List comprehension',
-      d: 'Creare liste, dizionari e insiemi in una riga, con filtri e trasformazioni.',
+      t: 'Comprehension',
+      d: 'Creare liste, dizionari e set in una riga, filtrando e trasformando allo stesso tempo.',
       guide: [
         { h: 'Dal ciclo alla comprehension', p: [
           'Una list comprehension crea una nuova lista applicando un’espressione a ogni elemento: `[espressione for elemento in iterabile]`.',
@@ -501,89 +471,170 @@
         out(`vendite = {"lun": 120, "mar": 80, "mer": 150}\nbuoni = {g: v * 2 for g, v in vendite.items() if v >= 100}\nprint(buoni, sum(buoni.values()))`, ["{'lun': 240, 'mer': 300} 540", "{'lun': 120, 'mer': 150} 270", "{'lun': 240, 'mar': 160, 'mer': 300} 700", '[240, 300] 540'], 'Il filtro lascia fuori il martedì (80) e l’espressione raddoppia gli altri: 240 + 300 = 540.'),
       ],
     },
-    // ───────────── Giorno 14 ─────────────
+    // ───────────── Giorno 13 ─────────────
     {
-      id: 'py-higher-order',
-      t: 'Funzioni di ordine superiore',
-      d: 'Le funzioni come valori: lambda, map, filter, sorted con key, closure e decoratori.',
+      id: 'py-modules',
+      t: 'Moduli e pacchetti con pip',
+      d: 'Importare il tuo codice e la libreria standard, e installare pacchetti da PyPI con pip.',
       guide: [
-        { h: 'Anche le funzioni sono valori', p: [
-          'In Python una funzione è un oggetto come gli altri: puoi salvarla in una variabile, passarla come argomento o restituirla da un’altra funzione.',
-          'Una funzione di ordine superiore riceve o restituisce altre funzioni. Permette di scrivere codice generico che si adatta a ciò che le passi.' ],
-          code: `def urla(testo):\n    return testo.upper() + "!"\n\ndef applica(funzione, valore):\n    return funzione(valore)\n\nprint(applica(urla, "ciao"))  # CIAO!\nprint(applica(len, "ciao"))   # 4` },
-        { h: 'lambda: funzioni di una riga', p: [
-          '`lambda parametri: espressione` crea una piccola funzione anonima. Si usa soprattutto come argomento di `sorted`, `map`, `filter`, `max`...',
-          'Se la logica richiede più di un’espressione, definisci una funzione normale con `def`.' ],
-          code: `doppio = lambda x: x * 2\nprint(doppio(7))  # 14\n\nprodotti = [("pane", 1.2), ("formaggio", 4.5), ("latte", 0.9)]\nprodotti.sort(key=lambda p: p[1])\nprint(prodotti[0])  # ('latte', 0.9)` },
-        { h: 'map, filter e reduce', p: [
-          '`map(f, dati)` applica `f` a ogni elemento; `filter(f, dati)` tiene quelli per cui `f` è vera. Restituiscono iteratori: avvolgili in `list()` per vedere il risultato.',
-          '`reduce` (dal modulo `functools`) combina tutti gli elementi in un solo valore. Spesso una list comprehension è più leggibile di `map` e `filter`.' ],
-          code: `from functools import reduce\n\nnums = [1, 2, 3, 4, 5]\nprint(list(map(lambda n: n ** 2, nums)))         # [1, 4, 9, 16, 25]\nprint(list(filter(lambda n: n % 2 == 1, nums)))  # [1, 3, 5]\nprint(reduce(lambda a, b: a * b, nums))          # 120` },
-        { h: 'Closure', p: [
-          'Una funzione definita dentro un’altra ricorda le variabili della funzione esterna anche quando questa è già terminata. Questa è una closure.',
-          'Serve a fabbricare funzioni configurate: qui, una funzione di sconto per ogni percentuale.' ],
-          code: `def crea_sconto(percentuale):\n    def applica(prezzo):\n        return prezzo * (1 - percentuale / 100)\n    return applica\n\nsaldi = crea_sconto(20)\nprint(saldi(50))  # 40.0` },
-        { h: 'Decoratori', p: [
-          'Un decoratore è una funzione che ne riceve un’altra e ne restituisce una versione arricchita. Si applica con `@nome` sopra il `def`.',
-          'Si usano per registrare le chiamate, misurare i tempi, controllare i permessi o mettere in cache i risultati senza toccare la funzione originale. Flask, che vedrai il giorno 26, li usa per le rotte.' ],
-          code: `def registra(funzione):\n    def involucro(*args):\n        print("Chiamata a", funzione.__name__)\n        return funzione(*args)\n    return involucro\n\n@registra\ndef somma(a, b):\n    return a + b\n\nprint(somma(2, 3))\n# Chiamata a somma\n# 5` },
-        { h: 'Esempio reale: il catalogo di un negozio', real: true, p: [
-          'Con `filter`, `map`, `sorted` e `max` con `key` puoi rispondere a domande su un catalogo: quali prodotti costano meno di 20 € e qual è il più caro.' ],
-          code: `prodotti = [\n    {"nome": "Cuffie", "prezzo": 59.9},\n    {"nome": "Cavo USB", "prezzo": 7.5},\n    {"nome": "Mouse", "prezzo": 19.9},\n]\neconomici = filter(lambda p: p["prezzo"] < 20, prodotti)\nnomi = sorted(map(lambda p: p["nome"], economici))\nprint(nomi)  # ['Cavo USB', 'Mouse']\npiu_caro = max(prodotti, key=lambda p: p["prezzo"])\nprint(piu_caro["nome"])  # Cuffie` },
+        { h: 'Che cos’è un modulo?', p: [
+          'Un modulo è semplicemente un file `.py`. Tutto ciò che vi definisci (funzioni, variabili, classi) si può usare da un altro file con `import`.',
+          'Dividere un programma in moduli lo rende più facile da mantenere: ogni file si occupa di una cosa sola.' ],
+          code: `# file: strumenti.py\nIVA = 0.22\n\ndef con_iva(prezzo):\n    return round(prezzo * (1 + IVA), 2)\n\n# file: main.py (nella stessa cartella)\nimport strumenti\nprint(strumenti.con_iva(50))  # 61.0` },
+        { h: 'Modi di importare', p: [
+          '`import math` carica il modulo e usi i suoi nomi con il prefisso: `math.sqrt()`. `from math import sqrt` porta solo quel nome e lo usi senza prefisso.',
+          '`import statistics as st` gli dà un alias breve. Evita `from modulo import *`: riempie il codice di nomi e non saprai più da dove viene ciascuno.' ],
+          code: `import math\nfrom math import sqrt, pi\nimport statistics as st\n\nprint(math.floor(3.7))     # 3\nprint(sqrt(81))            # 9.0\nprint(round(pi, 2))        # 3.14\nprint(st.mean([2, 4, 9]))  # 5` },
+        { h: 'La libreria standard', p: [
+          'Python arriva «con le batterie incluse»: `math` (matematica), `random` (caso), `datetime` (date), `os` e `pathlib` (file), `json`, `csv`, `re`, `statistics`... Non c’è niente da installare.',
+          '`random` serve per giochi e simulazioni: `randint(a, b)` include entrambi gli estremi, `choice()` sceglie un elemento e `shuffle()` mescola una lista sul posto.' ],
+          code: `import random\n\nprint(random.randint(1, 6))  # un numero da 1 a 6\nprint(random.choice(["sasso", "carta", "forbici"]))\ncarte = [1, 2, 3, 4]\nrandom.shuffle(carte)        # mescola la lista sul posto\nprint(carte)` },
+        { h: 'pip e PyPI', p: [
+          'La libreria standard è ampia, ma la vera forza di Python sta in PyPI (Python Package Index), un archivio con centinaia di migliaia di pacchetti: `requests`, `pandas`, `flask`, `numpy`...',
+          'pip è il programma che li scarica e li installa. È incluso in Python. Se hai più versioni di Python, `python -m pip` garantisce che installi in quella che esegui.' ],
+          code: `pip --version\npip install requests\npip install requests==2.32.3   # una versione esatta\npip install --upgrade requests\npip uninstall requests\npython -m pip install requests  # il pip di QUESTO Python` },
+        { h: 'requirements.txt', p: [
+          '`pip freeze > requirements.txt` salva l’elenco esatto di pacchetti e versioni del progetto. Va nel repository insieme al codice.',
+          'Chi clona il progetto esegue `pip install -r requirements.txt` e ottiene esattamente le stesse versioni. Così eviti il classico «sul mio computer funziona».' ],
+          code: `# requirements.txt\nrequests==2.32.3\npython-dateutil==2.9.0\n\n# su un altro computer\npip install -r requirements.txt` },
+        { h: 'Esempio reale: il tasso di cambio con requests', real: true, p: [
+          'Con `requests` puoi interrogare un’API pubblica di valute in tre righe. `timeout` evita che il programma resti bloccato e `raise_for_status()` solleva un errore se la risposta non è corretta.' ],
+          code: `# pip install requests\nimport requests\n\nr = requests.get("https://api.frankfurter.app/latest?from=EUR&to=USD", timeout=10)\nr.raise_for_status()\ndati = r.json()\nprint("1 EUR =", dati["rates"]["USD"], "USD")` },
       ],
       x: [
-        mc('Che cos’è una funzione di ordine superiore?', ['Una funzione che riceve o restituisce altre funzioni', 'Una funzione definita dentro una classe', 'Una funzione con più di tre parametri', 'Una funzione che si esegue più in fretta'], '`map`, `filter` e `sorted(key=...)` ne sono esempi: ricevono una funzione come argomento.'),
-        out(`quadrato = lambda x: x ** 2\nprint(quadrato(3))`, ['9', '6', '27', '8'], '`**` è la potenza: 3 alla seconda fa 9.'),
-        fill(`doppio = ___ x: x * 2\nprint(doppio(5))  # 10`, ['lambda', 'def', 'fn', 'func'], 'Le funzioni anonime di una riga si creano con `lambda`.'),
-        out(`print(list(map(lambda n: n + 1, [1, 2, 3])))`, ['[2, 3, 4]', '[1, 2, 3]', '6', '<map object>'], '`map` applica la funzione a ogni elemento e `list()` mostra il risultato.'),
-        out(`print(list(filter(lambda n: n > 2, [1, 2, 3, 4])))`, ['[3, 4]', '[1, 2]', '[False, False, True, True]', '2'], '`filter` tiene gli elementi per cui la funzione restituisce `True`.'),
-        out(`def moltiplicatore(n):\n    def f(x):\n        return x * n\n    return f\n\ntriplo = moltiplicatore(3)\nprint(triplo(5))`, ['15', '8', '3', 'Errore'], '`f` è una closure: ricorda il valore di `n` anche se `moltiplicatore` è già terminata.'),
-        out(`def urla(f):\n    def involucro():\n        return f().upper()\n    return involucro\n\n@urla\ndef saluto():\n    return "ciao"\n\nprint(saluto())`, ['CIAO', 'ciao', 'involucro', 'Errore'], '`@urla` sostituisce `saluto` con `involucro`, che mette il risultato in maiuscolo.'),
-        out(`from functools import reduce\nnums = [3, 8, 1, 6]\nr = reduce(lambda a, b: a + b, map(lambda n: n * 10, filter(lambda n: n > 2, nums)))\nprint(r)`, ['170', '180', '17', '[30, 80, 60]'], '`filter` tiene 3, 8 e 6; `map` li moltiplica per 10 e `reduce` li somma: 30 + 80 + 60 = 170.'),
+        fill(`___ math\nprint(math.pi)`, ['import', 'include', 'using', 'require'], '`import` carica un modulo in Python.'),
+        out(`import math\nprint(math.sqrt(25))`, ['5.0', '5', '25', 'Errore'], '`math.sqrt` restituisce sempre un `float`.'),
+        fill(`import statistics ___ st\nprint(st.mean([1, 2, 3]))`, ['as', 'to', '=', 'alias'], '`as` dà un alias al modulo importato.'),
+        out(`from math import floor, ceil\nprint(floor(2.5), ceil(2.1))`, ['2 3', '3 3', '2 2', '3 2'], '`floor` arrotonda per difetto e `ceil` per eccesso, qualunque siano i decimali.'),
+        mc('Che cos’è pip?', ['Il gestore di pacchetti di Python', 'Un editor di codice', 'Un tipo di dato', 'Un framework web'], 'pip installa e gestisce le librerie di terze parti.'),
+        ord('Installa il pacchetto requests', ['pip', 'install', 'requests'], ['get', 'npm'], 'Il comando è `pip install` seguito dal nome del pacchetto.'),
+        mc('Che cosa fa `pip freeze > requirements.txt`?', ['Salva i pacchetti installati e le loro versioni in un file', 'Impedisce a Python di aggiornarsi', 'Cancella i pacchetti', 'Installa i pacchetti del file'], 'Così altre persone possono riprodurre il tuo ambiente.'),
+        mc('Il tuo script fallisce con `ModuleNotFoundError: No module named \'requests\'`, ma `pip install requests` dice che è già installato. Qual è la causa più probabile?', ['pip installa in un Python diverso da quello che esegue lo script: usa python -m pip install requests', 'requests non esiste su PyPI', 'Bisogna scrivere import Requests con la maiuscola', 'Bisogna riavviare il computer'], 'Con più installazioni di Python, `pip` e `python` possono non corrispondere. `python -m pip` usa il pip dello stesso interprete.'),
+      ],
+    },
+    // ───────────── Giorno 14 ─────────────
+    {
+      id: 'py-workshop-contacts',
+      t: 'Il laboratorio di Kibi: la rubrica dei clienti',
+      d: 'Progetto della settimana 2: salvare i clienti in una lista di dizionari, cercarli e filtrarli con funzioni in un modulo tutto tuo.',
+      guide: [
+        { h: 'L’incarico', p: [
+          'Il negozio di Kibi ha ormai clienti abituali e vuole ricordarli: nome, telefono e quanti acquisti hanno fatto, per premiare i più fedeli.',
+          'Questo laboratorio mette insieme la settimana 2: liste, dizionari, funzioni, comprehension e moduli. Alla fine avrai una rubrica con menu da usare davvero.' ] },
+        { h: 'Passo 1: i dati', p: [
+          'Ogni cliente è un dizionario con le stesse chiavi, e tutti stanno in una lista. È come una tabella: la lista contiene le righe e le chiavi sono le colonne.',
+          'Per leggere un dato si combinano i due accessi: prima la posizione nella lista, poi la chiave.' ],
+          code: `clienti = [\n    {"nome": "Lucía", "telefono": "600111222", "acquisti": 12},\n    {"nome": "Marco", "telefono": "600333444", "acquisti": 3},\n    {"nome": "Aiko", "telefono": "600555666", "acquisti": 7},\n]\nprint(len(clienti), clienti[0]["nome"])  # 3 Lucía` },
+        { h: 'Passo 2: una funzione per ogni compito', p: [
+          '`cerca()` scorre la lista e restituisce il primo cliente con quel nome, senza distinguere maiuscole e minuscole. Se il ciclo finisce senza trovarlo, restituisce `None`.',
+          '`aggiungi()` riusa `cerca()` per non duplicare i clienti e restituisce `True` o `False`, così chi la chiama sa cosa è successo.' ],
+          code: `def cerca(clienti, nome):\n    for c in clienti:\n        if c["nome"].lower() == nome.lower():\n            return c\n    return None\n\ndef aggiungi(clienti, nome, telefono):\n    if cerca(clienti, nome):\n        return False\n    clienti.append({"nome": nome, "telefono": telefono, "acquisti": 0})\n    return True\n\nprint(cerca(clienti, "aiko")["telefono"])  # 600555666` },
+        { h: 'Passo 3: filtrare con le comprehension', p: [
+          'Una list comprehension estrae i clienti fedeli in una riga. Una dict comprehension crea un elenco telefonico per trovare subito un numero partendo dal nome.' ],
+          code: `fedeli = [c["nome"] for c in clienti if c["acquisti"] >= 5]\nprint(fedeli)  # ['Lucía', 'Aiko']\n\ntelefoni = {c["nome"]: c["telefono"] for c in clienti}\nprint(telefoni["Marco"])  # 600333444` },
+        { h: 'Passo 4: un modulo tutto tuo', p: [
+          'Salva `cerca()` e `aggiungi()` in un file `rubrica.py`. Da un altro file della stessa cartella le importi con `from rubrica import cerca, aggiungi`.',
+          'Così il menu sta in un file e la logica in un altro, e puoi riusare la rubrica in altri programmi senza copiare codice.' ],
+          code: `# main.py\nfrom rubrica import cerca, aggiungi\n\nclienti = []\naggiungi(clienti, "Eva", "600777888")\nprint(cerca(clienti, "EVA"))  # {'nome': 'Eva', 'telefono': '600777888', 'acquisti': 0}` },
+        { h: 'Esempio reale: il menu della rubrica', real: true, p: [
+          'Un ciclo con un menu di opzioni è la base di molti strumenti da terminale. Ogni opzione chiama una funzione di `rubrica.py`.' ],
+          code: `from rubrica import cerca, aggiungi\n\nclienti = []\nwhile True:\n    opzione = input("1 Cerca · 2 Aggiungi · 3 Fedeli · 0 Esci: ")\n    if opzione == "0":\n        break\n    elif opzione == "1":\n        c = cerca(clienti, input("Nome: "))\n        print(c if c else "Non è in rubrica")\n    elif opzione == "2":\n        ok = aggiungi(clienti, input("Nome: "), input("Telefono: "))\n        print("Salvato" if ok else "Esiste già")\n    elif opzione == "3":\n        print([c["nome"] for c in clienti if c["acquisti"] >= 5])` },
+      ],
+      x: [
+        out(`c = {"nome": "Aiko", "acquisti": 7}\nprint(c["acquisti"] + 1)`, ['8', '71', '7', 'Error'], '`c["acquisti"]` è l’intero 7; aggiungendo 1 si ottiene 8.'),
+        out(`clienti = [{"n": "Ana"}, {"n": "Leo"}]\nprint(clienti[1]["n"])`, ['Leo', 'Ana', '{"n": "Leo"}', 'Error'], '`clienti[1]` è il secondo dizionario e `["n"]` legge il suo nome.'),
+        fill(`clienti.___({"nome": "Eva", "acquisti": 0})`, ['append', 'add', 'insert', 'push'], '`append()` aggiunge un elemento alla fine di una lista. `add()` è dei set e `push()` in Python non esiste.'),
+        out(`def totale_acquisti(clienti):\n    return sum(c["acquisti"] for c in clienti)\n\nprint(totale_acquisti([{"acquisti": 2}, {"acquisti": 5}]))`, ['7', '25', '[2, 5]', 'Error'], 'L’espressione scorre i clienti, prende i loro acquisti e `sum()` li somma: 2 + 5.'),
+        out(`clienti = [{"n": "Ana", "k": 9}, {"n": "Leo", "k": 2}, {"n": "Eva", "k": 5}]\nprint([c["n"] for c in clienti if c["k"] > 4])`, ["['Ana', 'Eva']", "['Leo']", "['Ana', 'Leo', 'Eva']", '[9, 5]'], 'La comprehension tiene i clienti con `k` maggiore di 4 e ne conserva il nome.'),
+        mc('Perché `cerca()` finisce con `return None`, fuori dal ciclo?', ['Per indicare che non ha trovato nessuno dopo aver guardato tutti i clienti', 'Perché ogni funzione ha bisogno di un return alla fine', 'Per uscire dal ciclo prima del tempo', 'Per svuotare la lista dei clienti'], 'Se un cliente corrisponde, il `return` dentro il ciclo esce prima. Si arriva alla fine solo se non corrisponde nessuno.'),
+        typ('Completa la riga che importa la funzione cerca da rubrica.py', `from rubrica ___ cerca`, 'import', '`from modulo import nome` importa solo quel nome per usarlo direttamente.'),
+        out(`def aggiungi(clienti, nome):\n    if nome in [c["nome"] for c in clienti]:\n        return False\n    clienti.append({"nome": nome, "acquisti": 0})\n    return True\n\nrubrica = [{"nome": "Ana", "acquisti": 3}]\nprint(aggiungi(rubrica, "Leo"), aggiungi(rubrica, "Ana"), len(rubrica))`, ['True False 2', 'True True 3', 'False False 1', 'True False 3'], 'Leo non c’era e viene aggiunto (`True`); Ana c’era già e non si ripete (`False`). La rubrica finisce con 2 clienti.'),
       ],
     },
     // ───────────── Giorno 15 ─────────────
     {
-      id: 'py-type-errors',
-      t: 'Errori di tipo',
-      d: 'Leggere un traceback e riconoscere gli errori più comuni: SyntaxError, NameError, TypeError, ValueError...',
+      id: 'py-exceptions',
+      t: 'Errori ed eccezioni',
+      d: 'Leggere un traceback, riconoscere gli errori tipici e gestirli con try, except, else, finally e raise.',
       guide: [
         { h: 'Come leggere un traceback', p: [
           'Quando qualcosa va storto, Python mostra un traceback. Leggilo dal basso verso l’alto: l’ultima riga dice il tipo di errore e il messaggio; subito sopra compaiono il file, la riga e il codice che ha fallito.',
           'Copiare l’ultima riga in un motore di ricerca spesso porta dritto alla soluzione.' ],
           code: `Traceback (most recent call last):\n  File "negozio.py", line 3, in <module>\n    totale = prezzo * quantita\nNameError: name 'quantita' is not defined` },
-        { h: 'SyntaxError e IndentationError', p: [
-          'Un `SyntaxError` significa che il codice è scritto male e Python non inizia nemmeno a eseguirlo: mancano i due punti, una parentesi o delle virgolette.',
-          '`IndentationError` è un caso particolare: l’indentazione non torna. Non mischiare tabulazioni e spazi; imposta l’editor su 4 spazi.' ],
-          code: `if eta >= 18      # SyntaxError: expected ':'\n    print("adulto")\n\ndef saluta():\nprint("ciao")     # IndentationError: expected an indented block` },
         { h: 'NameError, TypeError e ValueError', p: [
           '`NameError`: usi un nome che non esiste (un errore di battitura o una variabile non ancora creata).',
           '`TypeError`: l’operazione non ha senso con quel tipo, come sommare testo e numero. `ValueError`: il tipo è giusto ma il valore no, come `int("trenta")`.' ],
           code: `print(nome)      # NameError: name 'nome' is not defined\n"Età: " + 30     # TypeError: can only concatenate str (not "int") to str\nint("trenta")    # ValueError: invalid literal for int() with base 10: 'trenta'\nlen(5)           # TypeError: object of type 'int' has no len()` },
-        { h: 'Altri errori frequenti', p: [
-          '`IndexError`: indice fuori dalla lista. `KeyError`: chiave che non è nel dizionario. `AttributeError`: metodo o attributo che quell’oggetto non ha.',
-          '`ZeroDivisionError`: divisione per zero. `ModuleNotFoundError`: il modulo non esiste o non è installato (o è scritto male).' ],
-          code: `colori = ["rosso", "verde"]\ncolori[2]        # IndexError: list index out of range\n{"a": 1}["b"]    # KeyError: 'b'\n"ciao".push("!") # AttributeError: 'str' object has no attribute 'push'\n10 / 0           # ZeroDivisionError: division by zero\nimport numpi     # ModuleNotFoundError: No module named 'numpi'` },
-        { h: 'Esempio reale: correggere il calcolo di una media', real: true, p: [
-          'I voti arrivano da un modulo come testo. Sommarli direttamente solleva `TypeError`, e il traceback è chiaro: `sum()` prova a sommare un `int` e uno `str`. La soluzione è convertirli prima.' ],
-          code: `voti = ["7", "8.5", "6"]\n# media = sum(voti) / len(voti)\n# TypeError: unsupported operand type(s) for +: 'int' and 'str'\nnumeri = [float(v) for v in voti]\nmedia = sum(numeri) / len(numeri)\nprint(round(media, 2))  # 7.17` },
+        { h: 'try ed except', p: [
+          'Alcuni errori non dipendono da te: l’utente scrive lettere dove ti aspettavi un numero, un file non esiste o la rete cade. `try` esegue il codice che può fallire ed `except` decide cosa fare se fallisce, invece di fermare il programma.',
+          'Cattura sempre il tipo preciso (`except ValueError`). Un `except:` da solo cattura anche errori che non ti aspettavi e nasconde veri bug.' ],
+          code: `testo = "dodici"\ntry:\n    numero = int(testo)\nexcept ValueError:\n    print("Questo non è un numero")\n    numero = 0\nprint(numero)  # 0` },
+        { h: 'else e finally', p: [
+          '`else` si esegue solo se il `try` non ha sollevato errori: lì va il codice che dipende dal fatto che tutto sia andato bene.',
+          '`finally` si esegue sempre, con o senza errore. Si usa per liberare risorse: chiudere file o connessioni.' ],
+          code: `try:\n    risultato = 10 / 2\nexcept ZeroDivisionError:\n    print("Errore")\nelse:\n    print("Risultato:", risultato)  # solo se non ci sono stati errori\nfinally:\n    print("Calcolo terminato")      # sempre` },
+        { h: 'Sollevare errori con raise', p: [
+          'Con `raise` sollevi tu un’eccezione quando i dati non hanno senso per la tua funzione. Meglio fallire presto con un messaggio chiaro che restituire un risultato sbagliato.',
+          'Chi chiama la funzione deciderà se catturare l’errore e come.' ],
+          code: `def preleva(saldo, importo):\n    if importo > saldo:\n        raise ValueError("Saldo insufficiente")\n    return saldo - importo\n\ntry:\n    preleva(50, 80)\nexcept ValueError as e:\n    print("Errore:", e)  # Errore: Saldo insufficiente` },
+        { h: 'Esempio reale: chiedere l’età finché non è valida', real: true, p: [
+          'In un programma da console non puoi fidarti di quello che scrive l’utente. Questo ciclo ripete la domanda finché non riceve un intero positivo, senza che il programma si blocchi.' ],
+          code: `while True:\n    try:\n        eta = int(input("Età: "))\n        if eta < 0:\n            raise ValueError("negativa")\n        break\n    except ValueError:\n        print("Inserisci un numero intero positivo")\nprint("Età registrata:", eta)` },
       ],
       x: [
         mc('Quale errore produce `print(nome)` se `nome` non esiste?', ['NameError', 'TypeError', 'SyntaxError', 'ValueError'], 'Python non trova nessuna variabile con quel nome.'),
         mc('Quale errore produce `"5" + 5`?', ['TypeError', 'ValueError', 'NameError', 'Nessuno'], 'Non si può sommare uno `str` e un `int`; converti prima uno dei due.'),
-        mc('Quale errore produce `[1, 2, 3][5]`?', ['IndexError', 'KeyError', 'ValueError', 'TypeError'], 'L’indice 5 non esiste in una lista di 3 elementi.'),
         mc('Quale errore produce `int("ciao")`?', ['ValueError', 'TypeError', 'NameError', 'SyntaxError'], 'Il tipo è giusto (un testo), ma il suo valore non si può trasformare in numero.'),
-        out(`print(1 / 0)`, ['ZeroDivisionError', '0', 'inf', 'None'], 'Dividere per zero solleva `ZeroDivisionError`.'),
-        mc('Quale errore produce `"ciao".push("!")`?', ['AttributeError', 'TypeError', 'NameError', 'SyntaxError'], 'Le stringhe non hanno nessun metodo chiamato `push`.'),
-        typ('Scrivi il tipo di errore che produce questo codice', `x = 5\nif x > 3\n    print(x)\n# Errore: ___`, 'SyntaxError', 'Mancano i `:` alla fine dell’`if`, quindi il codice è scritto male e Python non lo esegue mai.'),
-        mc('Quale errore viene sollevato per primo quando si esegue questo codice?', ['TypeError', 'ZeroDivisionError', 'KeyError', 'ValueError'], 'La seconda riga fallisce già: `"1.20"` è un testo e non si può sommare al `float` 0.95. La divisione per zero non viene mai eseguita.', `prezzi = {"pane": "1.20", "latte": 0.95}\ntotale = prezzi["pane"] + prezzi["latte"]\nprint(totale / 0)`),
+        fill(`___:\n    x = 1 / 0\nexcept ZeroDivisionError:\n    print("errore")`, ['try', 'do', 'catch', 'test'], 'Il blocco che può fallire va dentro `try`.'),
+        out(`try:\n    n = int("abc")\nexcept ValueError:\n    n = -1\nprint(n)`, ['-1', 'abc', '0', 'Errore'], 'La conversione fallisce, si cattura `ValueError` e si assegna -1.'),
+        out(`try:\n    print(10 / 0)\nexcept ZeroDivisionError:\n    print("errore")\nfinally:\n    print("fine")`, ['errore\nfine', 'fine', 'errore', 'inf\nfine'], 'Dividere per zero solleva `ZeroDivisionError`, che viene catturata. `finally` si esegue sempre.'),
+        fill(`def dividi(a, b):\n    if b == 0:\n        ___ ValueError("b non può essere 0")\n    return a / b`, ['raise', 'throw', 'except', 'error'], 'In Python le eccezioni si sollevano con `raise`. `throw` è di Java e JavaScript.'),
+        out(`def converti(valori):\n    totale = 0\n    for v in valori:\n        try:\n            totale += int(v)\n        except ValueError:\n            totale -= 1\n        finally:\n            totale += 10\n    return totale\n\nprint(converti(["5", "a", "2"]))`, ['36', '6', '26', '37'], '"5" somma 5, "a" toglie 1 e "2" somma 2, e `finally` aggiunge 10 a ogni giro: 5 - 1 + 2 + 30 = 36.'),
       ],
     },
     // ───────────── Giorno 16 ─────────────
     {
+      id: 'py-files',
+      t: 'Leggere e scrivere file',
+      d: 'open() e with, percorsi, file che non esistono, CSV e JSON.',
+      guide: [
+        { h: 'Aprire e scrivere', p: [
+          '`open(percorso, modalita)` apre un file. Modalità: `"r"` leggere (predefinita), `"w"` scrivere cancellando ciò che c’era, `"a"` aggiungere in fondo e `"x"` creare (fallisce se esiste già).',
+          'Usa sempre `with open(...) as f:`: il file si chiude da solo alla fine del blocco, anche in caso di errore. Indica `encoding="utf-8"` perché le lettere accentate si salvino bene su qualsiasi sistema.' ],
+          code: `with open("note.txt", "w", encoding="utf-8") as f:\n    f.write("Comprare il pane\\n")\n    f.write("Chiamare il medico\\n")\n\nwith open("note.txt", "a", encoding="utf-8") as f:\n    f.write("Pagare la luce\\n")` },
+        { h: 'Leggere', p: [
+          '`read()` restituisce tutto il contenuto in una stringa, `readline()` una riga e `readlines()` una lista di righe (ognuna con il suo `\\n` finale).',
+          'Per i file grandi, percorri il file con `for`: legge riga per riga senza caricarlo tutto in memoria.' ],
+          code: `with open("note.txt", encoding="utf-8") as f:\n    for numero, riga in enumerate(f, start=1):\n        print(numero, riga.strip())\n# 1 Comprare il pane\n# 2 Chiamare il medico\n# 3 Pagare la luce` },
+        { h: 'Percorsi e file inesistenti', p: [
+          'Aprire in lettura un file che non esiste solleva `FileNotFoundError`; catturala se è una cosa che può succedere.',
+          '`pathlib.Path` gestisce i percorsi senza preoccuparti che il sistema usi `/` o `\\`, e ti dice l’estensione, il nome o se il file esiste.' ],
+          code: `from pathlib import Path\n\npercorso = Path("dati") / "clienti.csv"\nprint(percorso.suffix)    # .csv\nprint(percorso.name)      # clienti.csv\nprint(percorso.exists())  # False se non esiste ancora` },
+        { h: 'JSON', p: [
+          'JSON è il formato standard per salvare e scambiare dati strutturati. `json.dump()` scrive un oggetto Python in un file e `json.load()` lo rilegge.',
+          '`json.dumps()` e `json.loads()` (con la s di string) fanno lo stesso ma con testi. Nota che il `True` di Python diventa `true` in JSON.' ],
+          code: `import json\n\nimpostazioni = {"tema": "scuro", "lingua": "it", "avvisi": True}\nwith open("impostazioni.json", "w", encoding="utf-8") as f:\n    json.dump(impostazioni, f, indent=2)\n\nwith open("impostazioni.json", encoding="utf-8") as f:\n    caricate = json.load(f)\nprint(caricate["tema"])          # scuro\nprint(json.dumps({"ok": True}))  # {"ok": true}` },
+        { h: 'Esempio reale: sommare le spese di un CSV', real: true, p: [
+          'La tua banca ti permette di scaricare i movimenti in CSV. `csv.DictReader` legge ogni riga come un dizionario le cui chiavi sono i nomi dell’intestazione.',
+          'Apri i CSV con `newline=""`, come consiglia la documentazione del modulo `csv`.' ],
+          code: `import csv\n\nwith open("spese.csv", "w", newline="", encoding="utf-8") as f:\n    f.write("voce,importo\\naffitto,650\\nluce,48.30\\nspesa,212.45\\n")\n\ntotale = 0\nwith open("spese.csv", newline="", encoding="utf-8") as f:\n    for riga in csv.DictReader(f):\n        totale += float(riga["importo"])\nprint(f"Spese del mese: {totale:.2f} €")  # Spese del mese: 910.75 €` },
+      ],
+      x: [
+        fill(`___ open("dati.txt") as f:\n    testo = f.read()`, ['with', 'using', 'try', 'open'], '`with` chiude il file automaticamente alla fine del blocco, anche in caso di errore.'),
+        mc('Quale modalità di `open()` aggiunge testo in fondo senza cancellare ciò che c’è?', ['"a"', '"w"', '"r"', '"x"'], '`"w"` sovrascrive tutto il file; `"a"` (append) aggiunge in fondo.'),
+        mc('Che cosa succede se apri con `"r"` un file che non esiste?', ['Si solleva FileNotFoundError', 'Se ne crea uno vuoto', 'Restituisce None', 'Si apre in scrittura'], 'Solo le modalità di scrittura creano il file.'),
+        out(`import json\ntesto = json.dumps({"a": 1})\nprint(type(testo))`, ["<class 'str'>", "<class 'dict'>", "<class 'json'>", '{"a": 1}'], '`dumps` (dump string) trasforma un oggetto Python in testo JSON.'),
+        out(`import json\nd = json.loads('{"x": [1, 2]}')\nprint(d["x"][1])`, ['2', '1', '[1, 2]', 'Errore'], '`loads` trasforma il testo JSON in un dizionario.'),
+        mc('Che cosa restituisce `f.readlines()`?', ['Una lista con ogni riga del file', 'Solo la prima riga', 'Tutto il testo in una stringa', 'Il numero di righe'], 'Ogni elemento della lista include l’a capo finale.'),
+        typ('Apri il file per scrivere da zero', `with open("log.txt", "___") as f:\n    f.write("inizio")`, 'w', '`"w"` crea il file o ne cancella il contenuto prima di scrivere.'),
+        out(`with open("t.txt", "w") as f:\n    f.write("uno\\ndue\\n")\nwith open("t.txt", "a") as f:\n    f.write("tre\\n")\nwith open("t.txt") as f:\n    righe = f.readlines()\nprint(len(righe), righe[-1].strip())`, ['3 tre', '2 tre', '1 tre', '3 uno'], '`"w"` scrive due righe e `"a"` aggiunge la terza senza cancellare. `strip()` toglie l’a capo da "tre\\n".'),
+      ],
+    },
+    // ───────────── Giorno 17 ─────────────
+    {
       id: 'py-datetime',
-      t: 'Data e ora',
-      d: 'Il modulo datetime: creare date, formattarle, leggere testo e calcolare differenze.',
+      t: 'Date e ore',
+      d: 'Creare date, trasformarle in testo e viceversa, e calcolare quanto tempo passa tra due date.',
       guide: [
         { h: 'Il modulo datetime', p: [
           '`datetime` ha diverse classi: `date` (solo data), `time` (solo ora), `datetime` (data e ora) e `timedelta` (una durata).',
@@ -617,48 +668,11 @@
         out(`from datetime import date, timedelta\nfattura = date(2025, 1, 31)\nscadenza = fattura + timedelta(days=30)\nprint(scadenza.strftime("%d/%m"), (scadenza - fattura).days, scadenza > fattura)`, ['02/03 30 True', '28/02 30 True', '03/02 30 True', '02/03 28 True'], 'Febbraio 2025 ha 28 giorni: 30 giorni dopo il 31 gennaio è il 2 marzo. Le date si confrontano con `>`.'),
       ],
     },
-    // ───────────── Giorno 17 ─────────────
-    {
-      id: 'py-exceptions',
-      t: 'Gestione delle eccezioni',
-      d: 'Gestire gli errori con try, except, else e finally, e sollevare i tuoi con raise.',
-      guide: [
-        { h: 'try ed except', p: [
-          'Alcuni errori non dipendono da te: l’utente scrive lettere dove ti aspettavi un numero, un file non esiste o la rete cade. `try` esegue il codice che può fallire ed `except` decide cosa fare se fallisce, invece di fermare il programma.',
-          'Cattura sempre il tipo preciso (`except ValueError`). Un `except:` da solo cattura anche errori che non ti aspettavi e nasconde veri bug.' ],
-          code: `testo = "dodici"\ntry:\n    numero = int(testo)\nexcept ValueError:\n    print("Questo non è un numero")\n    numero = 0\nprint(numero)  # 0` },
-        { h: 'Più eccezioni e as', p: [
-          'Puoi concatenare più `except`, uno per tipo di errore. Python usa il primo che corrisponde.',
-          'Con `except TipoErrore as e` salvi l’eccezione in `e` per mostrarne o registrarne il messaggio.' ],
-          code: `def dividi(a, b):\n    try:\n        return a / b\n    except ZeroDivisionError:\n        return "Impossibile dividere per zero"\n    except TypeError as e:\n        return f"Tipo sbagliato: {e}"\n\nprint(dividi(10, 2))  # 5.0\nprint(dividi(10, 0))  # Impossibile dividere per zero` },
-        { h: 'else e finally', p: [
-          '`else` si esegue solo se il `try` non ha sollevato errori: lì va il codice che dipende dal fatto che tutto sia andato bene.',
-          '`finally` si esegue sempre, con o senza errore. Si usa per liberare risorse: chiudere file o connessioni.' ],
-          code: `try:\n    risultato = 10 / 2\nexcept ZeroDivisionError:\n    print("Errore")\nelse:\n    print("Risultato:", risultato)  # solo se non ci sono stati errori\nfinally:\n    print("Calcolo terminato")      # sempre` },
-        { h: 'Sollevare errori con raise', p: [
-          'Con `raise` sollevi tu un’eccezione quando i dati non hanno senso per la tua funzione. Meglio fallire presto con un messaggio chiaro che restituire un risultato sbagliato.',
-          'Chi chiama la funzione deciderà se catturare l’errore e come.' ],
-          code: `def preleva(saldo, importo):\n    if importo > saldo:\n        raise ValueError("Saldo insufficiente")\n    return saldo - importo\n\ntry:\n    preleva(50, 80)\nexcept ValueError as e:\n    print("Errore:", e)  # Errore: Saldo insufficiente` },
-        { h: 'Esempio reale: chiedere l’età finché non è valida', real: true, p: [
-          'In un programma da console non puoi fidarti di quello che scrive l’utente. Questo ciclo ripete la domanda finché non riceve un intero positivo, senza che il programma si blocchi.' ],
-          code: `while True:\n    try:\n        eta = int(input("Età: "))\n        if eta < 0:\n            raise ValueError("negativa")\n        break\n    except ValueError:\n        print("Inserisci un numero intero positivo")\nprint("Età registrata:", eta)` },
-      ],
-      x: [
-        fill(`___:\n    x = 1 / 0\nexcept ZeroDivisionError:\n    print("errore")`, ['try', 'do', 'catch', 'test'], 'Il blocco che può fallire va dentro `try`.'),
-        out(`try:\n    print(10 / 0)\nexcept ZeroDivisionError:\n    print("errore")\nfinally:\n    print("fine")`, ['errore\nfine', 'fine', 'errore', 'inf\nfine'], 'Dividere per zero solleva `ZeroDivisionError`, che viene catturata. `finally` si esegue sempre.'),
-        mc('Quando si esegue il blocco `finally`?', ['Sempre, con o senza errore', 'Solo se c’è un errore', 'Solo se non ci sono errori', 'Mai, è facoltativo'], 'Si usa per liberare risorse come file o connessioni.'),
-        out(`try:\n    n = int("abc")\nexcept ValueError:\n    n = -1\nprint(n)`, ['-1', 'abc', '0', 'Errore'], 'La conversione fallisce, si cattura `ValueError` e si assegna -1.'),
-        out(`try:\n    print("a")\nexcept ValueError:\n    print("b")\nelse:\n    print("c")`, ['a\nc', 'a\nb', 'a', 'a\nb\nc'], 'Non c’è stato nessun errore, quindi dopo il `try` si esegue l’`else`.'),
-        fill(`def dividi(a, b):\n    if b == 0:\n        ___ ValueError("b non può essere 0")\n    return a / b`, ['raise', 'throw', 'except', 'error'], 'In Python le eccezioni si sollevano con `raise`. `throw` è di Java e JavaScript.'),
-        out(`try:\n    x = [1, 2][5]\nexcept KeyError:\n    print("chiave")\nexcept IndexError:\n    print("indice")`, ['indice', 'chiave', 'chiave\nindice', 'IndexError'], 'L’indice 5 non esiste, quindi si solleva `IndexError` e la cattura il secondo `except`.'),
-        out(`def converti(valori):\n    totale = 0\n    for v in valori:\n        try:\n            totale += int(v)\n        except ValueError:\n            totale -= 1\n        finally:\n            totale += 10\n    return totale\n\nprint(converti(["5", "a", "2"]))`, ['36', '6', '26', '37'], '"5" somma 5, "a" toglie 1 e "2" somma 2, e `finally` aggiunge 10 a ogni giro: 5 - 1 + 2 + 30 = 36.'),
-      ],
-    },
     // ───────────── Giorno 18 ─────────────
     {
       id: 'py-regex',
-      t: 'Espressioni regolari',
-      d: 'Cercare, validare e sostituire schemi di testo con il modulo re.',
+      t: 'Cercare schemi con le regex',
+      d: 'Validare, cercare e sostituire testo con le espressioni regolari e il modulo re.',
       guide: [
         { h: 'Che cos’è un’espressione regolare?', p: [
           'Un’espressione regolare (regex) è uno schema che descrive un tipo di testo: «tre cifre», «qualcosa che sembra un’e-mail»... Il modulo `re` cerca questi schemi.',
@@ -695,84 +709,123 @@
     },
     // ───────────── Giorno 19 ─────────────
     {
-      id: 'py-files',
-      t: 'Gestione dei file',
-      d: 'Leggere e scrivere file di testo con open() e with, e lavorare con CSV e JSON.',
+      id: 'py-higher-order',
+      t: 'Le funzioni come valori',
+      d: 'Passare funzioni ad altre funzioni: lambda, map, filter, sorted con key, closure e decoratori.',
       guide: [
-        { h: 'Aprire e scrivere', p: [
-          '`open(percorso, modalita)` apre un file. Modalità: `"r"` leggere (predefinita), `"w"` scrivere cancellando ciò che c’era, `"a"` aggiungere in fondo e `"x"` creare (fallisce se esiste già).',
-          'Usa sempre `with open(...) as f:`: il file si chiude da solo alla fine del blocco, anche in caso di errore. Indica `encoding="utf-8"` perché le lettere accentate si salvino bene su qualsiasi sistema.' ],
-          code: `with open("note.txt", "w", encoding="utf-8") as f:\n    f.write("Comprare il pane\\n")\n    f.write("Chiamare il medico\\n")\n\nwith open("note.txt", "a", encoding="utf-8") as f:\n    f.write("Pagare la luce\\n")` },
-        { h: 'Leggere', p: [
-          '`read()` restituisce tutto il contenuto in una stringa, `readline()` una riga e `readlines()` una lista di righe (ognuna con il suo `\\n` finale).',
-          'Per i file grandi, percorri il file con `for`: legge riga per riga senza caricarlo tutto in memoria.' ],
-          code: `with open("note.txt", encoding="utf-8") as f:\n    for numero, riga in enumerate(f, start=1):\n        print(numero, riga.strip())\n# 1 Comprare il pane\n# 2 Chiamare il medico\n# 3 Pagare la luce` },
-        { h: 'Percorsi e file inesistenti', p: [
-          'Aprire in lettura un file che non esiste solleva `FileNotFoundError`; catturala se è una cosa che può succedere.',
-          '`pathlib.Path` gestisce i percorsi senza preoccuparti che il sistema usi `/` o `\\`, e ti dice l’estensione, il nome o se il file esiste.' ],
-          code: `from pathlib import Path\n\npercorso = Path("dati") / "clienti.csv"\nprint(percorso.suffix)    # .csv\nprint(percorso.name)      # clienti.csv\nprint(percorso.exists())  # False se non esiste ancora` },
-        { h: 'JSON', p: [
-          'JSON è il formato standard per salvare e scambiare dati strutturati. `json.dump()` scrive un oggetto Python in un file e `json.load()` lo rilegge.',
-          '`json.dumps()` e `json.loads()` (con la s di string) fanno lo stesso ma con testi. Nota che il `True` di Python diventa `true` in JSON.' ],
-          code: `import json\n\nimpostazioni = {"tema": "scuro", "lingua": "it", "avvisi": True}\nwith open("impostazioni.json", "w", encoding="utf-8") as f:\n    json.dump(impostazioni, f, indent=2)\n\nwith open("impostazioni.json", encoding="utf-8") as f:\n    caricate = json.load(f)\nprint(caricate["tema"])          # scuro\nprint(json.dumps({"ok": True}))  # {"ok": true}` },
-        { h: 'Esempio reale: sommare le spese di un CSV', real: true, p: [
-          'La tua banca ti permette di scaricare i movimenti in CSV. `csv.DictReader` legge ogni riga come un dizionario le cui chiavi sono i nomi dell’intestazione.',
-          'Apri i CSV con `newline=""`, come consiglia la documentazione del modulo `csv`.' ],
-          code: `import csv\n\nwith open("spese.csv", "w", newline="", encoding="utf-8") as f:\n    f.write("voce,importo\\naffitto,650\\nluce,48.30\\nspesa,212.45\\n")\n\ntotale = 0\nwith open("spese.csv", newline="", encoding="utf-8") as f:\n    for riga in csv.DictReader(f):\n        totale += float(riga["importo"])\nprint(f"Spese del mese: {totale:.2f} €")  # Spese del mese: 910.75 €` },
+        { h: 'Anche le funzioni sono valori', p: [
+          'In Python una funzione è un oggetto come gli altri: puoi salvarla in una variabile, passarla come argomento o restituirla da un’altra funzione.',
+          'Una funzione di ordine superiore riceve o restituisce altre funzioni. Permette di scrivere codice generico che si adatta a ciò che le passi.' ],
+          code: `def urla(testo):\n    return testo.upper() + "!"\n\ndef applica(funzione, valore):\n    return funzione(valore)\n\nprint(applica(urla, "ciao"))  # CIAO!\nprint(applica(len, "ciao"))   # 4` },
+        { h: 'lambda: funzioni di una riga', p: [
+          '`lambda parametri: espressione` crea una piccola funzione anonima. Si usa soprattutto come argomento di `sorted`, `map`, `filter`, `max`...',
+          'Se la logica richiede più di un’espressione, definisci una funzione normale con `def`.' ],
+          code: `doppio = lambda x: x * 2\nprint(doppio(7))  # 14\n\nprodotti = [("pane", 1.2), ("formaggio", 4.5), ("latte", 0.9)]\nprodotti.sort(key=lambda p: p[1])\nprint(prodotti[0])  # ('latte', 0.9)` },
+        { h: 'map, filter e reduce', p: [
+          '`map(f, dati)` applica `f` a ogni elemento; `filter(f, dati)` tiene quelli per cui `f` è vera. Restituiscono iteratori: avvolgili in `list()` per vedere il risultato.',
+          '`reduce` (dal modulo `functools`) combina tutti gli elementi in un solo valore. Spesso una list comprehension è più leggibile di `map` e `filter`.' ],
+          code: `from functools import reduce\n\nnums = [1, 2, 3, 4, 5]\nprint(list(map(lambda n: n ** 2, nums)))         # [1, 4, 9, 16, 25]\nprint(list(filter(lambda n: n % 2 == 1, nums)))  # [1, 3, 5]\nprint(reduce(lambda a, b: a * b, nums))          # 120` },
+        { h: 'Closure', p: [
+          'Una funzione definita dentro un’altra ricorda le variabili della funzione esterna anche quando questa è già terminata. Questa è una closure.',
+          'Serve a fabbricare funzioni configurate: qui, una funzione di sconto per ogni percentuale.' ],
+          code: `def crea_sconto(percentuale):\n    def applica(prezzo):\n        return prezzo * (1 - percentuale / 100)\n    return applica\n\nsaldi = crea_sconto(20)\nprint(saldi(50))  # 40.0` },
+        { h: 'Decoratori', p: [
+          'Un decoratore è una funzione che ne riceve un’altra e ne restituisce una versione arricchita. Si applica con `@nome` sopra il `def`.',
+          'Si usano per registrare le chiamate, misurare i tempi, controllare i permessi o mettere in cache i risultati senza toccare la funzione originale. Flask, che vedrai il giorno 26, li usa per le rotte.' ],
+          code: `def registra(funzione):\n    def involucro(*args):\n        print("Chiamata a", funzione.__name__)\n        return funzione(*args)\n    return involucro\n\n@registra\ndef somma(a, b):\n    return a + b\n\nprint(somma(2, 3))\n# Chiamata a somma\n# 5` },
+        { h: 'Esempio reale: il catalogo di un negozio', real: true, p: [
+          'Con `filter`, `map`, `sorted` e `max` con `key` puoi rispondere a domande su un catalogo: quali prodotti costano meno di 20 € e qual è il più caro.' ],
+          code: `prodotti = [\n    {"nome": "Cuffie", "prezzo": 59.9},\n    {"nome": "Cavo USB", "prezzo": 7.5},\n    {"nome": "Mouse", "prezzo": 19.9},\n]\neconomici = filter(lambda p: p["prezzo"] < 20, prodotti)\nnomi = sorted(map(lambda p: p["nome"], economici))\nprint(nomi)  # ['Cavo USB', 'Mouse']\npiu_caro = max(prodotti, key=lambda p: p["prezzo"])\nprint(piu_caro["nome"])  # Cuffie` },
       ],
       x: [
-        fill(`___ open("dati.txt") as f:\n    testo = f.read()`, ['with', 'using', 'try', 'open'], '`with` chiude il file automaticamente alla fine del blocco, anche in caso di errore.'),
-        mc('Quale modalità di `open()` aggiunge testo in fondo senza cancellare ciò che c’è?', ['"a"', '"w"', '"r"', '"x"'], '`"w"` sovrascrive tutto il file; `"a"` (append) aggiunge in fondo.'),
-        mc('Che cosa succede se apri con `"r"` un file che non esiste?', ['Si solleva FileNotFoundError', 'Se ne crea uno vuoto', 'Restituisce None', 'Si apre in scrittura'], 'Solo le modalità di scrittura creano il file.'),
-        out(`import json\ntesto = json.dumps({"a": 1})\nprint(type(testo))`, ["<class 'str'>", "<class 'dict'>", "<class 'json'>", '{"a": 1}'], '`dumps` (dump string) trasforma un oggetto Python in testo JSON.'),
-        out(`import json\nd = json.loads('{"x": [1, 2]}')\nprint(d["x"][1])`, ['2', '1', '[1, 2]', 'Errore'], '`loads` trasforma il testo JSON in un dizionario.'),
-        mc('Che cosa restituisce `f.readlines()`?', ['Una lista con ogni riga del file', 'Solo la prima riga', 'Tutto il testo in una stringa', 'Il numero di righe'], 'Ogni elemento della lista include l’a capo finale.'),
-        typ('Apri il file per scrivere da zero', `with open("log.txt", "___") as f:\n    f.write("inizio")`, 'w', '`"w"` crea il file o ne cancella il contenuto prima di scrivere.'),
-        out(`with open("t.txt", "w") as f:\n    f.write("uno\\ndue\\n")\nwith open("t.txt", "a") as f:\n    f.write("tre\\n")\nwith open("t.txt") as f:\n    righe = f.readlines()\nprint(len(righe), righe[-1].strip())`, ['3 tre', '2 tre', '1 tre', '3 uno'], '`"w"` scrive due righe e `"a"` aggiunge la terza senza cancellare. `strip()` toglie l’a capo da "tre\\n".'),
+        mc('Che cos’è una funzione di ordine superiore?', ['Una funzione che riceve o restituisce altre funzioni', 'Una funzione definita dentro una classe', 'Una funzione con più di tre parametri', 'Una funzione che si esegue più in fretta'], '`map`, `filter` e `sorted(key=...)` ne sono esempi: ricevono una funzione come argomento.'),
+        out(`quadrato = lambda x: x ** 2\nprint(quadrato(3))`, ['9', '6', '27', '8'], '`**` è la potenza: 3 alla seconda fa 9.'),
+        fill(`doppio = ___ x: x * 2\nprint(doppio(5))  # 10`, ['lambda', 'def', 'fn', 'func'], 'Le funzioni anonime di una riga si creano con `lambda`.'),
+        out(`print(list(map(lambda n: n + 1, [1, 2, 3])))`, ['[2, 3, 4]', '[1, 2, 3]', '6', '<map object>'], '`map` applica la funzione a ogni elemento e `list()` mostra il risultato.'),
+        out(`print(list(filter(lambda n: n > 2, [1, 2, 3, 4])))`, ['[3, 4]', '[1, 2]', '[False, False, True, True]', '2'], '`filter` tiene gli elementi per cui la funzione restituisce `True`.'),
+        out(`def moltiplicatore(n):\n    def f(x):\n        return x * n\n    return f\n\ntriplo = moltiplicatore(3)\nprint(triplo(5))`, ['15', '8', '3', 'Errore'], '`f` è una closure: ricorda il valore di `n` anche se `moltiplicatore` è già terminata.'),
+        out(`def urla(f):\n    def involucro():\n        return f().upper()\n    return involucro\n\n@urla\ndef saluto():\n    return "ciao"\n\nprint(saluto())`, ['CIAO', 'ciao', 'involucro', 'Errore'], '`@urla` sostituisce `saluto` con `involucro`, che mette il risultato in maiuscolo.'),
+        out(`from functools import reduce\nnums = [3, 8, 1, 6]\nr = reduce(lambda a, b: a + b, map(lambda n: n * 10, filter(lambda n: n > 2, nums)))\nprint(r)`, ['170', '180', '17', '[30, 80, 60]'], '`filter` tiene 3, 8 e 6; `map` li moltiplica per 10 e `reduce` li somma: 30 + 80 + 60 = 170.'),
       ],
     },
     // ───────────── Giorno 20 ─────────────
     {
-      id: 'py-pip',
-      t: 'Il gestore di pacchetti pip',
-      d: 'Installare, aggiornare e fissare librerie di PyPI con pip e requirements.txt.',
+      id: 'py-venv',
+      t: 'Ambienti virtuali',
+      d: 'Un ambiente per progetto con venv, perché le dipendenze di uno non rompano un altro.',
       guide: [
-        { h: 'pip e PyPI', p: [
-          'La libreria standard è ampia, ma la vera forza di Python sta in PyPI (Python Package Index), un archivio con centinaia di migliaia di pacchetti: `requests`, `pandas`, `flask`, `numpy`...',
-          'pip è il programma che li scarica e li installa. È incluso in Python. Se hai più versioni di Python, `python -m pip` garantisce che installi in quella che esegui.' ],
-          code: `pip --version\npip install requests\npip install requests==2.32.3   # una versione esatta\npip install --upgrade requests\npip uninstall requests\npython -m pip install requests  # il pip di QUESTO Python` },
-        { h: 'Vedere cosa hai installato', p: [
-          '`pip list` mostra tutti i pacchetti con la loro versione e `pip show nome` dà i dettagli di uno: versione, dipendenze e dove è installato.' ],
-          code: `pip list\npip show requests\n# Name: requests\n# Version: 2.32.3\n# Requires: certifi, charset-normalizer, idna, urllib3` },
-        { h: 'requirements.txt', p: [
-          '`pip freeze > requirements.txt` salva l’elenco esatto di pacchetti e versioni del progetto. Va nel repository insieme al codice.',
-          'Chi clona il progetto esegue `pip install -r requirements.txt` e ottiene esattamente le stesse versioni. Così eviti il classico «sul mio computer funziona».' ],
-          code: `# requirements.txt\nrequests==2.32.3\npython-dateutil==2.9.0\n\n# su un altro computer\npip install -r requirements.txt` },
-        { h: 'Errori frequenti', p: [
-          '`ModuleNotFoundError` di solito significa che il pacchetto non è installato nel Python che stai usando.',
-          'Il nome per installare non sempre coincide con quello per importare: `pip install beautifulsoup4` si importa come `bs4` e `pip install Pillow` come `PIL`.',
-          'Installa solo pacchetti noti e controlla il nome: esistono pacchetti malevoli con nomi quasi uguali a quelli popolari.' ],
-          code: `pip install beautifulsoup4   # si installa così...\n\nfrom bs4 import BeautifulSoup  # ...e si importa così` },
-        { h: 'Esempio reale: il tasso di cambio con requests', real: true, p: [
-          'Con `requests` puoi interrogare un’API pubblica di valute in tre righe. `timeout` evita che il programma resti bloccato e `raise_for_status()` solleva un errore se la risposta non è corretta.' ],
-          code: `# pip install requests\nimport requests\n\nr = requests.get("https://api.frankfurter.app/latest?from=EUR&to=USD", timeout=10)\nr.raise_for_status()\ndati = r.json()\nprint("1 EUR =", dati["rates"]["USD"], "USD")` },
+        { h: 'Il problema che risolvono', p: [
+          'Immagina due progetti: uno ha bisogno di Django 4 e l’altro di Django 5. Se installi tutto nel Python di sistema, uno dei due si rompe.',
+          'Un ambiente virtuale è una cartella con il proprio Python e i propri pacchetti. Ogni progetto ha il suo e non si pestano i piedi.' ] },
+        { h: 'Creare e attivare un ambiente', p: [
+          '`python -m venv .venv` crea l’ambiente nella cartella `.venv`. Poi bisogna attivarlo; il prompt del terminale mostrerà `(.venv)` all’inizio.' ],
+          code: `# creare\npython -m venv .venv\n\n# attivare su macOS e Linux\nsource .venv/bin/activate\n\n# attivare su Windows (PowerShell)\n.venv\\Scripts\\Activate.ps1\n\n# uscire dall'ambiente\ndeactivate` },
+        { h: 'Installare e condividere le dipendenze', p: [
+          'Con l’ambiente attivo, `pip install` installa solo al suo interno. Alla fine, salva l’elenco con `pip freeze > requirements.txt`.',
+          'La cartella `.venv` non va su Git: si aggiunge a `.gitignore` e ognuno la ricrea con `pip install -r requirements.txt`.' ],
+          code: `pip install flask requests\npip freeze > requirements.txt\n\n# in .gitignore\n.venv/` },
+        { h: 'Controllare quale Python si sta usando', p: [
+          'Se un pacchetto non si importa, controlla quale interprete stai usando. Con un ambiente attivo, `sys.prefix` punta alla cartella dell’ambiente.',
+          'Editor come VS Code permettono di scegliere l’interprete dell’ambiente, così completamento automatico ed esecuzione usano gli stessi pacchetti.' ],
+          code: `import sys\nprint(sys.executable)                 # percorso del Python in uso\nprint(sys.prefix != sys.base_prefix)  # True se c'è un ambiente attivo` },
+        { h: 'Esempio reale: preparare un nuovo progetto', real: true, p: [
+          'Questi sono i passi che seguiresti all’inizio di qualsiasi progetto Python professionale, per esempio un’app che consulta il meteo.' ],
+          code: `mkdir app-meteo\ncd app-meteo\npython -m venv .venv\nsource .venv/bin/activate\npip install requests\npip freeze > requirements.txt\necho ".venv/" > .gitignore\ngit init` },
       ],
       x: [
-        mc('Che cos’è pip?', ['Il gestore di pacchetti di Python', 'Un editor di codice', 'Un tipo di dato', 'Un framework web'], 'pip installa e gestisce le librerie di terze parti.'),
-        ord('Installa il pacchetto requests', ['pip', 'install', 'requests'], ['get', 'npm'], 'Il comando è `pip install` seguito dal nome del pacchetto.'),
-        mc('Da dove scarica pip i pacchetti per impostazione predefinita?', ['Da PyPI, il Python Package Index', 'Da GitHub', 'Da npm', 'Dal Microsoft Store'], 'PyPI ospita centinaia di migliaia di pacchetti Python.'),
-        mc('Che cosa fa `pip freeze > requirements.txt`?', ['Salva i pacchetti installati e le loro versioni in un file', 'Impedisce a Python di aggiornarsi', 'Cancella i pacchetti', 'Installa i pacchetti del file'], 'Così altre persone possono riprodurre il tuo ambiente.'),
-        typ('Installa le dipendenze elencate nel file', `pip install ___ requirements.txt`, '-r', '`-r` dice a pip di leggere l’elenco dei pacchetti da un file.'),
-        mc('Quale comando mostra i pacchetti installati?', ['pip list', 'pip show-all', 'pip ls', 'pip installed'], '`pip show nome` dà i dettagli di un pacchetto preciso.'),
-        mc('Esegui `pip install beautifulsoup4`. Come lo importi?', ['from bs4 import BeautifulSoup', 'import beautifulsoup4', 'from beautifulsoup4 import BeautifulSoup', 'import soup'], 'Il pacchetto di PyPI si chiama beautifulsoup4, ma il modulo che installa si chiama `bs4`.'),
-        mc('Il tuo script fallisce con `ModuleNotFoundError: No module named \'requests\'`, ma `pip install requests` dice che è già installato. Qual è la causa più probabile?', ['pip installa in un Python diverso da quello che esegue lo script: usa python -m pip install requests', 'requests non esiste su PyPI', 'Bisogna scrivere import Requests con la maiuscola', 'Bisogna riavviare il computer'], 'Con più installazioni di Python, `pip` e `python` possono non corrispondere. `python -m pip` usa il pip dello stesso interprete.'),
+        mc('A che cosa serve un ambiente virtuale?', ['A isolare le dipendenze di ogni progetto', 'A eseguire Python nel browser', 'A rendere il codice più veloce', 'A creare macchine virtuali'], 'Ogni progetto può usare versioni diverse delle stesse librerie.'),
+        ord('Crea un ambiente virtuale nella cartella .venv', ['python', '-m', 'venv', '.venv'], ['pip', 'new'], '`-m venv` esegue il modulo venv; l’ultimo argomento è la cartella.'),
+        mc('Su Windows con PowerShell, come si attiva l’ambiente `.venv`?', ['.venv\\Scripts\\Activate.ps1', 'source .venv/bin/activate', 'activate .venv', 'python .venv'], 'Su macOS e Linux si usa `source .venv/bin/activate`.'),
+        mc('Devi caricare su Git la cartella dell’ambiente virtuale?', ['No: si aggiunge a .gitignore e si condivide requirements.txt', 'Sì, sempre', 'Solo nei progetti grandi', 'Solo i file .py al suo interno'], 'L’ambiente si ricrea con `pip install -r requirements.txt`.'),
+        mc('Con l’ambiente attivo, dove installa `pip install flask`?', ['Nell’ambiente virtuale del progetto', 'In tutto il sistema', 'Nella cartella dell’utente', 'Nel cloud'], 'Per questo non influisce sugli altri progetti.'),
+        typ('Scrivi il comando che disattiva l’ambiente virtuale', `(.venv) $ ___`, 'deactivate', '`deactivate` ti riporta al Python di sistema.'),
+        mc('Che cosa mostra `print(sys.prefix != sys.base_prefix)` con un ambiente virtuale attivo?', ['True', 'False', 'La versione di Python', 'None'], 'Dentro un ambiente, `sys.prefix` punta alla sua cartella ed è diverso da `sys.base_prefix`.'),
+        ord('Salva le dipendenze dell’ambiente in requirements.txt', ['pip', 'freeze', '>', 'requirements.txt'], ['install', '-r'], '`pip freeze` elenca i pacchetti con la loro versione e `>` reindirizza quell’output in un file.'),
       ],
     },
     // ───────────── Giorno 21 ─────────────
     {
+      id: 'py-workshop-sales',
+      t: 'Il laboratorio di Kibi: il report delle vendite',
+      d: 'Progetto della settimana 3: leggere le vendite da un CSV, saltare le righe con errori, raggruppare per mese e salvare un report in JSON.',
+      guide: [
+        { h: 'L’incarico', p: [
+          'Kibi annota ogni vendita in `vendite.csv`: data, prodotto e importo. Vuole sapere quanto vende il negozio ogni mese e qual è il prodotto di punta, anche se il file ha qualche riga scritta male.',
+          'Questo laboratorio mette insieme la settimana 3: file, eccezioni, date, espressioni regolari e funzioni come valori. Crea una cartella per il progetto con il suo ambiente (`python -m venv .venv`): usa solo la libreria standard, ma così è già pronta.' ],
+          code: `data,prodotto,importo\n2026-03-02,semi,4.50\n2026-03-15,fieno,7.25\n2026-04-01,semi,4.50\n2026-04-09,carota,abc` },
+        { h: 'Passo 1: leggere il CSV senza bloccarsi', p: [
+          '`csv.DictReader` trasforma ogni riga in un dizionario con i nomi dell’intestazione come chiavi. Tutti i valori arrivano come testo.',
+          'L’ultima riga ha `abc` come importo: `float()` solleva `ValueError`, la catturiamo, avvisiamo e passiamo alla riga successiva con `continue`.' ],
+          code: `import csv\n\nvendite = []\nwith open("vendite.csv", encoding="utf-8") as f:\n    for riga in csv.DictReader(f):\n        try:\n            riga["importo"] = float(riga["importo"])\n        except ValueError:\n            print("Riga ignorata:", riga["data"], riga["prodotto"])\n            continue\n        vendite.append(riga)\nprint(len(vendite))  # 3` },
+        { h: 'Passo 2: raggruppare per mese', p: [
+          '`strptime()` trasforma il testo in una data e `strftime("%Y-%m")` la riduce ad anno e mese, che usiamo come chiave.',
+          '`dict.get(chiave, 0)` restituisce 0 la prima volta che compare un mese, così non serve controllare se la chiave esiste.' ],
+          code: `from datetime import datetime\n\nper_mese = {}\nfor v in vendite:\n    mese = datetime.strptime(v["data"], "%Y-%m-%d").strftime("%Y-%m")\n    per_mese[mese] = per_mese.get(mese, 0) + v["importo"]\nprint(per_mese)  # {'2026-03': 11.75, '2026-04': 4.5}` },
+        { h: 'Passo 3: validare le date e trovare il prodotto di punta', p: [
+          'Un’espressione regolare scarta le righe la cui data non ha la forma `AAAA-MM-GG` prima di fare i conti.',
+          '`max()` con `key` riceve una funzione: confronta i prodotti in base al totale e restituisce il prodotto, non la cifra.' ],
+          code: `import re\n\nDATA = re.compile(r"\\d{4}-\\d{2}-\\d{2}")\nvendite = [v for v in vendite if DATA.fullmatch(v["data"])]\n\ntotali = {}\nfor v in vendite:\n    totali[v["prodotto"]] = totali.get(v["prodotto"], 0) + v["importo"]\nmigliore = max(totali, key=lambda p: totali[p])\nprint(migliore, totali[migliore])  # semi 9.0` },
+        { h: 'Esempio reale: salvare il report', real: true, p: [
+          'Il report si salva in JSON perché un altro programma, un foglio di calcolo o un sito possano leggerlo. `ensure_ascii=False` conserva gli accenti e `indent=2` lo rende leggibile.',
+          'Se ogni mese arriva un CSV nuovo, lo stesso programma prepara il report in pochi secondi. È proprio il tipo di lavoro che la programmazione ti toglie.' ],
+          code: `import json\n\nreport = {"per_mese": per_mese, "prodotto_di_punta": migliore, "vendite_valide": len(vendite)}\nwith open("report.json", "w", encoding="utf-8") as f:\n    json.dump(report, f, ensure_ascii=False, indent=2)` },
+      ],
+      x: [
+        mc('Che cosa fa `with open("vendite.csv") as f:` alla fine del blocco?', ['Chiude il file, anche se c’è stato un errore', 'Cancella il file', 'Salva una copia del file', 'Niente: bisogna chiuderlo a mano con close()'], '`with` chiude il file all’uscita dal blocco, anche se dentro viene sollevata un’eccezione.'),
+        out(`try:\n    importo = float("abc")\nexcept ValueError:\n    importo = 0\nprint(importo)`, ['0', 'abc', 'ValueError', '0.0'], '`float("abc")` solleva `ValueError`; l’`except` la cattura e assegna l’intero 0.'),
+        fill(`from datetime import datetime\nd = datetime.___("2026-03-15", "%Y-%m-%d")\nprint(d.month)  # 3`, ['strptime', 'strftime', 'parse', 'fromtext'], '`strptime` legge un testo e lo trasforma in data (p come parse). `strftime` fa il contrario.'),
+        out(`from datetime import datetime\nd = datetime(2026, 4, 9)\nprint(d.strftime("%Y-%m"))`, ['2026-04', '2026-4', '04-2026', '2026-04-09'], '`%m` scrive sempre il mese con due cifre, e il formato chiede solo anno e mese.'),
+        out(`totali = {}\nfor p in ["semi", "fieno", "semi"]:\n    totali[p] = totali.get(p, 0) + 1\nprint(totali)`, ["{'semi': 2, 'fieno': 1}", "{'semi': 1, 'fieno': 1}", "{'fieno': 1, 'semi': 2}", 'KeyError'], '`get(p, 0)` dà 0 la prima volta, quindi niente `KeyError`. Il dizionario conserva le chiavi nell’ordine in cui compaiono.'),
+        out(`import re\nprint(bool(re.fullmatch(r"\\d{4}-\\d{2}", "2026-3")))`, ['False', 'True', 'None', '2026-3'], '`\\d{2}` richiede due cifre e il mese ne ha una sola. `fullmatch` vuole che corrisponda tutto il testo.'),
+        out(`totali = {"semi": 9.0, "fieno": 7.25}\nprint(max(totali, key=lambda p: totali[p]))`, ['semi', '9.0', 'fieno', '7.25'], 'Scorrere un dizionario significa scorrerne le chiavi. `key` confronta per totale, ma `max()` restituisce la chiave.'),
+        out(`righe = ["2026-03-02;4.50", "2026-03-20;x", "2026-04-01;3.00", "2026-03-31;1.50"]\nper_mese = {}\nfor riga in righe:\n    data, importo = riga.split(";")\n    try:\n        per_mese[data[:7]] = per_mese.get(data[:7], 0) + float(importo)\n    except ValueError:\n        continue\nprint(per_mese)`, ["{'2026-03': 6.0, '2026-04': 3.0}", "{'2026-03': 4.5, '2026-04': 3.0}", 'ValueError', "{'2026-03': 6.0}"], 'La riga con `x` fallisce in `float()` prima di qualsiasi assegnazione e si salta. Marzo somma 4.50 + 1.50 = 6.0 e aprile, 3.0.'),
+      ],
+    },
+    // ───────────── Giorno 22 ─────────────
+    {
       id: 'py-classes',
       t: 'Classi e oggetti',
-      d: 'class, __init__, self, attributi, ereditarietà, super() e dataclass.',
+      d: 'Creare i tuoi tipi con class: __init__, self, attributi, metodi e metodi speciali.',
       guide: [
         { h: 'Classi e oggetti', p: [
           'Una classe è uno stampo che descrive dati (attributi) e comportamento (metodi). Ogni oggetto creato da essa è un’istanza con i propri valori.',
@@ -805,119 +858,56 @@
         out(`class Conto:\n    def __init__(self, saldo=0):\n        self.saldo = saldo\n\n    def versa(self, x):\n        self.saldo += x\n        return self\n\nc = Conto(10).versa(5).versa(20)\nprint(c.saldo)`, ['35', '10', '25', 'Errore'], 'Ogni `versa` restituisce `self`, quindi le chiamate si concatenano sullo stesso oggetto: 10 + 5 + 20 = 35.'),
       ],
     },
-    // ───────────── Giorno 22 ─────────────
-    {
-      id: 'py-scraping',
-      t: 'Web scraping',
-      d: 'Scaricare pagine con requests ed estrarre dati con BeautifulSoup.',
-      guide: [
-        { h: 'Che cos’è il web scraping?', p: [
-          'Il web scraping consiste nello scaricare pagine web ed estrarre dal loro HTML i dati che ti interessano: prezzi, titoli, orari...',
-          'Si usa quando un sito non offre un’API. Se esiste un’API, usala: è più stabile e pensata per i programmi.' ] },
-        { h: 'Scaricare l’HTML con requests', p: [
-          '`requests.get(url)` scarica la pagina. `status_code` indica se è andata bene (200) e `.text` contiene l’HTML.',
-          'Indica sempre un `timeout`, così il programma non resta in attesa per sempre se il server non risponde.' ],
-          code: `import requests\n\nr = requests.get("https://example.com", timeout=10)\nprint(r.status_code)  # 200\nprint(r.text[:15])    # <!doctype html>` },
-        { h: 'Analizzare l’HTML con BeautifulSoup', p: [
-          'BeautifulSoup (`pip install beautifulsoup4`) trasforma l’HTML in un albero che puoi percorrere. `find()` restituisce il primo elemento, `find_all()` tutti e `select()` accetta selettori CSS.',
-          '`.text` o `.get_text(strip=True)` danno il testo, ed `elemento["href"]` legge un attributo.' ],
-          code: `from bs4 import BeautifulSoup\n\nhtml = """<ul>\n  <li class="p">Caffè <span>1.80</span></li>\n  <li class="p">Tè <span>1.50</span></li>\n</ul>"""\nsoup = BeautifulSoup(html, "html.parser")\nfor li in soup.select("li.p"):\n    nome = li.contents[0].strip()\n    prezzo = float(li.span.text)\n    print(nome, prezzo)\n# Caffè 1.8\n# Tè 1.5` },
-        { h: 'Farlo in modo responsabile', p: [
-          'Controlla il file `robots.txt` e le condizioni d’uso del sito, non raccogliere dati personali e aspetta tra una richiesta e l’altra con `time.sleep(1)` per non sovraccaricare il server.',
-          'Le pagine cambiano: se cambia l’HTML, il tuo scraper smette di funzionare. Controlla che `find()` non abbia restituito `None` prima di usare il risultato.' ] },
-        { h: 'Esempio reale: i titoli di un sito di notizie', real: true, p: [
-          'Uno script che legge i primi cinque titoli di Hacker News con i loro link. È la base di qualsiasi rassegna stampa automatica.' ],
-          code: `import time\nimport requests\nfrom bs4 import BeautifulSoup\n\nurl = "https://news.ycombinator.com/"\nr = requests.get(url, timeout=10, headers={"User-Agent": "corso-sintaxis/1.0"})\nsoup = BeautifulSoup(r.text, "html.parser")\n\nfor link in soup.select(".titleline > a")[:5]:\n    print("-", link.get_text(strip=True))\n    print("  ", link["href"])\ntime.sleep(1)  # pausa prima della richiesta successiva` },
-      ],
-      x: [
-        mc('Quale libreria si usa di solito per analizzare l’HTML in Python?', ['BeautifulSoup', 'NumPy', 'Flask', 'Pygame'], 'BeautifulSoup trasforma l’HTML in un albero facile da percorrere.'),
-        mc('Che cosa restituisce `requests.get(url).text`?', ['Il contenuto della risposta come testo', 'Un oggetto BeautifulSoup', 'Il codice di stato', 'Una lista di link'], '`.status_code` darebbe il codice HTTP, come 200.'),
-        fill(`soup = BeautifulSoup(html, "html.parser")\ntitoli = soup.___("h2")  # tutti gli h2`, ['find_all', 'find', 'get', 'select_one'], '`find_all` restituisce tutti gli elementi; `find` solo il primo.'),
-        out(`from bs4 import BeautifulSoup\nsoup = BeautifulSoup("<p>Ciao</p>", "html.parser")\nprint(soup.p.text)`, ['Ciao', '<p>Ciao</p>', 'p', 'None'], '`.text` estrae il testo senza i tag.'),
-        mc('Come ottieni l’URL di un link `a` con BeautifulSoup?', ['link["href"]', 'link.url', 'link.text', 'link.link()'], 'Gli attributi HTML si leggono come le chiavi di un dizionario.'),
-        mc('Quale file indica quali parti di un sito si possono esplorare?', ['robots.txt', 'sitemap.css', 'index.html', '.htaccess'], 'Rispettare robots.txt fa parte di uno scraping responsabile.'),
-        out(`from bs4 import BeautifulSoup\nhtml = '<a href="/a">A</a><a href="/b">B</a>'\nsoup = BeautifulSoup(html, "html.parser")\nprint([a["href"] for a in soup.find_all("a")])`, ["['/a', '/b']", "['A', 'B']", '/a', "['/a']"], '`find_all` restituisce tutti i link e `a["href"]` legge l’attributo di ciascuno.'),
-        out(`from bs4 import BeautifulSoup\nhtml = "<div><p>Ciao</p></div>"\nsoup = BeautifulSoup(html, "html.parser")\nprint(soup.find("span") is None, soup.div.p.text)`, ['True Ciao', 'False Ciao', 'None Ciao', 'Errore'], '`find` restituisce `None` se non ci sono corrispondenze (non c’è nessuno span). `soup.div.p` scende fino al paragrafo dentro il div.'),
-      ],
-    },
     // ───────────── Giorno 23 ─────────────
     {
-      id: 'py-venv',
-      t: 'Ambienti virtuali',
-      d: 'venv: isolare le dipendenze di ogni progetto.',
+      id: 'py-inheritance',
+      t: 'Ereditarietà e dataclass',
+      d: 'Riutilizzare le classi con l’ereditarietà e super(), quando preferire la composizione e risparmiare codice con @dataclass.',
       guide: [
-        { h: 'Il problema che risolvono', p: [
-          'Immagina due progetti: uno ha bisogno di Django 4 e l’altro di Django 5. Se installi tutto nel Python di sistema, uno dei due si rompe.',
-          'Un ambiente virtuale è una cartella con il proprio Python e i propri pacchetti. Ogni progetto ha il suo e non si pestano i piedi.' ] },
-        { h: 'Creare e attivare un ambiente', p: [
-          '`python -m venv .venv` crea l’ambiente nella cartella `.venv`. Poi bisogna attivarlo; il prompt del terminale mostrerà `(.venv)` all’inizio.' ],
-          code: `# creare\npython -m venv .venv\n\n# attivare su macOS e Linux\nsource .venv/bin/activate\n\n# attivare su Windows (PowerShell)\n.venv\\Scripts\\Activate.ps1\n\n# uscire dall'ambiente\ndeactivate` },
-        { h: 'Installare e condividere le dipendenze', p: [
-          'Con l’ambiente attivo, `pip install` installa solo al suo interno. Alla fine, salva l’elenco con `pip freeze > requirements.txt`.',
-          'La cartella `.venv` non va su Git: si aggiunge a `.gitignore` e ognuno la ricrea con `pip install -r requirements.txt`.' ],
-          code: `pip install flask requests\npip freeze > requirements.txt\n\n# in .gitignore\n.venv/` },
-        { h: 'Controllare quale Python si sta usando', p: [
-          'Se un pacchetto non si importa, controlla quale interprete stai usando. Con un ambiente attivo, `sys.prefix` punta alla cartella dell’ambiente.',
-          'Editor come VS Code permettono di scegliere l’interprete dell’ambiente, così completamento automatico ed esecuzione usano gli stessi pacchetti.' ],
-          code: `import sys\nprint(sys.executable)                 # percorso del Python in uso\nprint(sys.prefix != sys.base_prefix)  # True se c'è un ambiente attivo` },
-        { h: 'Esempio reale: preparare un nuovo progetto', real: true, p: [
-          'Questi sono i passi che seguiresti all’inizio di qualsiasi progetto Python professionale, per esempio un’app che consulta il meteo.' ],
-          code: `mkdir app-meteo\ncd app-meteo\npython -m venv .venv\nsource .venv/bin/activate\npip install requests\npip freeze > requirements.txt\necho ".venv/" > .gitignore\ngit init` },
+        { h: 'Ereditare da un’altra classe', p: [
+          'Una classe figlia eredita attributi e metodi dalla classe madre e può cambiare quelli che le servono. `Offerta` è un `Prodotto` con sconto: non serve ripetere quello che fa già `Prodotto`.',
+          '`super().__init__(...)` esegue l’`__init__` della madre, che continua a preparare gli attributi comuni. Senza quella riga, `self.nome` e `self.prezzo` non esisterebbero.' ],
+          code: `class Prodotto:\n    def __init__(self, nome, prezzo):\n        self.nome = nome\n        self.prezzo = prezzo\n\n    def prezzo_finale(self):\n        return self.prezzo\n\nclass Offerta(Prodotto):\n    def __init__(self, nome, prezzo, sconto):\n        super().__init__(nome, prezzo)\n        self.sconto = sconto\n\n    def prezzo_finale(self):\n        return round(self.prezzo * (1 - self.sconto), 2)\n\nprint(Offerta("Fieno", 8.0, 0.25).prezzo_finale())  # 6.0` },
+        { h: 'isinstance e l’ordine di ricerca', p: [
+          'Un’`Offerta` è anche un `Prodotto`, ma non il contrario. `isinstance()` lo verifica ed è il modo corretto di chiedere il tipo di un oggetto.',
+          'Quando chiami un metodo, Python lo cerca prima nella classe dell’oggetto e, se non c’è, nella madre. Quell’ordine si chiama MRO e puoi vederlo in `__mro__`.' ],
+          code: `o = Offerta("Fieno", 8.0, 0.25)\nprint(isinstance(o, Prodotto))                   # True\nprint(isinstance(Prodotto("Semi", 4.5), Offerta))  # False\nprint(Offerta.__mro__[1].__name__)               # Prodotto` },
+        { h: 'Ereditarietà o composizione?', p: [
+          'Usa l’ereditarietà quando la frase «è un» ha senso: un’offerta è un prodotto. Se viene più naturale «ha un», usa la composizione: un carrello ha dei prodotti, quindi ne tiene una lista.',
+          'Le gerarchie profonde diventano difficili da cambiare. Nel dubbio, la composizione è di solito la scelta più flessibile.' ],
+          code: `class Carrello:\n    def __init__(self):\n        self.prodotti = []  # ha dei prodotti: composizione\n\n    def totale(self):\n        return sum(p.prezzo_finale() for p in self.prodotti)` },
+        { h: '@dataclass: classi di dati senza ripetere codice', p: [
+          'Molte classi contengono solo dati. `@dataclass` scrive per te `__init__`, `__repr__` (ciò che mostra `print`) e `__eq__` (il confronto con `==`) a partire dagli attributi e dal loro tipo.',
+          'Una lista come valore predefinito si scrive con `field(default_factory=list)`; altrimenti tutti gli oggetti condividerebbero la stessa lista, come con i parametri predefiniti delle funzioni.' ],
+          code: `from dataclasses import dataclass, field\n\n@dataclass\nclass Cliente:\n    nome: str\n    acquisti: int = 0\n    etichette: list = field(default_factory=list)\n\nana = Cliente("Ana")\nprint(ana)                    # Cliente(nome='Ana', acquisti=0, etichette=[])\nprint(ana == Cliente("Ana"))  # True` },
+        { h: 'frozen e order', p: [
+          'Con `frozen=True` l’oggetto non si può modificare dopo averlo creato, come una tupla con i nomi. Con `order=True` gli oggetti si possono confrontare con `<` e `>`, campo per campo e in ordine.' ],
+          code: `from dataclasses import dataclass\n\n@dataclass(frozen=True, order=True)\nclass Versione:\n    maggiore: int\n    minore: int\n\nprint(Versione(1, 10) > Versione(1, 2))  # True\n# Versione(2, 0).maggiore = 3 solleverebbe FrozenInstanceError` },
+        { h: 'Esempio reale: il catalogo del negozio', real: true, p: [
+          'Anche le dataclass si ereditano. Il catalogo mescola prodotti normali e offerte, e il ciclo chiama `prezzo_finale()` senza chiedere di che tipo sia ognuno: ogni oggetto sa calcolare il proprio prezzo.' ],
+          code: `from dataclasses import dataclass\n\n@dataclass\nclass Prodotto:\n    nome: str\n    prezzo: float\n\n    def prezzo_finale(self):\n        return self.prezzo\n\n@dataclass\nclass Offerta(Prodotto):\n    sconto: float = 0.1\n\n    def prezzo_finale(self):\n        return round(self.prezzo * (1 - self.sconto), 2)\n\ncatalogo = [Prodotto("Semi", 4.5), Offerta("Fieno", 8.0, 0.25)]\nfor p in catalogo:\n    print(f"{p.nome}: {p.prezzo_finale():.2f} €")\n# Semi: 4.50 €\n# Fieno: 6.00 €` },
       ],
       x: [
-        mc('A che cosa serve un ambiente virtuale?', ['A isolare le dipendenze di ogni progetto', 'A eseguire Python nel browser', 'A rendere il codice più veloce', 'A creare macchine virtuali'], 'Ogni progetto può usare versioni diverse delle stesse librerie.'),
-        ord('Crea un ambiente virtuale nella cartella .venv', ['python', '-m', 'venv', '.venv'], ['pip', 'new'], '`-m venv` esegue il modulo venv; l’ultimo argomento è la cartella.'),
-        mc('Su Windows con PowerShell, come si attiva l’ambiente `.venv`?', ['.venv\\Scripts\\Activate.ps1', 'source .venv/bin/activate', 'activate .venv', 'python .venv'], 'Su macOS e Linux si usa `source .venv/bin/activate`.'),
-        mc('Devi caricare su Git la cartella dell’ambiente virtuale?', ['No: si aggiunge a .gitignore e si condivide requirements.txt', 'Sì, sempre', 'Solo nei progetti grandi', 'Solo i file .py al suo interno'], 'L’ambiente si ricrea con `pip install -r requirements.txt`.'),
-        mc('Con l’ambiente attivo, dove installa `pip install flask`?', ['Nell’ambiente virtuale del progetto', 'In tutto il sistema', 'Nella cartella dell’utente', 'Nel cloud'], 'Per questo non influisce sugli altri progetti.'),
-        typ('Scrivi il comando che disattiva l’ambiente virtuale', `(.venv) $ ___`, 'deactivate', '`deactivate` ti riporta al Python di sistema.'),
-        mc('Che cosa mostra `print(sys.prefix != sys.base_prefix)` con un ambiente virtuale attivo?', ['True', 'False', 'La versione di Python', 'None'], 'Dentro un ambiente, `sys.prefix` punta alla sua cartella ed è diverso da `sys.base_prefix`.'),
-        ord('Salva le dipendenze dell’ambiente in requirements.txt', ['pip', 'freeze', '>', 'requirements.txt'], ['install', '-r'], '`pip freeze` elenca i pacchetti con la loro versione e `>` reindirizza quell’output in un file.'),
+        fill(`class Prodotto:\n    pass\n\nclass Offerta(___):\n    pass  # Offerta eredita da Prodotto`, ['Prodotto', 'super', 'self', 'Prodotto()'], 'La classe madre va tra parentesi, con il suo nome e senza chiamarla.'),
+        mc('A cosa serve `super().__init__(nome, prezzo)` in una classe figlia?', ['A eseguire l’__init__ della classe madre invece di ripeterne il codice', 'A creare un secondo oggetto', 'A cancellare gli attributi della madre', 'A impedire che altre classi ereditino da lei'], '`super()` dà accesso alla classe madre; il suo `__init__` prepara gli attributi comuni.'),
+        out(`class A:\n    def ciao(self):\n        return "A"\n\nclass B(A):\n    pass\n\nprint(B().ciao())`, ['A', 'B', 'None', 'AttributeError'], '`B` non definisce `ciao`, quindi Python lo cerca nella madre `A`.'),
+        out(`class A:\n    pass\n\nclass B(A):\n    pass\n\nprint(isinstance(B(), A), isinstance(A(), B))`, ['True False', 'True True', 'False True', 'False False'], 'Un oggetto della figlia è anche della madre, ma uno della madre non è della figlia.'),
+        out(`from dataclasses import dataclass\n\n@dataclass\nclass Punto:\n    x: int\n    y: int = 0\n\nprint(Punto(3))`, ['Punto(x=3, y=0)', 'Punto(3)', '<__main__.Punto object>', '(3, 0)'], '`@dataclass` genera un `__repr__` con il nome e il valore di ogni campo, compresi quelli predefiniti.'),
+        mc('Un `Carrello` tiene i prodotti da comprare. Quale relazione conviene?', ['Composizione: il carrello ha una lista di prodotti', 'Ereditarietà: Carrello eredita da Prodotto', 'Ereditarietà: Prodotto eredita da Carrello', 'Nessuna: meglio una variabile globale'], 'Un carrello non è un prodotto: ha dei prodotti. «Ha un» chiede la composizione.'),
+        fill(`from dataclasses import dataclass, field\n\n@dataclass\nclass Ordine:\n    righe: list = ___(default_factory=list)`, ['field', 'list', 'dataclass', 'default'], '`field(default_factory=list)` crea una lista nuova per ogni ordine invece di condividerne una.'),
+        out(`from dataclasses import dataclass\n\n@dataclass\nclass Prodotto:\n    nome: str\n    prezzo: float\n\n    def finale(self):\n        return self.prezzo\n\n@dataclass\nclass Offerta(Prodotto):\n    sconto: float = 0.5\n\n    def finale(self):\n        return super().finale() * (1 - self.sconto)\n\narticoli = [Prodotto("a", 4.0), Offerta("b", 6.0), Offerta("c", 10.0, 0.1)]\nprint(sum(p.finale() for p in articoli), Offerta("b", 6.0) == articoli[1])`, ['16.0 True', '20.0 True', '16.0 False', '13.0 True'], '4.0 + 6.0 × 0.5 + 10.0 × 0.9 = 16.0. Le dataclass si confrontano per campi, quindi due offerte con gli stessi dati sono uguali.'),
       ],
     },
     // ───────────── Giorno 24 ─────────────
     {
-      id: 'py-statistics',
-      t: 'Statistica',
-      d: 'statistics e NumPy: media, mediana, moda, dispersione e array.',
+      id: 'py-pandas',
+      t: 'Analisi dei dati con pandas',
+      d: 'Media e mediana con statistics, e tabelle con pandas: leggere un CSV, filtrare, creare colonne e raggruppare.',
       guide: [
         { h: 'Misure di tendenza centrale', p: [
           'La media è la somma divisa per il numero di valori, la mediana è il valore centrale dei dati ordinati e la moda è il valore che si ripete di più.',
           'La mediana resiste meglio ai valori estremi: con gli stipendi, pochi molto alti fanno schizzare la media ma spostano appena la mediana.' ],
           code: `import statistics as st\n\nstipendi = [1200, 1300, 1250, 1400, 9000]\nprint(st.mean(stipendi))    # 2830\nprint(st.median(stipendi))  # 1300` },
-        { h: 'Dispersione: la deviazione standard', p: [
-          'La deviazione standard misura quanto i dati si allontanano dalla media. Due classi possono avere la stessa media e una dispersione molto diversa.',
-          '`statistics.pstdev()` calcola la deviazione di un’intera popolazione e `stdev()` quella di un campione.' ],
-          code: `import statistics as st\n\nclasse_a = [5, 5, 5, 5]\nclasse_b = [0, 10, 0, 10]\nprint(st.mean(classe_a), st.mean(classe_b))      # 5 5\nprint(st.pstdev(classe_a), st.pstdev(classe_b))  # 0.0 5.0` },
-        { h: 'NumPy: calcoli con gli array', p: [
-          'NumPy lavora con array di numeri in modo velocissimo. Le operazioni si applicano a tutti gli elementi insieme, senza cicli: è la vettorizzazione.',
-          'Attenzione: con una lista normale, `lista * 2` la ripete; con un array, moltiplica ogni elemento.' ],
-          code: `import numpy as np\n\ntemp = np.array([18.5, 21.0, 23.5, 19.0])\nprint(temp.mean())             # 20.5\nprint(temp.max(), temp.min())  # 23.5 18.5\nprint(temp * 9 / 5 + 32)       # le stesse temperature in Fahrenheit` },
-        { h: 'Filtrare con condizioni', p: [
-          'Con NumPy puoi usare una condizione come indice: `arr[arr > 20]` restituisce gli elementi che la soddisfano.',
-          '`np.percentile(dati, 90)` dà il valore sotto il quale si trova il 90 % dei dati, utile per individuare i casi estremi.' ],
-          code: `import numpy as np\n\nvendite = np.array([120, 80, 300, 95, 150])\nprint(vendite[vendite > 100])  # [120 300 150]\nprint(vendite.sum())           # 745` },
-        { h: 'Esempio reale: analizzare i voti di una classe', real: true, p: [
-          'Un professore vuole un riepilogo veloce del suo gruppo: la media, la mediana e quanti sono stati promossi (voti da 0 a 10).' ],
-          code: `import statistics as st\n\nvoti = {"Ana": 8.5, "Luis": 6.0, "Eva": 9.5, "Leo": 4.5, "Sara": 7.0}\nvalori = list(voti.values())\n\nprint("Media:", st.mean(valori))      # Media: 7.1\nprint("Mediana:", st.median(valori))  # Mediana: 7.0\npromossi = [n for n, v in voti.items() if v >= 5]\nprint(f"Promossi: {len(promossi)} su {len(voti)}")  # Promossi: 4 su 5` },
-      ],
-      x: [
-        out(`import statistics as st\nprint(st.mean([2, 4, 6]))`, ['4', '12', '6', '3'], 'La media è la somma (12) divisa per il numero di valori (3).'),
-        mc('Quale misura è il valore centrale dei dati ordinati?', ['La mediana', 'La media', 'La moda', 'La deviazione standard'], 'Con [1, 3, 9], la mediana è 3.'),
-        fill(`import statistics as st\nprint(st.___([1, 2, 2, 3]))  # 2, il valore più ripetuto`, ['mode', 'mean', 'median', 'max'], '`mode` restituisce il valore più frequente.'),
-        out(`import numpy as np\na = np.array([1, 2, 3])\nprint(a * 2)`, ['[2 4 6]', '[1, 2, 3, 1, 2, 3]', '[1 2 3 1 2 3]', 'Errore'], 'NumPy moltiplica ogni elemento. Con una lista normale, `* 2` la ripeterebbe.'),
-        out(`import numpy as np\nprint(np.arange(0, 10, 3))`, ['[0 3 6 9]', '[0 3 6]', '[3 6 9]', '[0, 3, 6, 9, 10]'], '`arange` funziona come `range`, ma restituisce un array.'),
-        out(`import numpy as np\nm = np.zeros((2, 3))\nprint(m.shape)`, ['(2, 3)', '(3, 2)', '6', '[2, 3]'], '`shape` indica righe e colonne.'),
-        out(`import numpy as np\na = np.array([3, 8, 1, 9])\nprint(a[a > 2])`, ['[3 8 9]', '[8 9]', '[True True False True]', '[3, 8, 9]'], 'Una condizione usata come indice filtra l’array e lascia gli elementi che la soddisfano.'),
-        out(`import statistics as st\ndati = [2, 4, 4, 4, 100]\nprint(st.median(dati), st.mode(dati), st.mean(dati) > 20)`, ['4 4 True', '4 4 False', '22.8 4 True', '4 100 True'], 'Mediana e moda valgono 4, ma il 100 fa salire la media a 22.8. Per questo la mediana è più affidabile con i valori estremi.'),
-      ],
-    },
-    // ───────────── Giorno 25 ─────────────
-    {
-      id: 'py-pandas',
-      t: 'Pandas',
-      d: 'Series, DataFrame, leggere CSV, filtrare, creare colonne e raggruppare.',
-      guide: [
         { h: 'Series e DataFrame', p: [
           'Pandas è la libreria di riferimento per analizzare dati in tabelle. Una `Series` è una colonna con un indice e un `DataFrame` è una tabella con più colonne.',
           'Per convenzione si importa come `pd`.' ],
@@ -937,93 +927,21 @@
           code: `import pandas as pd\n\nvendite = pd.read_csv("vendite_2025.csv", parse_dates=["data"])\nvendite["mese"] = vendite["data"].dt.month\n\nreport = (vendite.groupby("mese")["importo"]\n                 .agg(["sum", "count", "mean"])\n                 .round(2))\nprint(report)\nreport.to_excel("report_mensile.xlsx")` },
       ],
       x: [
+        out(`import statistics as st\nprint(st.mean([2, 4, 6]))`, ['4', '12', '6', '3'], 'La media è la somma (12) divisa per il numero di valori (3).'),
+        mc('Quale misura è il valore centrale dei dati ordinati?', ['La mediana', 'La media', 'La moda', 'La deviazione standard'], 'Con [1, 3, 9], la mediana è 3.'),
         mc('Quale struttura di pandas rappresenta una tabella con righe e colonne?', ['DataFrame', 'Series', 'Array', 'Table'], 'Una `Series` è una sola colonna.'),
         fill(`import pandas as pd\ndf = pd.___("vendite.csv")`, ['read_csv', 'open_csv', 'load', 'csv'], '`read_csv` carica un file CSV in un DataFrame.'),
-        mc('Che cosa mostra `df.head()`?', ['Le prime 5 righe', 'I nomi delle colonne', 'L’ultima riga', 'Le statistiche'], 'Puoi passare un altro numero: `df.head(10)`.'),
         out(`import pandas as pd\ndf = pd.DataFrame({"x": [1, 2, 3]})\nprint(df["x"].sum())`, ['6', '3', '[1, 2, 3]', 'x'], 'Selezioni la colonna come Series e la sommi.'),
         out(`import pandas as pd\ndf = pd.DataFrame({"eta": [20, 35, 50]})\nprint(len(df[df["eta"] > 30]))`, ['2', '1', '3', '0'], 'Il filtro lascia le righe con 35 e 50.'),
-        out(`import pandas as pd\ndf = pd.DataFrame({"a": [1, 2], "b": [3, 4]})\nprint(df.shape)`, ['(2, 2)', '(4,)', '2', '(1, 2)'], '2 righe e 2 colonne.'),
         out(`import pandas as pd\ndf = pd.DataFrame({"a": [1, 2, 3]})\ndf["b"] = df["a"] * 10\nprint(df["b"].tolist())`, ['[10, 20, 30]', '[1, 2, 3]', '[10]', '60'], 'L’operazione si applica a tutta la colonna e ne crea una nuova.'),
         out(`import pandas as pd\ndf = pd.DataFrame({"negozio": ["A", "B", "A", "B"], "totale": [10, 5, 20, 1]})\nr = df.groupby("negozio")["totale"].sum()\nprint(r["A"], r["B"])`, ['30 6', '10 5', '15 3', '36'], '`groupby` raggruppa le righe per negozio e `sum` somma ogni gruppo: A = 10 + 20 e B = 5 + 1.'),
       ],
     },
-    // ───────────── Giorno 26 ─────────────
-    {
-      id: 'py-web',
-      t: 'Python per il web',
-      d: 'Flask: rotte, parametri, template e moduli.',
-      guide: [
-        { h: 'Framework web in Python', p: [
-          'Un framework web riceve le richieste HTTP del browser e decide cosa rispondere. In Python i più usati sono Flask (piccolo e flessibile), Django (completo, con ORM e pannello di amministrazione) e FastAPI (veloce e pensato per le API).',
-          'Oggi usiamo Flask: `pip install flask`.' ] },
-        { h: 'La tua prima applicazione Flask', p: [
-          'Ogni rotta è associata a una funzione con il decoratore `@app.route()`. Ciò che restituisce la funzione è ciò che vede il browser.',
-          'Avvia il server di sviluppo con `flask --app app run --debug` e apri http://127.0.0.1:5000 nel browser.' ],
-          code: `# app.py\nfrom flask import Flask\n\napp = Flask(__name__)\n\n@app.route("/")\ndef home():\n    return "<h1>Ciao da Flask</h1>"\n\n@app.route("/ciao/<nome>")\ndef ciao(nome):\n    return f"Ciao, {nome}"` },
-        { h: 'Template HTML', p: [
-          'Per pagine complete, Flask usa template Jinja salvati nella cartella `templates`. `render_template()` li riempie con i tuoi dati.',
-          'Nel template, `{{ variabile }}` mostra un valore e `{% for %}` percorre le liste. Jinja fa l’escape dell’HTML automaticamente, il che protegge dall’iniezione di codice.' ],
-          code: `# app.py\nfrom flask import Flask, render_template\n\napp = Flask(__name__)\n\n@app.route("/compiti")\ndef compiti():\n    lista = ["Comprare il pane", "Studiare Python"]\n    return render_template("compiti.html", compiti=lista)\n\n# templates/compiti.html\n# <ul>{% for c in compiti %}<li>{{ c }}</li>{% endfor %}</ul>` },
-        { h: 'Moduli e metodi HTTP', p: [
-          'Una rotta può accettare più metodi: `GET` per mostrare e `POST` per ricevere dati. I campi del modulo arrivano in `request.form`.',
-          'Dopo aver gestito un POST, reindirizza con `redirect()` così ricaricare la pagina non reinvia il modulo.' ],
-          code: `from flask import Flask, request, redirect\n\napp = Flask(__name__)\nmessaggi = []\n\n@app.route("/contatti", methods=["GET", "POST"])\ndef contatti():\n    if request.method == "POST":\n        messaggi.append(request.form["messaggio"])\n        return redirect("/contatti")\n    return f"Messaggi ricevuti: {len(messaggi)}"` },
-        { h: 'Esempio reale: il menù di un bar', real: true, p: [
-          'Un bar vuole pubblicare il suo menù su un sito che si aggiorna modificando una lista Python, senza toccare l’HTML.' ],
-          code: `from flask import Flask, render_template_string\n\napp = Flask(__name__)\nMENU = [("Caffè", 1.80), ("Tè", 1.50), ("Toast", 2.20)]\n\nTEMPLATE = """\n<h1>Menù</h1>\n<ul>{% for nome, prezzo in menu %}\n  <li>{{ nome }}: {{ "%.2f"|format(prezzo) }} €</li>\n{% endfor %}</ul>\n"""\n\n@app.route("/")\ndef menu():\n    return render_template_string(TEMPLATE, menu=MENU)` },
-      ],
-      x: [
-        mc('Che cos’è Flask?', ['Un microframework per creare applicazioni web', 'Un database', 'Un editor di codice', 'Un gestore di pacchetti'], 'Flask è leggero e si amplia con le estensioni.'),
-        fill(`@app.___("/")\ndef home():\n    return "Ciao"`, ['route', 'get_route', 'path', 'url'], '`@app.route` associa un URL alla funzione.'),
-        mc('Con la rotta `/ciao/<nome>`, quale valore riceve `nome` visitando `/ciao/Ana`?', ['"Ana"', '"<nome>"', '"ciao"', 'None'], 'Le parti tra `< >` sono variabili dell’URL.'),
-        mc('Quale funzione riempie un template HTML della cartella templates?', ['render_template()', 'show_html()', 'template()', 'render()'], 'I template usano la sintassi di Jinja.'),
-        fill(`@app.route("/contatti", methods=[___])\ndef contatti():\n    ...`, ['"GET", "POST"', 'GET, POST', '"get()", "post()"', 'ALL'], '`methods` è una lista di stringhe con i metodi HTTP consentiti.'),
-        mc('Quale framework Python è più completo e include ORM e pannello di amministrazione?', ['Django', 'Flask', 'NumPy', 'Requests'], 'Django segue la filosofia «batterie incluse».'),
-        mc('Dopo aver gestito un modulo con POST, perché conviene restituire `redirect()`?', ['Perché ricaricare la pagina non reinvii il modulo', 'Perché la pagina carichi più in fretta', 'Perché Flask lo richiede', 'Per cancellare i dati del modulo'], 'È lo schema Post/Redirect/Get.'),
-        out(`from flask import Flask\n\napp = Flask(__name__)\n\n@app.route("/doppio/<int:n>")\ndef doppio(n):\n    return str(n * 2)\n\nwith app.test_client() as c:\n    print(c.get("/doppio/21").text)`, ['42', '2121', '21', 'Errore'], 'Il convertitore `<int:n>` trasforma "21" in un intero, quindi il risultato è 42 e non "2121". `test_client()` permette di provare le rotte senza avviare il server.'),
-      ],
-    },
-    // ───────────── Giorno 27 ─────────────
-    {
-      id: 'py-mongodb',
-      t: 'Python con MongoDB',
-      d: 'pymongo: inserire, cercare, aggiornare ed eliminare documenti.',
-      guide: [
-        { h: 'Database di documenti', p: [
-          'MongoDB è un database NoSQL: invece di tabelle con colonne fisse, salva documenti simili a JSON raggruppati in collezioni.',
-          'Ogni documento può avere campi diversi, il che lo rende flessibile per dati che cambiano spesso. Per provarlo senza installare nulla c’è MongoDB Atlas, che ha un piano gratuito.' ] },
-        { h: 'Connettersi con pymongo', p: [
-          '`pip install pymongo` installa il driver ufficiale. `MongoClient` apre la connessione; poi scegli il database e la collezione come se fossero dizionari.',
-          'Non scrivere la password nel codice: tienila in una variabile d’ambiente.' ],
-          code: `import os\nfrom pymongo import MongoClient\n\nclient = MongoClient(os.environ["MONGO_URL"])\ndb = client["scuola"]\nstudenti = db["studenti"]` },
-        { h: 'Creare e leggere documenti', p: [
-          '`insert_one()` e `insert_many()` aggiungono documenti. `find()` restituisce un cursore con quelli che soddisfano il filtro e `find_one()` il primo.',
-          'I filtri sono dizionari. Operatori come `$gt` (maggiore di), `$lt` (minore di) o `$in` (dentro una lista) permettono query più ricche.' ],
-          code: `studenti.insert_many([\n    {"nome": "Ana", "eta": 22, "corsi": ["python"]},\n    {"nome": "Luis", "eta": 19, "corsi": ["java", "python"]},\n])\n\nfor s in studenti.find({"eta": {"$gt": 20}}):\n    print(s["nome"])  # Ana\n\nprint(studenti.count_documents({"corsi": "python"}))  # 2` },
-        { h: 'Aggiornare ed eliminare', p: [
-          '`update_one(filtro, modifiche)` modifica il primo documento che corrisponde. Usa `$set` per cambiare campi e `$inc` per sommare a un numero.',
-          '`delete_one()` e `delete_many()` eliminano documenti. Controlla bene il filtro: un filtro vuoto `{}` riguarda tutta la collezione.' ],
-          code: `studenti.update_one({"nome": "Luis"}, {"$set": {"eta": 20}})\nstudenti.update_one({"nome": "Ana"}, {"$inc": {"eta": 1}})\nstudenti.delete_one({"nome": "Luis"})` },
-        { h: 'Esempio reale: salvare gli ordini di un negozio', real: true, p: [
-          'Gli ordini di un negozio online si adattano bene ai documenti: ognuno contiene i suoi prodotti, senza bisogno di più tabelle.' ],
-          code: `from datetime import datetime\n\nordini = db["ordini"]\nordini.insert_one({\n    "cliente": "ana@example.com",\n    "data": datetime.now(),\n    "prodotti": [\n        {"nome": "Libro", "prezzo": 12.5, "quantita": 1},\n        {"nome": "Tazza", "prezzo": 6.0, "quantita": 2},\n    ],\n    "stato": "in attesa",\n})\n\nin_attesa = ordini.count_documents({"stato": "in attesa"})\nprint("Ordini in attesa:", in_attesa)` },
-      ],
-      x: [
-        mc('Che tipo di database è MongoDB?', ['NoSQL orientato ai documenti', 'Relazionale con tabelle SQL', 'Un foglio di calcolo', 'Un file CSV'], 'Salva documenti flessibili invece di righe con colonne fisse.'),
-        mc('Quale libreria collega Python a MongoDB?', ['pymongo', 'mongopy', 'sqlite3', 'pandas'], '`pymongo` è il driver ufficiale.'),
-        fill(`db.utenti.___({"nome": "Luis"})  # aggiunge un documento`, ['insert_one', 'add', 'push', 'create'], '`insert_one` inserisce un documento; `insert_many`, più documenti.'),
-        mc('Che cosa cerca il filtro `{"eta": {"$gt": 30}}`?', ['Documenti con età maggiore di 30', 'Età uguale a 30', 'Età minore di 30', 'Età tra 0 e 30'], '`$gt` significa «greater than». Altri operatori: `$lt`, `$gte` e `$ne`.'),
-        mc('Che cosa restituisce `collezione.find()` senza filtro?', ['Un cursore con tutti i documenti', 'Solo il primo documento', 'Il numero di documenti', 'None'], 'Per ottenerne uno solo c’è `find_one()`.'),
-        fill(`db.utenti.update_one(\n    {"nome": "Luis"},\n    {___: {"eta": 31}}\n)`, ['"$set"', '"$update"', '"$put"', '"set"'], '`$set` cambia solo i campi indicati.'),
-        typ('Completa l’operatore che somma 1 al campo visite', `pagine.update_one({"url": "/"}, {"___": {"visite": 1}})`, '$inc', '`$inc` incrementa un campo numerico della quantità indicata.'),
-        mc('Con i documenti `{"nome": "Ana", "corsi": ["python"]}` e `{"nome": "Luis", "corsi": ["java", "python"]}`, che cosa restituisce `count_documents({"corsi": "python"})`?', ['2', '1', '0', 'Un errore, perché corsi è una lista'], 'Se il campo è una lista, MongoDB cerca al suo interno: entrambi i documenti contengono "python".'),
-      ],
-    },
-    // ───────────── Giorno 28 ─────────────
+    // ───────────── Giorno 25 ─────────────
     {
       id: 'py-apis',
-      t: 'API',
-      d: 'HTTP, metodi, codici di stato e usare le API con requests.',
+      t: 'Usare le API',
+      d: 'Chiedere dati ad altri servizi via HTTP con requests: metodi, codici di stato, JSON ed errori.',
       guide: [
         { h: 'Che cos’è un’API?', p: [
           'Un’API è un contratto che permette a due programmi di comunicare. Le API web ricevono richieste HTTP su un URL e rispondono con dati, quasi sempre in JSON.',
@@ -1055,15 +973,54 @@
         mc('Un’API risponde con il codice 429. Che cosa dovresti fare?', ['Aspettare e riprovare con meno richieste: hai superato il limite', 'Ripetere subito la richiesta in un ciclo', 'Cambiare GET con POST', 'Niente: 429 significa che è andato tutto bene'], '429 Too Many Requests indica che hai superato il limite. Molte API dicono quanto aspettare nell’intestazione Retry-After.'),
       ],
     },
-    // ───────────── Giorno 29 ─────────────
+    // ───────────── Giorno 26 ─────────────
+    {
+      id: 'py-scraping',
+      t: 'Estrarre dati dal web',
+      d: 'Scaricare pagine ed estrarre dati dall’HTML con BeautifulSoup, senza sovraccaricare il sito.',
+      guide: [
+        { h: 'Che cos’è il web scraping?', p: [
+          'Il web scraping consiste nello scaricare pagine web ed estrarre dal loro HTML i dati che ti interessano: prezzi, titoli, orari...',
+          'Si usa quando un sito non offre un’API. Se esiste un’API, usala: è più stabile e pensata per i programmi.' ] },
+        { h: 'Scaricare l’HTML con requests', p: [
+          '`requests.get(url)` scarica la pagina. `status_code` indica se è andata bene (200) e `.text` contiene l’HTML.',
+          'Indica sempre un `timeout`, così il programma non resta in attesa per sempre se il server non risponde.' ],
+          code: `import requests\n\nr = requests.get("https://example.com", timeout=10)\nprint(r.status_code)  # 200\nprint(r.text[:15])    # <!doctype html>` },
+        { h: 'Analizzare l’HTML con BeautifulSoup', p: [
+          'BeautifulSoup (`pip install beautifulsoup4`) trasforma l’HTML in un albero che puoi percorrere. `find()` restituisce il primo elemento, `find_all()` tutti e `select()` accetta selettori CSS.',
+          '`.text` o `.get_text(strip=True)` danno il testo, ed `elemento["href"]` legge un attributo.' ],
+          code: `from bs4 import BeautifulSoup\n\nhtml = """<ul>\n  <li class="p">Caffè <span>1.80</span></li>\n  <li class="p">Tè <span>1.50</span></li>\n</ul>"""\nsoup = BeautifulSoup(html, "html.parser")\nfor li in soup.select("li.p"):\n    nome = li.contents[0].strip()\n    prezzo = float(li.span.text)\n    print(nome, prezzo)\n# Caffè 1.8\n# Tè 1.5` },
+        { h: 'Farlo in modo responsabile', p: [
+          'Controlla il file `robots.txt` e le condizioni d’uso del sito, non raccogliere dati personali e aspetta tra una richiesta e l’altra con `time.sleep(1)` per non sovraccaricare il server.',
+          'Le pagine cambiano: se cambia l’HTML, il tuo scraper smette di funzionare. Controlla che `find()` non abbia restituito `None` prima di usare il risultato.' ] },
+        { h: 'Esempio reale: i titoli di un sito di notizie', real: true, p: [
+          'Uno script che legge i primi cinque titoli di Hacker News con i loro link. È la base di qualsiasi rassegna stampa automatica.' ],
+          code: `import time\nimport requests\nfrom bs4 import BeautifulSoup\n\nurl = "https://news.ycombinator.com/"\nr = requests.get(url, timeout=10, headers={"User-Agent": "corso-sintaxis/1.0"})\nsoup = BeautifulSoup(r.text, "html.parser")\n\nfor link in soup.select(".titleline > a")[:5]:\n    print("-", link.get_text(strip=True))\n    print("  ", link["href"])\ntime.sleep(1)  # pausa prima della richiesta successiva` },
+      ],
+      x: [
+        mc('Quale libreria si usa di solito per analizzare l’HTML in Python?', ['BeautifulSoup', 'NumPy', 'Flask', 'Pygame'], 'BeautifulSoup trasforma l’HTML in un albero facile da percorrere.'),
+        mc('Che cosa restituisce `requests.get(url).text`?', ['Il contenuto della risposta come testo', 'Un oggetto BeautifulSoup', 'Il codice di stato', 'Una lista di link'], '`.status_code` darebbe il codice HTTP, come 200.'),
+        fill(`soup = BeautifulSoup(html, "html.parser")\ntitoli = soup.___("h2")  # tutti gli h2`, ['find_all', 'find', 'get', 'select_one'], '`find_all` restituisce tutti gli elementi; `find` solo il primo.'),
+        out(`from bs4 import BeautifulSoup\nsoup = BeautifulSoup("<p>Ciao</p>", "html.parser")\nprint(soup.p.text)`, ['Ciao', '<p>Ciao</p>', 'p', 'None'], '`.text` estrae il testo senza i tag.'),
+        mc('Come ottieni l’URL di un link `a` con BeautifulSoup?', ['link["href"]', 'link.url', 'link.text', 'link.link()'], 'Gli attributi HTML si leggono come le chiavi di un dizionario.'),
+        mc('Quale file indica quali parti di un sito si possono esplorare?', ['robots.txt', 'sitemap.css', 'index.html', '.htaccess'], 'Rispettare robots.txt fa parte di uno scraping responsabile.'),
+        out(`from bs4 import BeautifulSoup\nhtml = '<a href="/a">A</a><a href="/b">B</a>'\nsoup = BeautifulSoup(html, "html.parser")\nprint([a["href"] for a in soup.find_all("a")])`, ["['/a', '/b']", "['A', 'B']", '/a', "['/a']"], '`find_all` restituisce tutti i link e `a["href"]` legge l’attributo di ciascuno.'),
+        out(`from bs4 import BeautifulSoup\nhtml = "<div><p>Ciao</p></div>"\nsoup = BeautifulSoup(html, "html.parser")\nprint(soup.find("span") is None, soup.div.p.text)`, ['True Ciao', 'False Ciao', 'None Ciao', 'Errore'], '`find` restituisce `None` se non ci sono corrispondenze (non c’è nessuno span). `soup.div.p` scende fino al paragrafo dentro il div.'),
+      ],
+    },
+    // ───────────── Giorno 27 ─────────────
     {
       id: 'py-build-api',
-      t: 'Costruire un’API',
-      d: 'Un’API REST con Flask: rotte, jsonify, codici di stato e validazione.',
+      t: 'Creare la tua API',
+      d: 'Un’API REST con Flask: rotte, JSON, codici di stato e validazione di ciò che arriva.',
       guide: [
-        { h: 'Dall’usare al creare', p: [
-          'Ora tocca a te stare dall’altra parte: creare un’API che altri programmi possano usare. Con Flask, ogni rotta restituisce JSON con `jsonify()`.',
-          'Un’API REST organizza gli URL per risorse (`/compiti`, `/compiti/3`) e usa il metodo HTTP per indicare l’azione.' ] },
+        { h: 'Framework web in Python', p: [
+          'Un framework web riceve le richieste HTTP del browser e decide cosa rispondere. In Python i più usati sono Flask (piccolo e flessibile), Django (completo, con ORM e pannello di amministrazione) e FastAPI (veloce e pensato per le API).',
+          'Oggi usiamo Flask: `pip install flask`.' ] },
+        { h: 'La tua prima applicazione Flask', p: [
+          'Ogni rotta è associata a una funzione con il decoratore `@app.route()`. Ciò che restituisce la funzione è ciò che vede il browser.',
+          'Avvia il server di sviluppo con `flask --app app run --debug` e apri http://127.0.0.1:5000 nel browser.' ],
+          code: `# app.py\nfrom flask import Flask\n\napp = Flask(__name__)\n\n@app.route("/")\ndef home():\n    return "<h1>Ciao da Flask</h1>"\n\n@app.route("/ciao/<nome>")\ndef ciao(nome):\n    return f"Ciao, {nome}"` },
         { h: 'Leggere e creare risorse', p: [
           '`GET /compiti` li elenca tutti e `GET /compiti/<id>` ne restituisce uno. `POST /compiti` ne crea uno nuovo con il JSON del corpo, che leggi con `request.get_json()`.',
           'Restituisci il codice giusto: 201 quando crei e 404 se la risorsa non esiste.' ],
@@ -1080,49 +1037,130 @@
           code: `import secrets\nfrom flask import Flask, jsonify, request, redirect, abort\n\napp = Flask(__name__)\nlink = {}\n\n@app.post("/accorcia")\ndef accorcia():\n    url = (request.get_json(silent=True) or {}).get("url")\n    if not url or not url.startswith("http"):\n        return jsonify(errore="URL non valido"), 400\n    codice = secrets.token_urlsafe(4)\n    link[codice] = url\n    return jsonify(corto=f"{request.host_url}{codice}"), 201\n\n@app.get("/<codice>")\ndef vai(codice):\n    if codice not in link:\n        abort(404)\n    return redirect(link[codice])` },
       ],
       x: [
+        mc('Che cos’è Flask?', ['Un microframework per creare applicazioni web', 'Un database', 'Un editor di codice', 'Un gestore di pacchetti'], 'Flask è leggero e si amplia con le estensioni.'),
+        fill(`@app.___("/")\ndef home():\n    return "Ciao"`, ['route', 'get_route', 'path', 'url'], '`@app.route` associa un URL alla funzione.'),
+        mc('Con la rotta `/ciao/<nome>`, quale valore riceve `nome` visitando `/ciao/Ana`?', ['"Ana"', '"<nome>"', '"ciao"', 'None'], 'Le parti tra `< >` sono variabili dell’URL.'),
         fill(`from flask import Flask, ___\n\napp = Flask(__name__)\n\n@app.route("/api")\ndef api():\n    return jsonify({"ok": True})`, ['jsonify', 'json', 'dumps', 'JSON'], '`jsonify` crea una risposta HTTP con contenuto JSON.'),
         mc('Come leggi il JSON inviato in una richiesta POST con Flask?', ['request.get_json()', 'request.body', 'request.json_read()', 'input()'], 'Restituisce il corpo già trasformato in dizionario.'),
         mc('In `return jsonify(compito), 201`, che cos’è il 201?', ['Il codice di stato HTTP della risposta', 'L’id del compito', 'La porta del server', 'La dimensione della risposta'], '201 indica che la risorsa è stata creata.'),
-        mc('Quale metodo e quale rotta seguono la convenzione REST per eliminare il compito 5?', ['DELETE /compiti/5', 'GET /elimina/5', 'POST /compiti/delete', 'PUT /compiti'], 'L’URL nomina la risorsa e il metodo indica l’azione.'),
-        fill(`@app.___("/compiti")\ndef crea():\n    dati = request.get_json()\n    ...`, ['post', 'get', 'put', 'delete'], 'Da Flask 2.0, `@app.post` è una scorciatoia di `@app.route(..., methods=["POST"])`, il metodo per creare risorse.'),
-        mc('Quale vantaggio offre FastAPI?', ['Valida i dati con i tipi e genera documentazione automatica', 'Non ha bisogno di Python', 'Sostituisce il database', 'Funziona solo con HTML'], 'La sua documentazione interattiva si trova su `/docs`.'),
         mc('Arriva un POST senza il campo obbligatorio "titolo". Che cosa dovresti rispondere?', ['400 con un messaggio che spiega cosa manca', '500 Errore del server', '200 con un oggetto vuoto', '404 Non trovato'], '400 Bad Request indica che la richiesta del client è sbagliata, e il messaggio lo aiuta a correggerla.'),
         out(`from flask import Flask, jsonify\n\napp = Flask(__name__)\n\n@app.get("/compiti/<int:id>")\ndef mostra(id):\n    if id > 3:\n        return jsonify(errore="Non trovato"), 404\n    return jsonify(id=id)\n\nwith app.test_client() as c:\n    r = c.get("/compiti/7")\n    print(r.status_code, r.get_json()["errore"])`, ['404 Non trovato', '200 Non trovato', '404 None', '500 Errore'], '7 è maggiore di 3, quindi la rotta restituisce il JSON di errore con il codice 404, e `get_json()` lo trasforma in dizionario.'),
       ],
     },
-    // ───────────── Giorno 30 ─────────────
+    // ───────────── Giorno 28 ─────────────
     {
-      id: 'py-wrapup',
-      t: 'Conclusioni',
-      d: 'Ripasso finale della sfida, buone pratiche e come continuare a imparare.',
+      id: 'py-sqlite',
+      t: 'Database con SQLite',
+      d: 'Salvare dati in un vero database con sqlite3: tabelle, INSERT, SELECT, parametri sicuri e transazioni.',
       guide: [
-        { h: 'Che cosa hai imparato', p: [
-          'In 30 giorni sei passato da `print("Ciao, mondo")` all’analisi dei dati con pandas, all’uso delle API e alla creazione del tuo servizio web. Hai visto tipi, collezioni, funzioni, classi, eccezioni, file, espressioni regolari e l’ecosistema dei pacchetti.',
-          'La cosa più importante non è ricordare ogni funzione, ma saper dividere un problema in parti e cercare nella documentazione ciò che ti serve.' ] },
-        { h: 'Codice pythonico', p: [
-          'Lo Zen di Python (`import this`) riassume lo stile del linguaggio: il bello è meglio del brutto, l’esplicito meglio dell’implicito e il semplice meglio del complesso.',
-          'Segui la guida di stile PEP 8 e usa strumenti come `ruff` o `black` per formattare il codice automaticamente.' ],
-          code: `nomi = ["Ana", "Luis", "Eva", "Carla"]\n\n# Meno pythonico\nrisultato = []\nfor i in range(len(nomi)):\n    if len(nomi[i]) > 3:\n        risultato.append(nomi[i].upper())\n\n# Pythonico\nrisultato = [n.upper() for n in nomi if len(n) > 3]\nprint(risultato)  # ['LUIS', 'CARLA']` },
-        { h: 'Errori da evitare', p: [
-          'Usare liste o dizionari come valore predefinito di un parametro: vengono condivisi tra le chiamate. Usa `None` e crea l’oggetto dentro la funzione.',
-          'Catturare le eccezioni con un `except:` vuoto, che nasconde errori veri. Cattura sempre il tipo preciso.' ],
-          code: `# Sbagliato: la lista è condivisa tra le chiamate\ndef aggiungi(x, lista=[]):\n    lista.append(x)\n    return lista\n\n# Giusto\ndef aggiungi(x, lista=None):\n    if lista is None:\n        lista = []\n    lista.append(x)\n    return lista` },
-        { h: 'Come continuare', p: [
-          'Scegli un ambito e costruisci progetti: analisi dei dati con pandas e Jupyter, sviluppo web con Django o FastAPI, automazione di attività o intelligenza artificiale con scikit-learn e PyTorch.',
-          'Leggi il codice di progetti open source, pubblica il tuo su GitHub e chiedi revisioni. A programmare si impara programmando.' ] },
-        { h: 'Esempio reale: il tuo progetto finale', real: true, p: [
-          'Un progetto che mette insieme tutto il corso: scarica dati da un’API, li salva in un CSV e genera un riepilogo con pandas. Amplialo come vuoi con un grafico, un sito Flask o un avviso via e-mail.' ],
-          code: `import csv\nimport requests\nimport pandas as pd\n\ndef scarica_meteo(lat, lon):\n    r = requests.get("https://api.open-meteo.com/v1/forecast",\n                     params={"latitude": lat, "longitude": lon,\n                             "daily": "temperature_2m_max", "timezone": "auto"},\n                     timeout=10)\n    r.raise_for_status()\n    return r.json()["daily"]\n\ndati = scarica_meteo(41.90, 12.50)\nwith open("meteo.csv", "w", newline="", encoding="utf-8") as f:\n    w = csv.writer(f)\n    w.writerow(["data", "massima"])\n    w.writerows(zip(dati["time"], dati["temperature_2m_max"]))\n\ndf = pd.read_csv("meteo.csv")\nprint(df.describe())` },
+        { h: 'Perché un database?', p: [
+          'Un CSV o un JSON vanno bene con pochi dati. Quando ci sono migliaia di righe, più persone che scrivono insieme o domande come «quanto ha speso ogni cliente?», un database è più veloce e più sicuro.',
+          'SQLite tiene tutto il database in un solo file ed è incluso in Python con il modulo `sqlite3`: non c’è niente da installare. Lo usano i telefoni, i browser e tantissime applicazioni.',
+          'Le query si scrivono in SQL, un linguaggio pensato per i dati. Le basi si imparano in un pomeriggio e funzionano allo stesso modo in PostgreSQL o MySQL.' ] },
+        { h: 'Connettersi e creare una tabella', p: [
+          '`connect()` apre il file (o lo crea) e `":memory:"` crea un database temporaneo che sparisce alla chiusura, perfetto per i test.',
+          'Una tabella definisce colonne con il loro tipo. `INTEGER PRIMARY KEY` numera ogni riga da sola e `NOT NULL` impedisce di lasciare vuoto quel dato.' ],
+          code: `import sqlite3\n\ncon = sqlite3.connect("negozio.db")  # ":memory:" per un database temporaneo\ncon.execute("""\n    CREATE TABLE IF NOT EXISTS prodotti (\n        id INTEGER PRIMARY KEY,\n        nome TEXT NOT NULL,\n        prezzo REAL NOT NULL\n    )\n""")` },
+        { h: 'Inserire con i parametri', p: [
+          'I valori vanno nella query come `?` e si passano a parte in una tupla. Non inserire mai i dati dell’utente con una f-string: qualcuno potrebbe scrivere SQL che cambia la query (SQL injection).',
+          '`executemany()` inserisce molte righe in una volta. Le modifiche non si salvano fino a `commit()`.' ],
+          code: `con.execute("INSERT INTO prodotti (nome, prezzo) VALUES (?, ?)", ("Semi", 4.5))\ncon.executemany(\n    "INSERT INTO prodotti (nome, prezzo) VALUES (?, ?)",\n    [("Fieno", 7.25), ("Carota", 1.25)],\n)\ncon.commit()` },
+        { h: 'Interrogare', p: [
+          '`SELECT` sceglie le colonne, `WHERE` filtra e `ORDER BY` ordina. Scorrere il risultato dà una tupla per riga.',
+          '`fetchone()` restituisce solo la prima riga, comodo per conti come `COUNT(*)` o `SUM()`.' ],
+          code: `query = "SELECT nome, prezzo FROM prodotti WHERE prezzo > ? ORDER BY prezzo"\nfor nome, prezzo in con.execute(query, (2,)):\n    print(nome, prezzo)\n# Semi 4.5\n# Fieno 7.25\nprint(con.execute("SELECT COUNT(*), SUM(prezzo) FROM prodotti").fetchone())  # (3, 13.0)` },
+        { h: 'Transazioni con with', p: [
+          'Usare la connessione con `with` raggruppa le modifiche in una transazione: se va tutto bene si salvano, e se c’è un errore si annullano tutte. Così un’operazione non resta mai a metà.' ],
+          code: `with con:  # commit se va tutto bene, rollback se c'è un errore\n    con.execute("UPDATE prodotti SET prezzo = prezzo * 0.9 WHERE nome = ?", ("Fieno",))\ncon.close()` },
+        { h: 'Esempio reale: quanto spende ogni cliente', real: true, p: [
+          '`GROUP BY` riunisce le righe di ogni cliente e `SUM()` ne somma gli importi. Quello che in Python sarebbe un ciclo con un dizionario in SQL è una riga, e funziona allo stesso modo con un milione di ordini.' ],
+          code: `import sqlite3\n\ncon = sqlite3.connect(":memory:")\ncon.execute("CREATE TABLE ordini (cliente TEXT, importo REAL)")\nwith con:\n    con.executemany(\n        "INSERT INTO ordini VALUES (?, ?)",\n        [("Ana", 12.5), ("Leo", 4.0), ("Ana", 7.5)],\n    )\nquery = "SELECT cliente, SUM(importo) FROM ordini GROUP BY cliente ORDER BY 2 DESC"\nfor cliente, totale in con.execute(query):\n    print(f"{cliente}: {totale:.2f} €")\n# Ana: 20.00 €\n# Leo: 4.00 €` },
       ],
       x: [
-        out(`def conta():\n    yield 1\n    yield 2\n\nprint(list(conta()))`, ['[1, 2]', '1', '[1]', 'Errore'], 'Una funzione con `yield` è un generatore; `list()` ne raccoglie tutti i valori.'),
-        out(`print(sum(n for n in range(5) if n % 2))`, ['4', '10', '6', '2'], 'Somma i dispari da 0 a 4: 1 + 3 = 4.'),
-        fill(`print(", ".___(["a", "b", "c"]))  # a, b, c`, ['join', 'split', 'concat', 'append'], '`join` unisce gli elementi usando il testo come separatore.'),
-        out(`def f(x, lista=[]):\n    lista.append(x)\n    return lista\n\nf(1)\nprint(f(2))`, ['[1, 2]', '[2]', '[1]', 'Errore'], 'Il valore predefinito mutabile si crea una sola volta e viene condiviso tra le chiamate. Usa `None` come predefinito.'),
-        out(`x = [1, 2, 3]\nprint(x[::-1], x)`, ['[3, 2, 1] [1, 2, 3]', '[3, 2, 1] [3, 2, 1]', '[1, 2, 3] [3, 2, 1]', 'Errore'], 'Lo slicing crea una lista nuova; l’originale non cambia.'),
-        out(`print(bool([]), bool([0]))`, ['False True', 'True True', 'False False', 'True False'], 'Una lista vuota è falsa; una lista con qualsiasi elemento, anche 0, è vera.'),
-        mc('Quale guida descrive lo stile consigliato per scrivere codice Python?', ['PEP 8', 'PEP 20', 'ISO 9001', 'RFC 2616'], 'PEP 8 è la guida di stile; PEP 20 è lo Zen di Python che mostra `import this`.'),
-        out(`def f(n, memo={}):\n    if n in memo:\n        return memo[n]\n    memo[n] = n if n < 2 else f(n - 1) + f(n - 2)\n    return memo[n]\n\nprint(f(10), len(f.__defaults__[0]))`, ['55 11', '55 10', '89 11', 'Errore'], 'È Fibonacci con memoria: f(10) vale 55. Il dizionario predefinito è condiviso tra le chiamate e finisce con le chiavi da 0 a 10, cioè 11 voci. Qui quel comportamento si usa apposta come cache.'),
+        mc('Quale modulo porta SQLite con Python, senza installare niente?', ['sqlite3', 'pymongo', 'sqlalchemy', 'sqlite'], 'Il modulo `sqlite3` fa parte della libreria standard.'),
+        mc('Che cosa fa `con.commit()`?', ['Salva in modo definitivo le modifiche in sospeso', 'Chiude la connessione', 'Annulla le ultime modifiche', 'Crea il database'], 'Fino al `commit()`, le modifiche fanno parte di una transazione aperta e non sono salvate.'),
+        fill(`con.execute("INSERT INTO prodotti (nome, prezzo) VALUES (___, ?)", ("Semi", 4.5))`, ['?', '%s', '{}', '$1'], 'In `sqlite3` ogni valore si indica con `?` e si passa a parte. `%s` e `$1` sono di altri connettori.'),
+        mc('Perché non bisogna mettere nella query il testo scritto dall’utente con una f-string?', ['Perché permette una SQL injection: l’utente potrebbe cambiare la query', 'Perché le f-string non funzionano con SQLite', 'Perché la query è più lenta', 'Perché SQLite non accetta testo'], 'Con `?`, SQLite tratta sempre il dato come un valore e mai come parte dell’SQL.'),
+        out(`import sqlite3\ncon = sqlite3.connect(":memory:")\ncon.execute("CREATE TABLE t (n INTEGER)")\ncon.executemany("INSERT INTO t VALUES (?)", [(1,), (2,), (3,)])\nprint(con.execute("SELECT SUM(n) FROM t").fetchone())`, ['(6,)', '6', '[6]', '(1, 2, 3)'], '`fetchone()` restituisce una riga come tupla, anche se ha una sola colonna.'),
+        typ('Completa la query che legge tutte le colonne della tabella prodotti', `SELECT ___ FROM prodotti`, '*', 'L’asterisco significa «tutte le colonne».'),
+        out(`import sqlite3\ncon = sqlite3.connect(":memory:")\ncon.execute("CREATE TABLE p (nome TEXT, prezzo REAL)")\ncon.executemany("INSERT INTO p VALUES (?, ?)", [("a", 3.0), ("b", 1.0), ("c", 2.0)])\nprint([n for (n,) in con.execute("SELECT nome FROM p ORDER BY prezzo")])`, ["['b', 'c', 'a']", "['a', 'b', 'c']", "['a', 'c', 'b']", "[('b',), ('c',), ('a',)]"], '`ORDER BY prezzo` ordina dal più economico al più caro, e `(n,)` spacchetta la tupla di ogni riga.'),
+        out(`import sqlite3\ncon = sqlite3.connect(":memory:")\ncon.execute("CREATE TABLE ordini (cliente TEXT, importo REAL)")\ntry:\n    with con:\n        con.execute("INSERT INTO ordini VALUES (?, ?)", ("Ana", 10.0))\n        con.execute("INSERT INTO ordini VALUES (?, ?, ?)", ("Leo", 5.0, 1))\nexcept sqlite3.OperationalError:\n    pass\nprint(con.execute("SELECT COUNT(*) FROM ordini").fetchone()[0])`, ['0', '1', '2', 'OperationalError'], 'Il secondo inserimento passa 3 valori a una tabella di 2 colonne e fallisce. `with con` annulla tutta la transazione, anche il primo inserimento.'),
+      ],
+    },
+    // ───────────── Giorno 29 ─────────────
+    {
+      id: 'py-pytest',
+      t: 'Testare il codice con pytest',
+      d: 'Scrivere test automatici con assert e pytest: casi normali, casi limite, eccezioni e fixture.',
+      guide: [
+        { h: 'Perché scrivere test?', p: [
+          'Un test è codice che controlla che un altro codice faccia ciò che deve. Si esegue in un secondo ogni volta che cambi qualcosa e ti avvisa se hai rotto qualcosa che funzionava.',
+          '`assert` controlla una condizione: se è vera non succede nulla e, se è falsa, solleva `AssertionError`. È il mattone di base di qualsiasi test.' ],
+          code: `def prezzo_con_iva(prezzo):\n    return round(prezzo * 1.21, 2)\n\nassert prezzo_con_iva(100) == 121.0\nassert prezzo_con_iva(0) == 0\nprint("Tutto corretto")  # Tutto corretto` },
+        { h: 'Il tuo primo test con pytest', p: [
+          'Installa pytest con `pip install pytest` nell’ambiente del progetto. Cerca solo i file `test_*.py` e, al loro interno, le funzioni che iniziano con `test_`.',
+          'Eseguilo con `pytest` nella cartella del progetto. Mostra un punto per ogni test superato e una `F` per ogni fallimento, con il valore atteso e quello ottenuto.' ],
+          code: `# test_prezzi.py\nfrom prezzi import prezzo_con_iva\n\ndef test_prezzo_normale():\n    assert prezzo_con_iva(100) == 121.0\n\ndef test_prezzo_zero():\n    assert prezzo_con_iva(0) == 0` },
+        { h: 'Casi limite ed eccezioni', p: [
+          'Gli errori amano nascondersi ai bordi: lo zero, i negativi, una lista vuota. Provali di proposito.',
+          '`pytest.raises` controlla che venga sollevata un’eccezione. I decimali non sono esatti, quindi si confrontano con `pytest.approx`.' ],
+          code: `import pytest\nfrom prezzi import prezzo_con_iva\n\ndef test_prezzo_negativo():\n    with pytest.raises(ValueError):\n        prezzo_con_iva(-5)  # la funzione deve sollevare ValueError\n\ndef test_decimali():\n    assert 0.1 + 0.2 == pytest.approx(0.3)` },
+        { h: 'Molti casi con parametrize', p: [
+          'Invece di copiare lo stesso test con altri numeri, `@pytest.mark.parametrize` lo esegue una volta per ogni caso della lista e, se uno fallisce, ti dice quale.' ],
+          code: `import pytest\nfrom prezzi import prezzo_con_iva\n\n@pytest.mark.parametrize("prezzo, atteso", [(100, 121.0), (10, 12.1), (0, 0)])\ndef test_prezzo_con_iva(prezzo, atteso):\n    assert prezzo_con_iva(prezzo) == atteso` },
+        { h: 'Esempio reale: testare il database del negozio', real: true, p: [
+          'Una fixture prepara ciò che serve ai test. pytest la esegue prima di ogni test che la chiede indicandola come parametro.',
+          'Qui ogni test riceve un database vuoto in memoria, così nessuno dipende da un altro né tocca i dati veri. Quello che viene dopo `yield` si esegue alla fine, per fare pulizia.' ],
+          code: `import sqlite3\nimport pytest\n\n@pytest.fixture\ndef con():\n    con = sqlite3.connect(":memory:")\n    con.execute("CREATE TABLE prodotti (nome TEXT, prezzo REAL)")\n    yield con\n    con.close()\n\ndef test_inserire(con):\n    con.execute("INSERT INTO prodotti VALUES (?, ?)", ("Semi", 4.5))\n    assert con.execute("SELECT COUNT(*) FROM prodotti").fetchone()[0] == 1\n\ndef test_inizia_vuoto(con):\n    assert con.execute("SELECT COUNT(*) FROM prodotti").fetchone()[0] == 0` },
+      ],
+      x: [
+        mc('Che cosa succede con `assert prezzo_con_iva(100) == 121.0` se la funzione restituisce 120?', ['Solleva AssertionError', 'Stampa False e continua', 'Restituisce 120', 'Niente'], 'Se la condizione di `assert` è falsa, viene sollevata `AssertionError`; pytest la mostra come test fallito.'),
+        mc('Come trova pytest i test?', ['Cerca i file test_*.py e le funzioni che iniziano con test_', 'Esegue tutte le funzioni del progetto', 'Legge un elenco in requirements.txt', 'Esegue solo main.py'], 'pytest segue una convenzione sui nomi: file `test_*.py` e funzioni `test_*`.'),
+        out(`def doppio(n):\n    return n * 2\n\ntry:\n    assert doppio(3) == 5\n    print("ok")\nexcept AssertionError:\n    print("fallito")`, ['fallito', 'ok', '6', 'AssertionError'], '`doppio(3)` vale 6, non 5: l’`assert` solleva `AssertionError` prima di arrivare al `print("ok")`.'),
+        fill(`import pytest\n\ndef test_divisione():\n    with pytest.___(ZeroDivisionError):\n        1 / 0`, ['raises', 'catch', 'expect', 'error'], '`pytest.raises` fa passare il test solo se dentro il blocco viene sollevata quell’eccezione.'),
+        mc('Perché `assert 0.1 + 0.2 == 0.3` fallisce?', ['Perché i numeri in virgola mobile non sono esatti: la somma dà 0.30000000000000004', 'Perché assert non accetta le somme', 'Perché 0.3 è un testo', 'Perché bisogna usare is invece di =='], 'I `float` si salvano in binario con un piccolo errore. Per confrontarli si usa `pytest.approx` o `math.isclose`.'),
+        typ('Scrivi il decoratore che trasforma la funzione in una fixture', `import pytest\n\n@pytest.___\ndef carrello():\n    return []`, 'fixture', '`@pytest.fixture` marca la funzione; i test la ricevono indicando `carrello` come parametro.'),
+        out(`import math\nprint(0.1 + 0.2 == 0.3, math.isclose(0.1 + 0.2, 0.3))`, ['False True', 'True True', 'False False', 'True False'], '`==` confronta il valore esatto, che non coincide. `math.isclose` accetta una differenza minima, come `pytest.approx`.'),
+        out(`def sconto(totale):\n    if totale < 0:\n        raise ValueError("totale negativo")\n    return totale * 0.1 if totale >= 50 else 0\n\ncasi = [(100, 10.0), (49, 0), (50, 0), (-1, None)]\nfallimenti = 0\nfor totale, atteso in casi:\n    try:\n        if sconto(totale) != atteso:\n            fallimenti += 1\n    except ValueError:\n        pass\nprint(fallimenti)`, ['1', '0', '2', 'ValueError'], 'Fallisce solo il caso (50, 0): da 50 c’è già lo sconto e la funzione dà 5.0. -1 solleva `ValueError`, che viene catturata e non conta come fallimento.'),
+      ],
+    },
+    // ───────────── Giorno 30 ─────────────
+    {
+      id: 'py-workshop-shop',
+      t: 'Il laboratorio di Kibi: il negozio completo',
+      d: 'Progetto finale: il negozio di Kibi con dataclass, un database SQLite, un’API con Flask e test con pytest.',
+      guide: [
+        { h: 'L’incarico', p: [
+          'Quattro settimane dopo, il negozio di Kibi ha bisogno di qualcosa di serio: un catalogo salvato in un database e un’API perché un sito o un’app possano consultare i prodotti e fare ordini.',
+          'Mettiamo insieme l’ultima settimana con tutto quello che c’era prima. Ogni file ha un solo compito, così si capisce meglio e si può testare pezzo per pezzo.' ],
+          code: `negozio/\n├── .venv/\n├── requirements.txt   # flask, pytest\n├── modello.py         # la classe Prodotto\n├── dati.py            # funzioni che parlano con SQLite\n├── api.py             # rotte di Flask\n└── test_negozio.py    # test` },
+        { h: 'Passo 1: il modello', p: [
+          'Una dataclass descrive un prodotto. Il metodo `disponibile()` contiene la regola di business: si può ordinare una quantità positiva che non superi le scorte.' ],
+          code: `# modello.py\nfrom dataclasses import dataclass\n\n@dataclass\nclass Prodotto:\n    nome: str\n    prezzo: float\n    scorte: int = 0\n\n    def disponibile(self, quantita):\n        return 0 < quantita <= self.scorte` },
+        { h: 'Passo 2: i dati in SQLite', p: [
+          '`dati.py` è l’unico file che conosce l’SQL. Se un giorno cambi database, tocchi solo questo file.',
+          '`INSERT OR REPLACE` aggiorna il prodotto se ne esisteva già uno con lo stesso nome, perché il nome è la chiave primaria.' ],
+          code: `# dati.py\nimport sqlite3\nfrom modello import Prodotto\n\ndef connetti(percorso="negozio.db"):\n    con = sqlite3.connect(percorso)\n    con.execute("CREATE TABLE IF NOT EXISTS prodotti (nome TEXT PRIMARY KEY, prezzo REAL, scorte INTEGER)")\n    return con\n\ndef salva(con, p):\n    with con:\n        con.execute("INSERT OR REPLACE INTO prodotti VALUES (?, ?, ?)", (p.nome, p.prezzo, p.scorte))\n\ndef cerca(con, nome):\n    riga = con.execute("SELECT nome, prezzo, scorte FROM prodotti WHERE nome = ?", (nome,)).fetchone()\n    return Prodotto(*riga) if riga else None` },
+        { h: 'Passo 3: l’API', p: [
+          'Due rotte: una per vedere un prodotto e una per ordinarlo. Ogni risposta ha il suo codice di stato: 404 se non esiste, 400 se non ci sono scorte e 201 se l’ordine viene creato.',
+          'Ti resta un miglioramento: togliere dalle scorte la quantità ordinata e salvarla con `salva()`.' ],
+          code: `# api.py\nfrom flask import Flask, jsonify, request\nfrom dati import connetti, cerca\n\napp = Flask(__name__)\n\n@app.get("/prodotti/<nome>")\ndef mostra(nome):\n    p = cerca(connetti(), nome)\n    if p is None:\n        return jsonify(errore="Non esiste"), 404\n    return jsonify(nome=p.nome, prezzo=p.prezzo, scorte=p.scorte)\n\n@app.post("/ordini")\ndef ordina():\n    corpo = request.get_json()\n    p = cerca(connetti(), corpo.get("prodotto", ""))\n    if p is None or not p.disponibile(corpo.get("quantita", 0)):\n        return jsonify(errore="Scorte esaurite"), 400\n    return jsonify(totale=round(p.prezzo * corpo["quantita"], 2)), 201` },
+        { h: 'Esempio reale: testare il negozio prima di aprirlo', real: true, p: [
+          'I test usano un database in memoria, così si possono eseguire mille volte senza toccare `negozio.db`. Con `pytest` nel terminale sai in un secondo se il negozio funziona ancora dopo ogni modifica.' ],
+          code: `# test_negozio.py\nimport pytest\nfrom modello import Prodotto\nfrom dati import connetti, salva, cerca\n\n@pytest.fixture\ndef con():\n    return connetti(":memory:")\n\ndef test_salva_e_cerca(con):\n    salva(con, Prodotto("Semi", 4.5, 10))\n    assert cerca(con, "Semi") == Prodotto("Semi", 4.5, 10)\n\ndef test_non_esiste(con):\n    assert cerca(con, "Kiwi") is None\n\ndef test_senza_scorte():\n    assert not Prodotto("Fieno", 7.25, 2).disponibile(3)` },
+        { h: 'Come continuare', p: [
+          'In quattro settimane hai fatto tutta la strada da `print("Ciao, mondo")` a un’applicazione con modello, database, API e test. È la stessa struttura di molti progetti professionali, solo più piccola.',
+          'Prossimi passi: metti il progetto su Git, usa un formattatore come `ruff` o `black`, aggiungi una pagina web che chiami l’API e pubblicala su un servizio di hosting. Scegli un tuo problema e risolvilo con ciò che sai: è il modo più veloce per continuare a imparare.' ] },
+      ],
+      x: [
+        mc('Perché il negozio separa modello.py, dati.py e api.py?', ['Perché ogni file abbia un solo compito e si possa testare da solo', 'Perché Python non accetta file lunghi', 'Perché il programma sia più veloce', 'Perché lo richiede Flask'], 'Separare le responsabilità rende il codice più facile da capire, cambiare e testare.'),
+        out(`from dataclasses import dataclass\n\n@dataclass\nclass Prodotto:\n    nome: str\n    prezzo: float\n    scorte: int = 0\n\n    def disponibile(self, quantita):\n        return 0 < quantita <= self.scorte\n\np = Prodotto("Semi", 4.5, 3)\nprint(p.disponibile(3), p.disponibile(0), p.disponibile(4))`, ['True False False', 'True True False', 'False False False', 'True False True'], '3 rientra nelle scorte; 0 non è una quantità positiva e 4 supera le scorte.'),
+        fill(`con.execute("SELECT prezzo FROM prodotti WHERE nome = ?", (___,))`, ['nome', '"nome"', 'f"{nome}"', '*nome'], 'Il valore va in una tupla a parte. `"nome"` cercherebbe letteralmente la parola «nome».'),
+        mc('L’API risponde `404` a `GET /prodotti/Kiwi`. Che cosa significa?', ['Che non esiste nessun prodotto chiamato Kiwi', 'Che il server è caduto', 'Che manca il corpo JSON', 'Che l’ordine è stato creato'], '404 significa «non trovato». Un server caduto darebbe un errore 5xx.'),
+        out(`def totale(prezzo, quantita):\n    return round(prezzo * quantita, 2)\n\nprint(totale(4.5, 3), totale(7.25, 2))`, ['13.5 14.5', '13.50 14.50', '13 14', '7.5 9.25'], '4.5 × 3 = 13.5 e 7.25 × 2 = 14.5. `round` non aggiunge zeri finali: lo farebbe un formato come `:.2f`.'),
+        mc('Che vantaggio ha la fixture che usa `connetti(":memory:")`?', ['Ogni test parte con un database vuoto e non tocca quello vero', 'I test si salvano in negozio.db', 'Non serve creare la tabella', 'Il database è condiviso da tutti i test'], 'Un database nuovo in memoria per ogni test rende i test indipendenti e ripetibili.'),
+        typ('Scrivi il codice di stato che restituisce l’API quando crea un ordine', `return jsonify(totale=13.5), ___`, '201', '201 significa «creato». 200 è un «OK» generico.'),
+        out(`import sqlite3\nfrom dataclasses import dataclass\n\n@dataclass\nclass Prodotto:\n    nome: str\n    prezzo: float\n    scorte: int = 0\n\ncon = sqlite3.connect(":memory:")\ncon.execute("CREATE TABLE prodotti (nome TEXT PRIMARY KEY, prezzo REAL, scorte INTEGER)")\nfor p in [Prodotto("Semi", 4.5, 10), Prodotto("Fieno", 7.25), Prodotto("Semi", 4.0, 8)]:\n    with con:\n        con.execute("INSERT OR REPLACE INTO prodotti VALUES (?, ?, ?)", (p.nome, p.prezzo, p.scorte))\nriga = con.execute("SELECT COUNT(*), SUM(scorte) FROM prodotti").fetchone()\nprint(riga, Prodotto(*con.execute("SELECT * FROM prodotti WHERE nome = 'Semi'").fetchone()))`, ["(2, 8) Prodotto(nome='Semi', prezzo=4.0, scorte=8)", "(3, 18) Prodotto(nome='Semi', prezzo=4.5, scorte=10)", "(2, 18) Prodotto(nome='Semi', prezzo=4.0, scorte=8)", 'sqlite3.IntegrityError'], 'Il secondo «Semi» sostituisce il primo perché il nome è la chiave primaria. Restano 2 prodotti: Semi con 8 di scorte e Fieno con 0.'),
       ],
     },
   ],

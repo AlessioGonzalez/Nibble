@@ -23,6 +23,9 @@
   const KEEP_DAYS = 120; // días de actividad que se guardan por dispositivo
   const V = 4;
   const order = c => (g.NibbleOrder && g.NibbleOrder[c]) || [];
+  // Las copias v3 se numeraron con el orden de entonces, no con el actual.
+  const orderV3 = c => (g.NibbleOrderV3 && g.NibbleOrderV3[c]) || order(c);
+  const ALIAS = () => g.NibbleAlias || {};
 
   const clone = o => JSON.parse(JSON.stringify(o));
   const zeroStats = () => Object.fromEntries(STATS.map(k => [k, 0]));
@@ -43,11 +46,26 @@
     const out = {};
     for (const k in map) {
       const p = k.split(':');
-      if (p.length >= 2 && /^\d+$/.test(p[1])) { const id = order(p[0])[+p[1] - off]; if (id) p[1] = id; }
+      if (p.length >= 2 && /^\d+$/.test(p[1])) { const id = orderV3(p[0])[+p[1] - off]; if (id) p[1] = id; }
       out[p.join(':')] = map[k];
     }
     return out;
   }
+  // Un día que se fusionó con otro (NibbleAlias) pasa sus claves al día que lo contiene; join une dos valores
+  // de la misma clave. Sin join, las claves del día fusionado se descartan (el repaso apunta a ejercicios que ya no están).
+  function unalias(map, join) {
+    const A = ALIAS(), out = {};
+    for (const k in map) if (!(k.split(':')[1] in A)) out[k] = map[k];
+    if (join) for (const k in map) {
+      const p = k.split(':');
+      if (!(p[1] in A)) continue;
+      p[1] = A[p[1]];
+      const nk = p.join(':');
+      out[nk] = nk in out ? join(out[nk], map[k]) : map[k];
+    }
+    return out;
+  }
+  const sumPair = (a, b) => [a[0] + b[0], a[1] + b[1]];
   // Completa una copia del estado (de cualquier versión anterior) con los campos que falten.
   function upgrade(s) {
     const st = Object.assign(fresh(), s ? clone(s) : {});
@@ -70,6 +88,11 @@
       for (const id in st.dev) if (st.dev[id] && st.dev[id].k) st.dev[id].k = rekey(st.dev[id].k, 1);
       st.v = V;
     }
+    st.done = unalias(st.done, (a, b) => a || b);
+    st.passed = unalias(st.passed, (a, b) => a | b);
+    for (const k in st.passed) if (st.done[k]) delete st.passed[k];
+    st.review = unalias(st.review, null);
+    for (const id in st.dev) if (st.dev[id] && st.dev[id].k) st.dev[id].k = unalias(st.dev[id].k, sumPair);
     return st;
   }
 

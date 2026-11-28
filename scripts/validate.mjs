@@ -28,6 +28,12 @@ for (const c of COURSES) {
   if (new Set(ids).size !== ids.length) errors.push(`order.js: ${c} tiene ids repetidos`);
 }
 if (new Set(COURSES.flatMap(c => ORDER[c] || [])).size !== COURSES.reduce((n, c) => n + (ORDER[c] || []).length, 0)) errors.push('order.js: un id se repite entre cursos');
+// Un día fusionado (NibbleAlias) ya no está en el temario, y el día que lo contiene sí.
+const allIds = new Set(COURSES.flatMap(c => ORDER[c] || []));
+for (const [from, to] of Object.entries(ctx.NibbleAlias || {})) {
+  if (allIds.has(from)) errors.push(`order.js: ${from} es un alias pero sigue en el temario`);
+  if (!allIds.has(to)) errors.push(`order.js: el alias ${from} apunta a ${to}, que no está en el temario`);
+}
 const missing = [];
 let exercises = 0;
 const err = (where, msg) => errors.push(`${where}: ${msg}`);

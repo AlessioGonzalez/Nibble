@@ -42,6 +42,10 @@ Cada día tiene un `id` fijo (`py-loops`, `java-maps`…), igual en los 4 idioma
 1. Cambia el orden en `order.js` y en los 4 archivos de idioma del curso (el validador comprueba que coinciden).
 2. Un día nuevo lleva un id nuevo. Un id nunca se reutiliza para otro tema.
 3. Revisa `UNLOCK_ID` en `assets/js/practice.js`: cada familia de ejercicios apunta al id del día que la enseña.
+4. Si fusionas dos días en uno, el día fusionado conserva uno de los dos ids y el otro se añade a `NibbleAlias` en `order.js` (`'id-antiguo': 'id-que-lo-contiene'`). Así el progreso del día que desaparece pasa al que lo contiene.
+5. No toques `NibbleOrderV3`: es el orden con el que se numeró el progreso antiguo (v3) y solo sirve para convertirlo.
+
+El temario de Python va por semanas: seis días de temas y un **Taller de Kibi** al final de cada una (días 7, 14, 21 y 30), un proyecto que junta lo de la semana sobre la tienda de Kibi.
 
 ### Temario y textos propios
 

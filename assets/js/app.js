@@ -1,7 +1,7 @@
 /* Nibble: interfaz. Depende de content-api.js, i18n.js y store.js. */
 (function () {
 'use strict';
-const VERSION = '4.2.0';
+const VERSION = '4.3.0';
 const Store = window.SintaxisStore;
 const P = window.NibbleProgress;
 const t = (k, v) => window.I18N.t(k, v);
@@ -200,7 +200,8 @@ function currentIndex(c) { for (let i = 0; i < DAYS * PER_DAY; i++) if (!S.done[
 const doneCount = c => { let n = 0; for (let i = 0; i < DAYS * PER_DAY; i++) if (S.done[nodeKey(c, Math.floor(i / PER_DAY), i % PER_DAY)]) n++; return n; };
 const dayDone = (c, d) => { let n = 0; for (let k = 0; k < PER_DAY; k++) if (S.done[nodeKey(c, d, k)]) n++; return n; };
 const currentDay = c => Math.min(DAYS - 1, Math.floor(currentIndex(c) / PER_DAY));
-const dayUnlocked = (c, d) => d * PER_DAY <= currentIndex(c);
+// Un día con algún nivel hecho sigue abierto aunque el temario se haya reordenado y haya otro pendiente antes.
+const dayUnlocked = (c, d) => d * PER_DAY <= currentIndex(c) || dayDone(c, d) > 0;
 const phase = d => (d >= 20 ? 2 : d >= 10 ? 1 : 0);
 
 /* ---------- contenido ---------- */
@@ -392,10 +393,13 @@ function renderMap() {
     <div class="hero-visual"><div class="hero-kibi">${kibi('idle', 76)}</div>${registerHTML(c, cd, { cur: all ? -1 : cur % PER_DAY })}</div>
     <span class="meter course" role="progressbar" aria-label="${t('map.title', { c: META[c].name })}" aria-valuemin="0" aria-valuemax="${DAYS * PER_DAY}" aria-valuenow="${dn}"><i style="width:${dn / (DAYS * PER_DAY) * 100}%"></i></span></section>`;
   if (S.stats.lessons === 0) h += `<div class="welcome">${kibi('idle', 52)}<div><b>${t('map.welcomeTitle')}</b><p>${t('map.welcome')}</p></div></div>`;
-  for (let p = 0; p < 3; p++) {
-    let full = 0; for (let d = p * 10; d < p * 10 + 10; d++) if (dayDone(c, d) === PER_DAY) full++;
-    h += `<section class="phase"><div class="phase-h"><h2>${t('phase.' + p)}</h2><span class="mono">${t('phase.days', { a: p * 10 + 1, b: p * 10 + 10 })} · ${full}/10</span></div><div class="dayrows">`;
-    for (let d = p * 10; d < p * 10 + 10; d++) h += dayRow(c, d, cur, cd);
+  // Un curso con semanas (NibbleWeeks) se agrupa por semana; el resto, en tres bloques de 10 días.
+  const weeks = window.NibbleWeeks && NibbleWeeks[c];
+  const groups = weeks ? weeks.map((b, i) => [i ? weeks[i - 1] : 0, b, t('phase.week', { n: i + 1 })]) : [0, 1, 2].map(p => [p * 10, p * 10 + 10, t('phase.' + p)]);
+  for (const [a, b, name] of groups) {
+    let full = 0; for (let d = a; d < b; d++) if (dayDone(c, d) === PER_DAY) full++;
+    h += `<section class="phase"><div class="phase-h"><h2>${name}</h2><span class="mono">${t('phase.days', { a: a + 1, b })} · ${full}/${b - a}</span></div><div class="dayrows">`;
+    for (let d = a; d < b; d++) h += dayRow(c, d, cur, cd);
     h += `</div></section>`;
   }
   return h + `</div>`;

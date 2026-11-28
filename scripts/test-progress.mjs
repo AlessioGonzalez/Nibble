@@ -118,8 +118,8 @@ test('conceptos: aciertos por tema, sumados entre dispositivos', () => {
   a.savedAt = 2; b.savedAt = 3;
   const m = P.merge(a, b);
   assert.deepEqual(m.skill['python:py-dicts'], [1, 3]);
-  // weak() da el id y el número actual del día (py-dicts es el día 8).
-  assert.deepEqual(P.weak(m, 'python', 3).map(w => [w.id, w.day]), [['py-dicts', 8]]);
+  // weak() da el id y el número actual del día (py-dicts es el día 10).
+  assert.deepEqual(P.weak(m, 'python', 3).map(w => [w.id, w.day]), [['py-dicts', 10]]);
   assert.deepEqual(P.weak(m, 'java', 1), []);
 });
 
@@ -192,6 +192,32 @@ test('v4: unir una copia v3 de otro dispositivo con una v4 no pierde nada', () =
     assert.ok(!Object.keys(m.done).some(k => /:\d+:/.test(k)), 'quedan claves con número de día');
     assert.deepEqual(P.pending(m, 'python'), ['python:py-operators:4']);
   }
+});
+
+test('v4: una copia v3 se convierte con el orden de entonces, no con el actual', () => {
+  // En la v3, py-dicts era el día 8 (índice 7) y py-conditionals el 9 (índice 8); ahora son el 10 y el 5.
+  const m = P.upgrade({ v: 3, savedAt: 1, done: { 'python:7:0': true, 'python:8:3': true }, dev: {} });
+  assert.deepEqual(Object.keys(m.done).sort(), ['python:py-conditionals:3', 'python:py-dicts:0']);
+});
+
+test('días fusionados: su progreso pasa al día que los contiene', () => {
+  // v3: py-tuples era el índice 5 y py-sets el 6; ahora py-sets forma parte de py-tuples.
+  const m = P.totals(P.upgrade({
+    v: 3, savedAt: 1, done: { 'python:5:0': true, 'python:6:0': true, 'python:6:1': true },
+    passed: { 'python:6:2': 3, 'python:5:2': 4 }, review: { 'python:6:1': [5, 0], 'python:5:3': [5, 0] },
+    dev: { A: { xp: 0, c: {}, s: {}, d: {}, k: { 'python:6': [1, 2], 'python:7': [3, 4] } } },
+  }));
+  assert.deepEqual(Object.keys(m.done).sort(), ['python:py-tuples:0', 'python:py-tuples:1']);
+  assert.deepEqual(m.passed, { 'python:py-tuples:2': 7 });
+  // El repaso del día fusionado apunta a ejercicios que ya no están: se descarta.
+  assert.deepEqual(P.pending(m, 'python'), ['python:py-tuples:3']);
+  assert.deepEqual(m.skill['python:py-tuples'], [4, 6]);
+  assert.ok(!JSON.stringify(m).includes('py-sets'));
+  // Una copia v4 con el id antiguo (un dispositivo sin actualizar) también se une sin perder nada.
+  const v4 = { v: 4, savedAt: 2, done: { 'python:py-sets:5': true }, dev: {} };
+  const u = P.merge(m, v4);
+  assert.ok(u.done['python:py-tuples:5'] && u.done['python:py-tuples:0']);
+  assert.deepEqual(P.upgrade(u).done, u.done);
 });
 
 test('v4: los ids de order.js son únicos y hay 30 por curso', () => {

@@ -44,10 +44,10 @@
   const UNLOCK_ID = {
     python: {
       print: 'py-intro', arith: 'py-intro', chain: 'py-intro', strmul: 'py-intro', concat: 'py-vars', vars: 'py-vars',
-      varw: 'py-vars', arith2: 'py-operators', cmp: 'py-operators', str: 'py-strings', list: 'py-lists', appendw: 'py-lists',
-      setf: 'py-sets', dict: 'py-dicts', dictw: 'py-dicts', cond: 'py-conditionals', ifw: 'py-conditionals', cond3: 'py-loops',
-      loop: 'py-loops', loopw: 'py-loops', loopif: 'py-functions', func: 'py-functions', callw: 'py-functions', retw: 'py-functions',
-      hof: 'py-comprehensions', exc: 'py-exceptions', cls: 'py-classes', inh: 'py-scraping',
+      varw: 'py-vars', arith2: 'py-operators', cmp: 'py-operators', str: 'py-strings', cond: 'py-conditionals', ifw: 'py-conditionals',
+      cond3: 'py-conditionals', loop: 'py-loops', loopw: 'py-loops', loopif: 'py-loops', list: 'py-lists', appendw: 'py-lists',
+      setf: 'py-tuples', dict: 'py-dicts', dictw: 'py-dicts', func: 'py-functions', callw: 'py-functions', retw: 'py-functions',
+      hof: 'py-comprehensions', exc: 'py-exceptions', cls: 'py-classes', inh: 'py-inheritance',
     },
     javascript: {
       print: 'js-intro', arith: 'js-intro', chain: 'js-intro', concat: 'js-types', vars: 'js-types', varw: 'js-types',
