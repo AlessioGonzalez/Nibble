@@ -371,7 +371,7 @@
           '`pop(clave)` borra y devuelve el valor; `del d[clave]` solo borra. `in` comprueba si existe una clave (no un valor).' ],
           code: `stock = {"manzanas": 10}\nstock["peras"] = 5       # añade\nstock["manzanas"] -= 3   # modifica\nstock.update({"uvas": 8})\ndel stock["peras"]\nprint(stock)             # {'manzanas': 7, 'uvas': 8}\nprint("uvas" in stock)   # True` },
         { h: 'Recorrer un diccionario', p: [
-          '`keys()` da las claves, `values()` los valores e `items()` los pares. Con `for clave, valor in d.items()` recorres todo a la vez (los bucles los verás a fondo en el día 10).',
+          '`keys()` da las claves, `values()` los valores e `items()` los pares. Con `for clave, valor in d.items()` recorres todo a la vez.',
           'Desde Python 3.7 los diccionarios mantienen el orden en que insertaste las claves.' ],
           code: `notas = {"Ana": 9, "Luis": 6, "Eva": 8}\nfor alumno, nota in notas.items():\n    print(alumno, "->", nota)\nprint(list(notas.keys()))  # ['Ana', 'Luis', 'Eva']\nprint(sum(notas.values()) / len(notas))  # 7.666666666666667` },
         { h: 'Datos anidados', p: [
@@ -731,7 +731,7 @@
           code: `def crear_descuento(porcentaje):\n    def aplicar(precio):\n        return precio * (1 - porcentaje / 100)\n    return aplicar\n\nrebajas = crear_descuento(20)\nprint(rebajas(50))  # 40.0` },
         { h: 'Decoradores', p: [
           'Un decorador es una función que recibe otra y devuelve una versión ampliada. Se aplica con `@nombre` encima del `def`.',
-          'Se usan para registrar llamadas, medir tiempos, comprobar permisos o cachear resultados sin tocar la función original. Flask, que verás el día 26, los usa para las rutas.' ],
+          'Se usan para registrar llamadas, medir tiempos, comprobar permisos o cachear resultados sin tocar la función original. Flask, que verás el día 27, los usa para las rutas.' ],
           code: `def registrar(funcion):\n    def envoltura(*args):\n        print("Llamando a", funcion.__name__)\n        return funcion(*args)\n    return envoltura\n\n@registrar\ndef sumar(a, b):\n    return a + b\n\nprint(sumar(2, 3))\n# Llamando a sumar\n# 5` },
         { h: 'Ejemplo real: catálogo de una tienda', real: true, p: [
           'Con `filter`, `map`, `sorted` y `max` con `key` puedes responder preguntas sobre un catálogo: qué productos cuestan menos de 20 € y cuál es el más caro.' ],

@@ -127,6 +127,85 @@
     },
     // ───────────────────────── Día 4
     {
+      id: 'cpp-conditionals',
+      t: 'Condicionales',
+      d: 'if, else if, switch, el operador ternario y FizzBuzz.',
+      guide: [
+        { h: 'if, else if y else', p: [
+          '`if (condición)` ejecuta un bloque solo si la condición es verdadera. `else if` encadena más casos y `else` recoge todo lo demás.',
+          'Usa siempre llaves `{ }`, aunque el bloque tenga una sola línea: evita errores al añadir líneas después.' ],
+          code: `int nota = 7;\nif (nota >= 9) {\n    std::cout << "Sobresaliente";\n} else if (nota >= 7) {\n    std::cout << "Notable";     // se ejecuta este\n} else if (nota >= 5) {\n    std::cout << "Aprobado";\n} else {\n    std::cout << "Suspenso";\n}` },
+        { h: 'Verdadero, falso y el error de =', p: [
+          'En C++ cualquier número distinto de 0 cuenta como verdadero y el 0 como falso.',
+          'Error clásico: `if (x = 5)` asigna 5 a `x` (en vez de comparar) y siempre es verdadero. Para comparar se usa `==`. Compila con `-Wall` y el compilador te avisará.',
+          'Desde C++17 puedes declarar una variable dentro del `if`: `if (auto pos = s.find(\'@\'); pos != std::string::npos)`. Así solo existe donde se usa.' ] },
+        { h: 'switch', p: [
+          '`switch` compara un entero, `char` o `enum` con varios `case`. No funciona con `std::string`.',
+          'Cada `case` debe acabar en `break`; si no, la ejecución "cae" en el siguiente caso. A veces se hace a propósito para agrupar casos.',
+          '`default` se ejecuta cuando ningún caso coincide.' ],
+          code: `char opcion = 'b';\nswitch (opcion) {\n    case 'a':\n        std::cout << "Nueva partida";\n        break;\n    case 'b':\n    case 'c':                   // b y c hacen lo mismo\n        std::cout << "Cargar partida";\n        break;\n    default:\n        std::cout << "Opción no válida";\n}` },
+        { h: 'El operador ternario', p: [
+          '`std::string` es el tipo de C++ para guardar texto; lo verás a fondo en el día 6.',
+          '`condición ? valor_si : valor_no` elige un valor dentro de una expresión. Es ideal para casos cortos.',
+          'Se pueden anidar, pero más de dos niveles cuesta de leer; en ese caso vuelve al `if`.' ],
+          code: `int edad = 16;\nstd::string tipo = edad >= 18 ? "adulto" : "menor";\nstd::cout << tipo;  // menor` },
+        { h: 'Ejemplo real: tarifa de envío', real: true, p: [
+          'Una tienda cobra el envío por tramos de peso y añade un 50 % si es urgente. Los `else if` comprueban los tramos en orden y el ternario aplica el recargo.' ],
+          code: `#include <iostream>\n\ndouble tarifa_envio(double kg, bool urgente) {\n    double precio;\n    if (kg <= 1) precio = 4.5;\n    else if (kg <= 5) precio = 7.9;\n    else precio = 7.9 + (kg - 5) * 1.2;   // 1,20 € por kilo extra\n    return urgente ? precio * 1.5 : precio;\n}\n\nint main() {\n    std::cout << tarifa_envio(3, false) << "\\n";  // 7.9\n    std::cout << tarifa_envio(8, true) << "\\n";   // 17.25\n}` },
+      ],
+      x: [
+        out(`int x = 4;\nif (x % 2 == 0)\n    std::cout << "par";\nelse\n    std::cout << "impar";`, ['par', 'impar', 'parimpar', '0'], '4 entre 2 da resto 0, así que se cumple la condición.'),
+        fill(`if (x > 0) {\n    std::cout << "positivo";\n} ___ if (x < 0) {\n    std::cout << "negativo";\n}`, ['else', 'elif', 'elseif', 'or'], 'C++ encadena condiciones con `else if`, en dos palabras.'),
+        out(`int pendientes = 0;\nif (!pendientes) std::cout << "al día";`, ['al día', '0', 'Nada', 'Error'], '0 equivale a `false`, y `!false` es `true`.'),
+        mc('¿Qué tipo de valores admite un `switch` en C++?', ['Enteros, char y enums', 'Strings', 'Doubles', 'Cualquier objeto'], 'Para comparar `std::string` usa una cadena de `if`/`else if`.'),
+        out(`int x = 0;\nif (x = 5) std::cout << "si";\nelse std::cout << "no";`, ['si', 'no', 'Error de compilación'], '`x = 5` asigna (no compara) y el resultado, 5, cuenta como verdadero.'),
+        out(`int d = 2;\nswitch (d) {\n    case 1: std::cout << "L";\n    case 2: std::cout << "M";\n    case 3: std::cout << "X"; break;\n    default: std::cout << "?";\n}`, ['MX', 'M', 'MX?', 'LMX'], 'Entra en `case 2` y, como no hay `break`, sigue hasta el `break` de `case 3`.'),
+        out(`int nota = 7;\nstd::cout << (nota >= 9 ? "A" : nota >= 7 ? "B" : "C");`, ['B', 'A', 'C', 'AB'], 'La primera condición falla, así que se evalúa el segundo ternario: 7 >= 7 es verdadero.'),
+        // Reto final
+        out(`int n = 30;\nstd::string r;\nif (n % 3 == 0) r += "Fizz";\nif (n % 5 == 0) r += "Buzz";\nif (r.empty()) r = std::to_string(n);\nswitch (n % 4) {\n    case 2: r += "!";\n    case 3: r += "?"; break;\n    default: r += ".";\n}\nstd::cout << r;`, ['FizzBuzz!?', 'FizzBuzz!', 'Fizz!?', 'FizzBuzz.'], '30 es múltiplo de 3 y de 5, así que se ejecutan los dos `if`. 30 % 4 = 2: se añade "!" y, sin `break`, también "?".'),
+      ],
+    },
+    // ───────────────────────── Día 5
+    {
+      id: 'cpp-loops',
+      t: 'Bucles',
+      d: 'for, while, do-while, range-for, break y continue.',
+      guide: [
+        { h: 'El bucle for', p: [
+          '`for (inicio; condición; paso)` es ideal cuando sabes cuántas vueltas dar. La variable declarada en el inicio solo existe dentro del bucle.',
+          'Error típico: usar `<=` en lugar de `<` al recorrer índices y salirte del contenedor por una posición.' ],
+          code: `for (int i = 1; i <= 5; i++) {\n    std::cout << i << " ";   // 1 2 3 4 5\n}\nfor (int i = 10; i > 0; i -= 3) {\n    std::cout << i << " ";   // 10 7 4 1\n}` },
+        { h: 'while y do-while', p: [
+          '`while (condición)` repite mientras la condición sea verdadera. Úsalo cuando no sabes de antemano cuántas vueltas habrá.',
+          '`do { ... } while (condición);` comprueba al final, así que el bloque se ejecuta al menos una vez. Va muy bien para menús y para pedir datos hasta que sean válidos.' ],
+          code: `int nota;\ndo {\n    std::cout << "Nota (0-10): ";\n    std::cin >> nota;\n} while (nota < 0 || nota > 10);   // repite hasta que sea válida` },
+        { h: 'El range-for', p: [
+          'En los ejemplos aparecen `std::string` (texto) y `std::vector` (una lista de valores). De momento basta con saber que el range-for los recorre elemento a elemento; los verás a fondo en los días 6 y 8.',
+          '`for (tipo x : contenedor)` recorre todos los elementos de un vector, array, set, map o string sin índices.',
+          'Recuerda: `for (auto x : v)` trabaja con copias; `for (auto& x : v)` modifica los originales y `for (const auto& x : v)` lee sin copiar.' ],
+          code: `std::string palabra = "hola";\nint vocales = 0;\nfor (char c : palabra)\n    if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') vocales++;\nstd::cout << vocales;  // 2` },
+        { h: 'break, continue y bucles anidados', p: [
+          '`break` sale del bucle inmediatamente y `continue` salta al siguiente paso.',
+          'Con bucles anidados, `break` solo sale del bucle más interno. Si necesitas salir de todos, mueve el código a una función y usa `return`.' ],
+          code: `for (int i = 1; i <= 10; i++) {\n    if (i % 2 == 0) continue;   // salta los pares\n    if (i > 7) break;           // para en el 9\n    std::cout << i << " ";       // 1 3 5 7\n}` },
+        { h: 'Ejemplo real: ¿cuánto tarda en crecer tu ahorro?', real: true, p: [
+          'Ingresas 1.000 € en una cuenta al 5 % anual y quieres saber cuántos años tardarás en llegar a 1.500 €. No sabes cuántas vueltas habrá, así que `while` es la herramienta adecuada.' ],
+          code: `#include <iostream>\n\nint main() {\n    double saldo = 1000;\n    int anios = 0;\n    while (saldo < 1500) {\n        saldo *= 1.05;   // intereses del año\n        anios++;\n    }\n    std::cout << "Años: " << anios << ", saldo: " << saldo << "\\n";\n    // Años: 9, saldo: 1551.33\n}` },
+      ],
+      x: [
+        out(`for (int i = 0; i < 4; i += 2)\n    std::cout << i;`, ['02', '0123', '024', '24'], '`i` vale 0 y luego 2; al llegar a 4 la condición falla.'),
+        typ('Completa la condición para que imprima 1 2 3 4 5', `for (int i = 1; i ___ 5; i++)\n    std::cout << i << " ";`, '<=', 'Con `<=` el bucle incluye el 5; con `<` pararía en el 4.'),
+        fill(`std::vector<int> v = {1, 2, 3};\nfor (int x ___ v) std::cout << x;`, [':', 'in', 'of', '->'], 'El range-for usa dos puntos: `for (tipo x : contenedor)`.'),
+        out(`int n = 0;\ndo {\n    n++;\n} while (n < 0);\nstd::cout << n;`, ['1', '0', 'Bucle infinito', '-1'], '`do-while` ejecuta el bloque una vez antes de comprobar la condición.'),
+        mc('Con dos bucles anidados, ¿de dónde sale un `break` escrito en el interno?', ['Solo del bucle interno', 'De los dos bucles', 'Del bucle externo', 'De la función entera'], '`break` solo sale del bucle más cercano. Para salir de todos, mueve el código a una función y usa `return`.'),
+        out(`for (int i = 0; i < 5; i++) {\n    if (i % 2 == 0) continue;\n    std::cout << i;\n}`, ['13', '024', '01234', '1'], '`continue` salta los pares, así que solo se imprimen 1 y 3.'),
+        out(`int c = 0;\nfor (int i = 0; i < 3; i++)\n    for (int j = i; j < 3; j++) c++;\nstd::cout << c;`, ['6', '9', '3', '5'], 'El bucle interno da 3, 2 y 1 vueltas: 3 + 2 + 1 = 6.'),
+        // Reto final
+        out(`int n = 1234, suma = 0, digitos = 0;\nwhile (n > 0) {\n    suma += n % 10;\n    n /= 10;\n    digitos++;\n}\nstd::cout << suma << " " << digitos;`, ['10 4', '4 10', '10 3', '1234 4'], '`n % 10` extrae la última cifra y `n /= 10` la quita. Se suman 4 + 3 + 2 + 1 = 10 en 4 vueltas.'),
+      ],
+    },
+    // ───────────────────────── Día 6
+    {
       id: 'cpp-strings',
       t: 'Strings',
       d: 'std::string: concatenar, size, substr, find y conversiones.',
@@ -165,7 +244,7 @@
         out(`std::string email = "ana.diaz@correo.es";\nauto pos = email.find('@');\nstd::string user = email.substr(0, pos);\nuser[0] = 'A';\nstd::cout << user << " " << email.size() - pos - 1;`, ['Ana.diaz 9', 'ana.diaz 9', 'Ana.diaz 10', 'Ana.diaz@ 9'], 'La @ está en la posición 8: el usuario son los 8 primeros caracteres y se modifica su inicial. El email mide 18, así que el dominio tiene 18 - 8 - 1 = 9.'),
       ],
     },
-    // ───────────────────────── Día 5
+    // ───────────────────────── Día 7
     {
       id: 'cpp-arrays',
       t: 'Arrays',
@@ -202,7 +281,7 @@
         out(`std::array<int, 5> v = {3, 8, 1, 9, 4};\nint mx = v[0], pos = 0;\nfor (int i = 1; i < 5; i++)\n    if (v[i] > mx) { mx = v[i]; pos = i; }\nstd::cout << mx << " en " << pos;`, ['9 en 3', '9 en 4', '8 en 1', '9 en 2'], 'El bucle guarda el mayor valor visto y su índice. El 9 está en el índice 3 porque se cuenta desde 0.'),
       ],
     },
-    // ───────────────────────── Día 6
+    // ───────────────────────── Día 8
     {
       id: 'cpp-vectors',
       t: 'Vectores',
@@ -240,7 +319,7 @@
         out(`std::vector<int> v = {5, 3, 8};\nfor (auto& x : v) x *= 2;\nv.insert(v.begin(), 1);\nv.pop_back();\nstd::cout << v.front() + v.back() << " " << v.size();`, ['7 3', '17 3', '1 3', '7 4'], 'Con `auto&` se duplican los originales: {10, 6, 16}. Tras insertar el 1 y quitar el último queda {1, 10, 6}: 1 + 6 = 7 y tamaño 3.'),
       ],
     },
-    // ───────────────────────── Día 7
+    // ───────────────────────── Día 9
     {
       id: 'cpp-sets',
       t: 'Sets',
@@ -278,7 +357,7 @@
         out(`std::set<int> a = {1, 3, 5, 7};\nstd::set<int> b = {3, 4, 5};\nint comunes = 0;\nfor (int x : b) if (a.count(x)) comunes++;\na.insert(b.begin(), b.end());\nstd::cout << comunes << " " << a.size();`, ['2 5', '2 7', '3 5', '1 5'], 'Los comunes son 3 y 5. Al insertar `b` en `a` solo entra el 4: {1, 3, 4, 5, 7}, cinco elementos.'),
       ],
     },
-    // ───────────────────────── Día 8
+    // ───────────────────────── Día 10
     {
       id: 'cpp-maps',
       t: 'Maps',
@@ -313,83 +392,6 @@
         out(`std::map<char, int> c;\nfor (char ch : std::string("hola ola"))\n    if (ch != ' ') c[ch]++;\nstd::cout << c['o'] << c['a'] << c.size();`, ['224', '114', '225', '223'], '"o", "l" y "a" aparecen dos veces y "h" una: o=2, a=2 y hay 4 claves distintas.'),
         // Reto final
         out(`std::map<std::string, int> stock = {{"pan", 3}, {"leche", 0}};\nstock["pan"] -= 1;\nstock["huevos"] += 12;\nint total = 0;\nfor (const auto& [p, n] : stock) total += n;\nstd::cout << stock.size() << " " << total << " " << stock.begin()->first;`, ['3 14 huevos', '2 14 pan', '3 15 huevos', '3 14 pan'], '`stock["huevos"]` crea la clave con 0 y le suma 12. Total: 2 + 0 + 12 = 14. La clave menor en orden alfabético es "huevos".'),
-      ],
-    },
-    // ───────────────────────── Día 9
-    {
-      id: 'cpp-conditionals',
-      t: 'Condicionales',
-      d: 'if, else if, switch, el operador ternario y FizzBuzz.',
-      guide: [
-        { h: 'if, else if y else', p: [
-          '`if (condición)` ejecuta un bloque solo si la condición es verdadera. `else if` encadena más casos y `else` recoge todo lo demás.',
-          'Usa siempre llaves `{ }`, aunque el bloque tenga una sola línea: evita errores al añadir líneas después.' ],
-          code: `int nota = 7;\nif (nota >= 9) {\n    std::cout << "Sobresaliente";\n} else if (nota >= 7) {\n    std::cout << "Notable";     // se ejecuta este\n} else if (nota >= 5) {\n    std::cout << "Aprobado";\n} else {\n    std::cout << "Suspenso";\n}` },
-        { h: 'Verdadero, falso y el error de =', p: [
-          'En C++ cualquier número distinto de 0 cuenta como verdadero y el 0 como falso.',
-          'Error clásico: `if (x = 5)` asigna 5 a `x` (en vez de comparar) y siempre es verdadero. Para comparar se usa `==`. Compila con `-Wall` y el compilador te avisará.',
-          'Desde C++17 puedes declarar una variable dentro del `if`: `if (auto pos = s.find(\'@\'); pos != std::string::npos)`. Así solo existe donde se usa.' ] },
-        { h: 'switch', p: [
-          '`switch` compara un entero, `char` o `enum` con varios `case`. No funciona con `std::string`.',
-          'Cada `case` debe acabar en `break`; si no, la ejecución "cae" en el siguiente caso. A veces se hace a propósito para agrupar casos.',
-          '`default` se ejecuta cuando ningún caso coincide.' ],
-          code: `char opcion = 'b';\nswitch (opcion) {\n    case 'a':\n        std::cout << "Nueva partida";\n        break;\n    case 'b':\n    case 'c':                   // b y c hacen lo mismo\n        std::cout << "Cargar partida";\n        break;\n    default:\n        std::cout << "Opción no válida";\n}` },
-        { h: 'El operador ternario', p: [
-          '`condición ? valor_si : valor_no` elige un valor dentro de una expresión. Es ideal para casos cortos.',
-          'Se pueden anidar, pero más de dos niveles cuesta de leer; en ese caso vuelve al `if`.' ],
-          code: `int edad = 16;\nstd::string tipo = edad >= 18 ? "adulto" : "menor";\nstd::cout << tipo;  // menor` },
-        { h: 'Ejemplo real: tarifa de envío', real: true, p: [
-          'Una tienda cobra el envío por tramos de peso y añade un 50 % si es urgente. Los `else if` comprueban los tramos en orden y el ternario aplica el recargo.' ],
-          code: `#include <iostream>\n\ndouble tarifa_envio(double kg, bool urgente) {\n    double precio;\n    if (kg <= 1) precio = 4.5;\n    else if (kg <= 5) precio = 7.9;\n    else precio = 7.9 + (kg - 5) * 1.2;   // 1,20 € por kilo extra\n    return urgente ? precio * 1.5 : precio;\n}\n\nint main() {\n    std::cout << tarifa_envio(3, false) << "\\n";  // 7.9\n    std::cout << tarifa_envio(8, true) << "\\n";   // 17.25\n}` },
-      ],
-      x: [
-        out(`int x = 4;\nif (x % 2 == 0)\n    std::cout << "par";\nelse\n    std::cout << "impar";`, ['par', 'impar', 'parimpar', '0'], '4 entre 2 da resto 0, así que se cumple la condición.'),
-        fill(`if (x > 0) {\n    std::cout << "positivo";\n} ___ if (x < 0) {\n    std::cout << "negativo";\n}`, ['else', 'elif', 'elseif', 'or'], 'C++ encadena condiciones con `else if`, en dos palabras.'),
-        out(`int pendientes = 0;\nif (!pendientes) std::cout << "al día";`, ['al día', '0', 'Nada', 'Error'], '0 equivale a `false`, y `!false` es `true`.'),
-        mc('¿Qué tipo de valores admite un `switch` en C++?', ['Enteros, char y enums', 'Strings', 'Doubles', 'Cualquier objeto'], 'Para comparar `std::string` usa una cadena de `if`/`else if`.'),
-        out(`int x = 0;\nif (x = 5) std::cout << "si";\nelse std::cout << "no";`, ['si', 'no', 'Error de compilación'], '`x = 5` asigna (no compara) y el resultado, 5, cuenta como verdadero.'),
-        out(`int d = 2;\nswitch (d) {\n    case 1: std::cout << "L";\n    case 2: std::cout << "M";\n    case 3: std::cout << "X"; break;\n    default: std::cout << "?";\n}`, ['MX', 'M', 'MX?', 'LMX'], 'Entra en `case 2` y, como no hay `break`, sigue hasta el `break` de `case 3`.'),
-        out(`int nota = 7;\nstd::cout << (nota >= 9 ? "A" : nota >= 7 ? "B" : "C");`, ['B', 'A', 'C', 'AB'], 'La primera condición falla, así que se evalúa el segundo ternario: 7 >= 7 es verdadero.'),
-        // Reto final
-        out(`int n = 30;\nstd::string r;\nif (n % 3 == 0) r += "Fizz";\nif (n % 5 == 0) r += "Buzz";\nif (r.empty()) r = std::to_string(n);\nswitch (n % 4) {\n    case 2: r += "!";\n    case 3: r += "?"; break;\n    default: r += ".";\n}\nstd::cout << r;`, ['FizzBuzz!?', 'FizzBuzz!', 'Fizz!?', 'FizzBuzz.'], '30 es múltiplo de 3 y de 5, así que se ejecutan los dos `if`. 30 % 4 = 2: se añade "!" y, sin `break`, también "?".'),
-      ],
-    },
-    // ───────────────────────── Día 10
-    {
-      id: 'cpp-loops',
-      t: 'Bucles',
-      d: 'for, while, do-while, range-for, break y continue.',
-      guide: [
-        { h: 'El bucle for', p: [
-          '`for (inicio; condición; paso)` es ideal cuando sabes cuántas vueltas dar. La variable declarada en el inicio solo existe dentro del bucle.',
-          'Error típico: usar `<=` en lugar de `<` al recorrer índices y salirte del contenedor por una posición.' ],
-          code: `for (int i = 1; i <= 5; i++) {\n    std::cout << i << " ";   // 1 2 3 4 5\n}\nfor (int i = 10; i > 0; i -= 3) {\n    std::cout << i << " ";   // 10 7 4 1\n}` },
-        { h: 'while y do-while', p: [
-          '`while (condición)` repite mientras la condición sea verdadera. Úsalo cuando no sabes de antemano cuántas vueltas habrá.',
-          '`do { ... } while (condición);` comprueba al final, así que el bloque se ejecuta al menos una vez. Va muy bien para menús y para pedir datos hasta que sean válidos.' ],
-          code: `int nota;\ndo {\n    std::cout << "Nota (0-10): ";\n    std::cin >> nota;\n} while (nota < 0 || nota > 10);   // repite hasta que sea válida` },
-        { h: 'El range-for', p: [
-          '`for (tipo x : contenedor)` recorre todos los elementos de un vector, array, set, map o string sin índices.',
-          'Recuerda: `for (auto x : v)` trabaja con copias; `for (auto& x : v)` modifica los originales y `for (const auto& x : v)` lee sin copiar.' ],
-          code: `std::string palabra = "hola";\nint vocales = 0;\nfor (char c : palabra)\n    if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') vocales++;\nstd::cout << vocales;  // 2` },
-        { h: 'break, continue y bucles anidados', p: [
-          '`break` sale del bucle inmediatamente y `continue` salta al siguiente paso.',
-          'Con bucles anidados, `break` solo sale del bucle más interno. Si necesitas salir de todos, mueve el código a una función y usa `return`.' ],
-          code: `for (int i = 1; i <= 10; i++) {\n    if (i % 2 == 0) continue;   // salta los pares\n    if (i > 7) break;           // para en el 9\n    std::cout << i << " ";       // 1 3 5 7\n}` },
-        { h: 'Ejemplo real: ¿cuánto tarda en crecer tu ahorro?', real: true, p: [
-          'Ingresas 1.000 € en una cuenta al 5 % anual y quieres saber cuántos años tardarás en llegar a 1.500 €. No sabes cuántas vueltas habrá, así que `while` es la herramienta adecuada.' ],
-          code: `#include <iostream>\n\nint main() {\n    double saldo = 1000;\n    int anios = 0;\n    while (saldo < 1500) {\n        saldo *= 1.05;   // intereses del año\n        anios++;\n    }\n    std::cout << "Años: " << anios << ", saldo: " << saldo << "\\n";\n    // Años: 9, saldo: 1551.33\n}` },
-      ],
-      x: [
-        out(`for (int i = 0; i < 4; i += 2)\n    std::cout << i;`, ['02', '0123', '024', '24'], '`i` vale 0 y luego 2; al llegar a 4 la condición falla.'),
-        typ('Completa la condición para que imprima 1 2 3 4 5', `for (int i = 1; i ___ 5; i++)\n    std::cout << i << " ";`, '<=', 'Con `<=` el bucle incluye el 5; con `<` pararía en el 4.'),
-        fill(`std::vector<int> v = {1, 2, 3};\nfor (int x ___ v) std::cout << x;`, [':', 'in', 'of', '->'], 'El range-for usa dos puntos: `for (tipo x : contenedor)`.'),
-        out(`int n = 0;\ndo {\n    n++;\n} while (n < 0);\nstd::cout << n;`, ['1', '0', 'Bucle infinito', '-1'], '`do-while` ejecuta el bloque una vez antes de comprobar la condición.'),
-        mc('Con dos bucles anidados, ¿de dónde sale un `break` escrito en el interno?', ['Solo del bucle interno', 'De los dos bucles', 'Del bucle externo', 'De la función entera'], '`break` solo sale del bucle más cercano. Para salir de todos, mueve el código a una función y usa `return`.'),
-        out(`for (int i = 0; i < 5; i++) {\n    if (i % 2 == 0) continue;\n    std::cout << i;\n}`, ['13', '024', '01234', '1'], '`continue` salta los pares, así que solo se imprimen 1 y 3.'),
-        out(`int c = 0;\nfor (int i = 0; i < 3; i++)\n    for (int j = i; j < 3; j++) c++;\nstd::cout << c;`, ['6', '9', '3', '5'], 'El bucle interno da 3, 2 y 1 vueltas: 3 + 2 + 1 = 6.'),
-        // Reto final
-        out(`int n = 1234, suma = 0, digitos = 0;\nwhile (n > 0) {\n    suma += n % 10;\n    n /= 10;\n    digitos++;\n}\nstd::cout << suma << " " << digitos;`, ['10 4', '4 10', '10 3', '1234 4'], '`n % 10` extrae la última cifra y `n /= 10` la quita. Se suman 4 + 3 + 2 + 1 = 10 en 4 vueltas.'),
       ],
     },
     // ───────────────────────── Día 11

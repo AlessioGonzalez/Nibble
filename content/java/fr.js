@@ -123,6 +123,82 @@
     },
     // ───────────── Jour 4 ─────────────
     {
+      id: 'java-conditionals',
+      t: 'Conditions',
+      d: 'if, else if, else, l’opérateur ternaire et switch.',
+      guide: [
+        { h: 'if et else', p: [
+          '`if (condition) { ... }` exécute le bloc seulement si la condition vaut `true`. La condition doit être un `boolean` : en Java, un nombre ne convient pas.',
+          'Une erreur classique est d’écrire `if (x = 5)` : avec un `int`, ça ne compile pas, car `=` affecte au lieu de comparer. Utilise `==`. Et mets toujours des accolades, même si le bloc tient en une ligne.' ],
+          code: `int age = 16;\nif (age >= 18) {\n    System.out.println("Tu peux voter");\n} else {\n    System.out.println("Tu ne peux pas encore voter");\n}\n// Tu ne peux pas encore voter` },
+        { h: 'else if : plusieurs options', p: [
+          'Avec `else if`, tu enchaînes les conditions. Java les vérifie dans l’ordre et n’exécute que la première qui est vraie ; les autres sont ignorées.',
+          'C’est pourquoi l’ordre compte : mets d’abord les conditions les plus strictes. Si tu testais `note >= 5` avant `note >= 9`, un 10 sortirait en « Passable ».' ],
+          code: `double note = 7.5;\nif (note >= 9) {\n    System.out.println("Excellent");\n} else if (note >= 7) {\n    System.out.println("Bien");\n} else if (note >= 5) {\n    System.out.println("Passable");\n} else {\n    System.out.println("Insuffisant");\n}\n// Bien` },
+        { h: 'L’opérateur ternaire', p: [
+          '`condition ? valeurSiVrai : valeurSiFaux` renvoie une valeur en une seule ligne. Il est idéal pour choisir entre deux textes ou deux nombres.',
+          'Ne l’enchaîne pas trop : trois ternaires à la suite sont difficiles à lire, et un `if` vaut mieux.' ],
+          code: `int stock = 0;\nString etat = stock > 0 ? "Disponible" : "Épuisé";\nSystem.out.println(etat);  // Épuisé` },
+        { h: 'Le switch classique', p: [
+          '`switch` compare une valeur (entier, `char`, `String` ou enum) à plusieurs `case`. `default` récupère tous les autres cas.',
+          'Dans le switch classique, si tu oublies `break`, l’exécution « tombe » dans le cas suivant. On s’en sert parfois exprès pour grouper des cas, mais c’est presque toujours un bug. Au jour 25, tu verras le switch moderne avec des flèches, qui n’a pas ce problème.' ],
+          code: `String jour = "samedi";\nswitch (jour) {\n    case "samedi":\n    case "dimanche":\n        System.out.println("Week-end");\n        break;\n    default:\n        System.out.println("Jour ouvré");\n}\n// Week-end` },
+        { h: 'Exemple réel : le coût d’une livraison', real: true, p: [
+          'Une boutique calcule la livraison par tranches de poids et ajoute un supplément pour les îles. Remarque que le texte est comparé avec `equals`, jamais avec `==`.' ],
+          code: `double kg = 3.2;\nString zone = "continent";\ndouble cout;\nif (kg <= 1) {\n    cout = 4.50;\n} else if (kg <= 5) {\n    cout = 6.90;\n} else {\n    cout = 6.90 + (kg - 5) * 1.20;\n}\nif (zone.equals("iles")) {\n    cout += 8;\n}\nSystem.out.println("Livraison : " + cout + " €");  // Livraison : 6.9 €` },
+      ],
+      x: [
+        fill(`if (age >= 18) {\n    System.out.println("majeur");\n} ___ {\n    System.out.println("mineur");\n}`, ['else', 'elif', 'otherwise', 'default'], 'Le bloc alternatif s’écrit avec `else`. `elif` appartient à Python.'),
+        out(`int x = 10;\nif (x > 5 && x < 20) {\n    System.out.println("dans");\n} else {\n    System.out.println("hors");\n}`, ['dans', 'hors', 'dans\nhors'], '10 remplit les deux conditions réunies par `&&`, et un seul bloc s’exécute.'),
+        mc('Si `x` est un `int`, que se passe-t-il avec `if (x = 5)` ?', ['Il ne compile pas : = affecte et la condition doit être un boolean', 'Il compare x à 5', 'Il est toujours vrai', 'Il est toujours faux'], 'Pour comparer, on utilise `==`. Java exige que la condition soit un `boolean`.'),
+        out(`int x = 5;\nString r = (x % 2 == 0) ? "pair" : "impair";\nSystem.out.println(r);`, ['impair', 'pair', 'true'], 'Le ternaire choisit "impair" car 5 % 2 vaut 1, pas 0.'),
+        ord('Écris l’en-tête du if : « si age est supérieur ou égal à 18 »', ['if', '(', 'age', '>=', '18', ')'], ['=>', 'then'], 'La condition va entre parenthèses et l’opérateur est `>=`. Java n’utilise pas `then`.'),
+        out(`int note = 75;\nif (note >= 90) System.out.println("A");\nelse if (note >= 70) System.out.println("B");\nelse System.out.println("C");`, ['B', 'A', 'C', 'B\nC'], '75 n’atteint pas 90 mais atteint 70, et après la première réussite les autres sont ignorés.'),
+        out(`int jour = 2;\nswitch (jour) {\n    case 1: System.out.print("L");\n    case 2: System.out.print("Ma");\n    case 3: System.out.print("Me");\n        break;\n    default: System.out.print("?");\n}`, ['MaMe', 'Ma', 'MaMe?', 'LMaMe'], 'Il entre dans `case 2` et, sans `break`, continue dans `case 3` jusqu’à en trouver un.'),
+        out(`int age = 70;\nboolean etudiant = false;\ndouble prix = 10;\nif (age < 12 || age >= 65) {\n    prix = prix / 2;\n} else if (etudiant) {\n    prix = prix * 0.8;\n}\nString tarif = prix < 10 ? "réduit" : "normal";\nSystem.out.println(tarif + " " + prix);`, ['réduit 5.0', 'normal 10.0', 'réduit 8.0', 'réduit 5'], '70 remplit `age >= 65`, donc le prix baisse à 5.0 et le else if n’est même pas regardé. Comme c’est un `double`, il s’affiche avec une décimale.'),
+      ],
+    },
+    // ───────────── Jour 5 ─────────────
+    {
+      id: 'java-loops',
+      t: 'Boucles',
+      d: 'for, for-each, while, do-while, break et continue.',
+      guide: [
+        { h: 'La boucle for', p: [
+          '`for (int i = 0; i < n; i++)` a trois parties : le départ, la condition vérifiée avant chaque tour et le pas exécuté à la fin de chaque tour.',
+          'Utilise-la quand tu sais combien de fois répéter. L’erreur la plus typique est le « un de trop » : avec `i <= tableau.length`, tu sors du tableau.' ],
+          code: `for (int i = 1; i <= 3; i++) {\n    System.out.println("Tour " + i);\n}\n// Tour 1\n// Tour 2\n// Tour 3\n\nfor (int i = 10; i > 0; i -= 5) {\n    System.out.println(i);   // 10 et 5\n}` },
+        { h: 'Le for-each', p: [
+          'Un tableau apparaît ici pour la première fois : plusieurs valeurs entre accolades avec un type comme `String[]`. Pour l’instant, il suffit de savoir que le for-each les parcourt une par une ; les tableaux et les collections arrivent à partir du jour 7.',
+          '`for (String nom : noms)` parcourt tous les éléments d’un tableau ou d’une collection sans manipuler d’indices. C’est plus court et ça évite de sortir des limites.',
+          'Utilise-le chaque fois que tu n’as pas besoin de la position. Si tu en as besoin, ou si tu modifies le tableau par indice, utilise le `for` classique.' ],
+          code: `String[] invites = {"Ana", "Luis", "Eva"};\nfor (String nom : invites) {\n    System.out.println("Bonjour, " + nom);\n}` },
+        { h: 'while et do-while', p: [
+          '`while (condition)` répète tant que la condition est vraie. Utilise-la quand tu ne sais pas combien de tours il y aura, par exemple en lisant des données jusqu’à la fin.',
+          '`do { ... } while (condition);` vérifie à la fin, donc s’exécute au moins une fois : pratique pour les menus affichés avant de demander.',
+          'Si la condition ne devient jamais fausse, tu as une boucle infinie. Assure-toi que quelque chose dans la boucle la rapproche de sa fin.' ],
+          code: `int compte = 3;\nwhile (compte > 0) {\n    System.out.println(compte);\n    compte--;\n}\nSystem.out.println("Décollage !");` },
+        { h: 'break, continue et boucles imbriquées', p: [
+          '`break` sort de la boucle immédiatement ; `continue` saute le reste du tour en cours et passe au suivant.',
+          'Une boucle dans une autre parcourt des combinaisons : lignes et colonnes, chaque produit avec chaque magasin. Les deux compteurs ont besoin de noms différents (`i` et `j`).' ],
+          code: `for (int i = 1; i <= 3; i++) {\n    String ligne = "";\n    for (int j = 1; j <= 3; j++) {\n        ligne += i * j + " ";\n    }\n    System.out.println(ligne.trim());\n}\n// 1 2 3\n// 2 4 6\n// 3 6 9` },
+        { h: 'Exemple réel : le temps pour faire fructifier une épargne', real: true, p: [
+          'Tu as 1000 € sur un compte à 5 % par an et tu veux savoir en combien d’années tu atteins 1200 €. Tu ne sais pas combien de tours il y aura, donc tu utilises `while`.' ],
+          code: `double epargne = 1000;\nint annees = 0;\nwhile (epargne < 1200) {\n    epargne = epargne * 1.05;\n    annees++;\n}\nSystem.out.println("Années nécessaires : " + annees);  // Années nécessaires : 4` },
+      ],
+      x: [
+        fill(`___ (int i = 0; i < 5; i++) {\n    System.out.println(i);\n}`, ['for', 'foreach', 'loop', 'while'], 'La boucle avec départ, condition et pas est `for`.'),
+        out(`for (int i = 1; i <= 3; i++) {\n    System.out.println(i * 2);\n}`, ['2\n4\n6', '1\n2\n3', '2\n4\n6\n8', '0\n2\n4'], '`i` vaut 1, 2 et 3 ; à chaque fois, le double s’affiche sur une ligne.'),
+        out(`int n = 3;\nwhile (n > 0) {\n    System.out.print(n);\n    n--;\n}`, ['321', '3210', '123', '33'], 'On affiche 3, 2 et 1. Quand `n` arrive à 0, la condition échoue et la boucle s’arrête.'),
+        out(`int[] nums = {4, 8, 15};\nint somme = 0;\nfor (int n : nums) {\n    somme += n;\n}\nSystem.out.println(somme);`, ['27', '3', '4815', '15'], 'Le for-each parcourt chaque nombre et les additionne : 4 + 8 + 15 = 27.'),
+        out(`int i = 0;\ndo {\n    i++;\n} while (i < 0);\nSystem.out.println(i);`, ['1', '0', '-1', 'Boucle infinie'], '`do-while` exécute le bloc une fois avant de vérifier la condition.'),
+        out(`for (int i = 0; i < 5; i++) {\n    if (i == 3) break;\n    System.out.print(i);\n}`, ['012', '0123', '01234', '3'], 'Arrivé à 3, `break` sort de la boucle avant d’afficher.'),
+        typ('Saute les nombres négatifs et passe au suivant', `for (int n : nums) {\n    if (n < 0) ___;\n    somme += n;\n}`, 'continue', '`continue` termine le tour en cours et passe à l’élément suivant ; `break` sortirait de la boucle.'),
+        out(`int total = 0;\nfor (int i = 1; i <= 3; i++) {\n    for (int j = 1; j <= 3; j++) {\n        if (j == i) continue;\n        total += i * j;\n    }\n}\nSystem.out.println(total);`, ['22', '36', '14', '18'], 'On additionne tous les produits i × j sauf quand i et j sont égaux : 36 au total moins 1 + 4 + 9 = 22.'),
+      ],
+    },
+    // ───────────── Jour 6 ─────────────
+    {
       id: 'java-strings',
       t: 'Chaînes de caractères',
       d: 'length, charAt, substring, equals, split et StringBuilder.',
@@ -159,7 +235,7 @@
         out(`StringBuilder sb = new StringBuilder("ab");\nsb.append("cd").reverse();\nString s = sb.toString().toUpperCase();\nSystem.out.println(s.indexOf("B") + s);`, ['2DCBA', '1DCBA', '2ABCD', 'DCBA2'], '`append` donne "abcd", `reverse` le transforme en "dcba" et en majuscules c’est "DCBA". Le B est à la position 2 et le nombre est concaténé devant.'),
       ],
     },
-    // ───────────── Jour 5 ─────────────
+    // ───────────── Jour 7 ─────────────
     {
       id: 'java-arrays',
       t: 'Tableaux',
@@ -196,7 +272,7 @@
         out(`int[] v = {4, 7, 1, 9};\nint[] c = Arrays.copyOf(v, 3);\nArrays.sort(c);\nSystem.out.println(c[c.length - 1] + v[3]);`, ['16', '18', '10', '79'], '`copyOf(v, 3)` copie {4, 7, 1} ; trié, cela donne {1, 4, 7}. Le dernier vaut 7, et 7 + 9 = 16. `v` ne change pas.'),
       ],
     },
-    // ───────────── Jour 6 ─────────────
+    // ───────────── Jour 8 ─────────────
     {
       id: 'java-arraylist',
       t: 'ArrayList',
@@ -233,7 +309,7 @@
         out(`List<Integer> l = new ArrayList<>(List.of(10, 20, 30));\nl.remove(Integer.valueOf(10));\nl.remove(0);\nl.add(5);\nSystem.out.println(l + " " + l.size());`, ['[30, 5] 2', '[20, 5] 2', '[10, 30, 5] 3', '[30, 5] 3'], 'On retire d’abord la valeur 10 ([20, 30]), puis l’indice 0 ([30]) et on ajoute 5 : [30, 5], avec 2 éléments.'),
       ],
     },
-    // ───────────── Jour 7 ─────────────
+    // ───────────── Jour 9 ─────────────
     {
       id: 'java-sets',
       t: 'Ensembles',
@@ -271,7 +347,7 @@
         out(`Set<String> s = new TreeSet<>(List.of("poire", "kiwi", "raisin"));\nboolean b = s.add("kiwi");\ns.removeAll(Set.of("raisin", "mangue"));\nSystem.out.println(b + " " + s);`, ['false [kiwi, poire]', 'true [kiwi, poire]', 'false [poire, kiwi]', 'false [kiwi, poire, raisin]'], '"kiwi" était déjà là, donc `add` donne false. `removeAll` retire "raisin" (mangue n’y était pas) et le `TreeSet` affiche le reste par ordre alphabétique.'),
       ],
     },
-    // ───────────── Jour 8 ─────────────
+    // ───────────── Jour 10 ─────────────
     {
       id: 'java-maps',
       t: 'Maps',
@@ -305,81 +381,6 @@
         out(`Map<String, Integer> m = new TreeMap<>();\nm.put("b", 2);\nm.put("a", 1);\nSystem.out.println(m);`, ['{a=1, b=2}', '{b=2, a=1}', '[a, b]', '{1, 2}'], '`TreeMap` trie par clé et s’affiche avec des accolades.'),
         mc('Quelle Map parcourt les clés dans l’ordre où elles ont été ajoutées ?', ['LinkedHashMap', 'HashMap', 'TreeMap', 'SortedMap'], '`HashMap` ne garantit aucun ordre et `TreeMap` trie par clé.'),
         out(`Map<Character, Integer> c = new TreeMap<>();\nfor (char ch : "banana".toCharArray()) {\n    c.merge(ch, 1, Integer::sum);\n}\nSystem.out.println(c);`, ['{a=3, b=1, n=2}', '{b=1, a=3, n=2}', '{a=1, b=1, n=1}', '{a=3, n=2, b=1}'], '`merge` compte chaque lettre : trois a, un b et deux n. Le `TreeMap` les trie par ordre alphabétique.'),
-      ],
-    },
-    // ───────────── Jour 9 ─────────────
-    {
-      id: 'java-conditionals',
-      t: 'Conditions',
-      d: 'if, else if, else, l’opérateur ternaire et switch.',
-      guide: [
-        { h: 'if et else', p: [
-          '`if (condition) { ... }` exécute le bloc seulement si la condition vaut `true`. La condition doit être un `boolean` : en Java, un nombre ne convient pas.',
-          'Une erreur classique est d’écrire `if (x = 5)` : avec un `int`, ça ne compile pas, car `=` affecte au lieu de comparer. Utilise `==`. Et mets toujours des accolades, même si le bloc tient en une ligne.' ],
-          code: `int age = 16;\nif (age >= 18) {\n    System.out.println("Tu peux voter");\n} else {\n    System.out.println("Tu ne peux pas encore voter");\n}\n// Tu ne peux pas encore voter` },
-        { h: 'else if : plusieurs options', p: [
-          'Avec `else if`, tu enchaînes les conditions. Java les vérifie dans l’ordre et n’exécute que la première qui est vraie ; les autres sont ignorées.',
-          'C’est pourquoi l’ordre compte : mets d’abord les conditions les plus strictes. Si tu testais `note >= 5` avant `note >= 9`, un 10 sortirait en « Passable ».' ],
-          code: `double note = 7.5;\nif (note >= 9) {\n    System.out.println("Excellent");\n} else if (note >= 7) {\n    System.out.println("Bien");\n} else if (note >= 5) {\n    System.out.println("Passable");\n} else {\n    System.out.println("Insuffisant");\n}\n// Bien` },
-        { h: 'L’opérateur ternaire', p: [
-          '`condition ? valeurSiVrai : valeurSiFaux` renvoie une valeur en une seule ligne. Il est idéal pour choisir entre deux textes ou deux nombres.',
-          'Ne l’enchaîne pas trop : trois ternaires à la suite sont difficiles à lire, et un `if` vaut mieux.' ],
-          code: `int stock = 0;\nString etat = stock > 0 ? "Disponible" : "Épuisé";\nSystem.out.println(etat);  // Épuisé` },
-        { h: 'Le switch classique', p: [
-          '`switch` compare une valeur (entier, `char`, `String` ou enum) à plusieurs `case`. `default` récupère tous les autres cas.',
-          'Dans le switch classique, si tu oublies `break`, l’exécution « tombe » dans le cas suivant. On s’en sert parfois exprès pour grouper des cas, mais c’est presque toujours un bug. Au jour 25, tu verras le switch moderne avec des flèches, qui n’a pas ce problème.' ],
-          code: `String jour = "samedi";\nswitch (jour) {\n    case "samedi":\n    case "dimanche":\n        System.out.println("Week-end");\n        break;\n    default:\n        System.out.println("Jour ouvré");\n}\n// Week-end` },
-        { h: 'Exemple réel : le coût d’une livraison', real: true, p: [
-          'Une boutique calcule la livraison par tranches de poids et ajoute un supplément pour les îles. Remarque que le texte est comparé avec `equals`, jamais avec `==`.' ],
-          code: `double kg = 3.2;\nString zone = "continent";\ndouble cout;\nif (kg <= 1) {\n    cout = 4.50;\n} else if (kg <= 5) {\n    cout = 6.90;\n} else {\n    cout = 6.90 + (kg - 5) * 1.20;\n}\nif (zone.equals("iles")) {\n    cout += 8;\n}\nSystem.out.println("Livraison : " + cout + " €");  // Livraison : 6.9 €` },
-      ],
-      x: [
-        fill(`if (age >= 18) {\n    System.out.println("majeur");\n} ___ {\n    System.out.println("mineur");\n}`, ['else', 'elif', 'otherwise', 'default'], 'Le bloc alternatif s’écrit avec `else`. `elif` appartient à Python.'),
-        out(`int x = 10;\nif (x > 5 && x < 20) {\n    System.out.println("dans");\n} else {\n    System.out.println("hors");\n}`, ['dans', 'hors', 'dans\nhors'], '10 remplit les deux conditions réunies par `&&`, et un seul bloc s’exécute.'),
-        mc('Si `x` est un `int`, que se passe-t-il avec `if (x = 5)` ?', ['Il ne compile pas : = affecte et la condition doit être un boolean', 'Il compare x à 5', 'Il est toujours vrai', 'Il est toujours faux'], 'Pour comparer, on utilise `==`. Java exige que la condition soit un `boolean`.'),
-        out(`int x = 5;\nString r = (x % 2 == 0) ? "pair" : "impair";\nSystem.out.println(r);`, ['impair', 'pair', 'true'], 'Le ternaire choisit "impair" car 5 % 2 vaut 1, pas 0.'),
-        ord('Écris l’en-tête du if : « si age est supérieur ou égal à 18 »', ['if', '(', 'age', '>=', '18', ')'], ['=>', 'then'], 'La condition va entre parenthèses et l’opérateur est `>=`. Java n’utilise pas `then`.'),
-        out(`int note = 75;\nif (note >= 90) System.out.println("A");\nelse if (note >= 70) System.out.println("B");\nelse System.out.println("C");`, ['B', 'A', 'C', 'B\nC'], '75 n’atteint pas 90 mais atteint 70, et après la première réussite les autres sont ignorés.'),
-        out(`int jour = 2;\nswitch (jour) {\n    case 1: System.out.print("L");\n    case 2: System.out.print("Ma");\n    case 3: System.out.print("Me");\n        break;\n    default: System.out.print("?");\n}`, ['MaMe', 'Ma', 'MaMe?', 'LMaMe'], 'Il entre dans `case 2` et, sans `break`, continue dans `case 3` jusqu’à en trouver un.'),
-        out(`int age = 70;\nboolean etudiant = false;\ndouble prix = 10;\nif (age < 12 || age >= 65) {\n    prix = prix / 2;\n} else if (etudiant) {\n    prix = prix * 0.8;\n}\nString tarif = prix < 10 ? "réduit" : "normal";\nSystem.out.println(tarif + " " + prix);`, ['réduit 5.0', 'normal 10.0', 'réduit 8.0', 'réduit 5'], '70 remplit `age >= 65`, donc le prix baisse à 5.0 et le else if n’est même pas regardé. Comme c’est un `double`, il s’affiche avec une décimale.'),
-      ],
-    },
-    // ───────────── Jour 10 ─────────────
-    {
-      id: 'java-loops',
-      t: 'Boucles',
-      d: 'for, for-each, while, do-while, break et continue.',
-      guide: [
-        { h: 'La boucle for', p: [
-          '`for (int i = 0; i < n; i++)` a trois parties : le départ, la condition vérifiée avant chaque tour et le pas exécuté à la fin de chaque tour.',
-          'Utilise-la quand tu sais combien de fois répéter. L’erreur la plus typique est le « un de trop » : avec `i <= tableau.length`, tu sors du tableau.' ],
-          code: `for (int i = 1; i <= 3; i++) {\n    System.out.println("Tour " + i);\n}\n// Tour 1\n// Tour 2\n// Tour 3\n\nfor (int i = 10; i > 0; i -= 5) {\n    System.out.println(i);   // 10 et 5\n}` },
-        { h: 'Le for-each', p: [
-          '`for (String nom : noms)` parcourt tous les éléments d’un tableau ou d’une collection sans manipuler d’indices. C’est plus court et ça évite de sortir des limites.',
-          'Utilise-le chaque fois que tu n’as pas besoin de la position. Si tu en as besoin, ou si tu modifies le tableau par indice, utilise le `for` classique.' ],
-          code: `String[] invites = {"Ana", "Luis", "Eva"};\nfor (String nom : invites) {\n    System.out.println("Bonjour, " + nom);\n}` },
-        { h: 'while et do-while', p: [
-          '`while (condition)` répète tant que la condition est vraie. Utilise-la quand tu ne sais pas combien de tours il y aura, par exemple en lisant des données jusqu’à la fin.',
-          '`do { ... } while (condition);` vérifie à la fin, donc s’exécute au moins une fois : pratique pour les menus affichés avant de demander.',
-          'Si la condition ne devient jamais fausse, tu as une boucle infinie. Assure-toi que quelque chose dans la boucle la rapproche de sa fin.' ],
-          code: `int compte = 3;\nwhile (compte > 0) {\n    System.out.println(compte);\n    compte--;\n}\nSystem.out.println("Décollage !");` },
-        { h: 'break, continue et boucles imbriquées', p: [
-          '`break` sort de la boucle immédiatement ; `continue` saute le reste du tour en cours et passe au suivant.',
-          'Une boucle dans une autre parcourt des combinaisons : lignes et colonnes, chaque produit avec chaque magasin. Les deux compteurs ont besoin de noms différents (`i` et `j`).' ],
-          code: `for (int i = 1; i <= 3; i++) {\n    String ligne = "";\n    for (int j = 1; j <= 3; j++) {\n        ligne += i * j + " ";\n    }\n    System.out.println(ligne.trim());\n}\n// 1 2 3\n// 2 4 6\n// 3 6 9` },
-        { h: 'Exemple réel : le temps pour faire fructifier une épargne', real: true, p: [
-          'Tu as 1000 € sur un compte à 5 % par an et tu veux savoir en combien d’années tu atteins 1200 €. Tu ne sais pas combien de tours il y aura, donc tu utilises `while`.' ],
-          code: `double epargne = 1000;\nint annees = 0;\nwhile (epargne < 1200) {\n    epargne = epargne * 1.05;\n    annees++;\n}\nSystem.out.println("Années nécessaires : " + annees);  // Années nécessaires : 4` },
-      ],
-      x: [
-        fill(`___ (int i = 0; i < 5; i++) {\n    System.out.println(i);\n}`, ['for', 'foreach', 'loop', 'while'], 'La boucle avec départ, condition et pas est `for`.'),
-        out(`for (int i = 1; i <= 3; i++) {\n    System.out.println(i * 2);\n}`, ['2\n4\n6', '1\n2\n3', '2\n4\n6\n8', '0\n2\n4'], '`i` vaut 1, 2 et 3 ; à chaque fois, le double s’affiche sur une ligne.'),
-        out(`int n = 3;\nwhile (n > 0) {\n    System.out.print(n);\n    n--;\n}`, ['321', '3210', '123', '33'], 'On affiche 3, 2 et 1. Quand `n` arrive à 0, la condition échoue et la boucle s’arrête.'),
-        out(`int[] nums = {4, 8, 15};\nint somme = 0;\nfor (int n : nums) {\n    somme += n;\n}\nSystem.out.println(somme);`, ['27', '3', '4815', '15'], 'Le for-each parcourt chaque nombre et les additionne : 4 + 8 + 15 = 27.'),
-        out(`int i = 0;\ndo {\n    i++;\n} while (i < 0);\nSystem.out.println(i);`, ['1', '0', '-1', 'Boucle infinie'], '`do-while` exécute le bloc une fois avant de vérifier la condition.'),
-        out(`for (int i = 0; i < 5; i++) {\n    if (i == 3) break;\n    System.out.print(i);\n}`, ['012', '0123', '01234', '3'], 'Arrivé à 3, `break` sort de la boucle avant d’afficher.'),
-        typ('Saute les nombres négatifs et passe au suivant', `for (int n : nums) {\n    if (n < 0) ___;\n    somme += n;\n}`, 'continue', '`continue` termine le tour en cours et passe à l’élément suivant ; `break` sortirait de la boucle.'),
-        out(`int total = 0;\nfor (int i = 1; i <= 3; i++) {\n    for (int j = 1; j <= 3; j++) {\n        if (j == i) continue;\n        total += i * j;\n    }\n}\nSystem.out.println(total);`, ['22', '36', '14', '18'], 'On additionne tous les produits i × j sauf quand i et j sont égaux : 36 au total moins 1 + 4 + 9 = 22.'),
       ],
     },
     // ───────────── Jour 11 ─────────────

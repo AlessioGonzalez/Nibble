@@ -59,15 +59,15 @@
     java: {
       print: 'java-intro', arith: 'java-intro', chain: 'java-intro', concat: 'java-intro', vars: 'java-vars', varw: 'java-vars',
       arith2: 'java-operators', cmp: 'java-operators', str: 'java-strings', list: 'java-arrays', appendw: 'java-arraylist', setf: 'java-sets',
-      dict: 'java-maps', dictw: 'java-maps', cond: 'java-conditionals', ifw: 'java-conditionals', cond3: 'java-loops', loop: 'java-loops',
-      loopw: 'java-loops', loopif: 'java-methods', func: 'java-methods', callw: 'java-methods', retw: 'java-methods', cls: 'java-classes',
+      dict: 'java-maps', dictw: 'java-maps', cond: 'java-conditionals', ifw: 'java-conditionals', cond3: 'java-conditionals', loop: 'java-loops',
+      loopw: 'java-loops', loopif: 'java-loops', func: 'java-methods', callw: 'java-methods', retw: 'java-methods', cls: 'java-classes',
       inh: 'java-polymorphism', exc: 'java-exceptions', hof: 'java-streams',
     },
     cpp: {
       print: 'cpp-intro', arith: 'cpp-intro', chain: 'cpp-intro', concat: 'cpp-vars', vars: 'cpp-vars', varw: 'cpp-vars',
       arith2: 'cpp-operators', cmp: 'cpp-operators', str: 'cpp-strings', list: 'cpp-arrays', appendw: 'cpp-vectors', setf: 'cpp-sets',
-      dict: 'cpp-maps', dictw: 'cpp-maps', cond: 'cpp-conditionals', ifw: 'cpp-conditionals', cond3: 'cpp-loops', loop: 'cpp-loops',
-      loopw: 'cpp-loops', loopif: 'cpp-functions', func: 'cpp-functions', callw: 'cpp-functions', retw: 'cpp-functions', ref: 'cpp-references',
+      dict: 'cpp-maps', dictw: 'cpp-maps', cond: 'cpp-conditionals', ifw: 'cpp-conditionals', cond3: 'cpp-conditionals', loop: 'cpp-loops',
+      loopw: 'cpp-loops', loopif: 'cpp-loops', func: 'cpp-functions', callw: 'cpp-functions', retw: 'cpp-functions', ref: 'cpp-references',
       ptr: 'cpp-pointers', cls: 'cpp-classes', inh: 'cpp-polymorphism', exc: 'cpp-exceptions', hof: 'cpp-iterators',
     },
   };

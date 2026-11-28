@@ -127,6 +127,85 @@
     },
     // ───────────── Giorno 4 ─────────────
     {
+      id: 'cpp-conditionals',
+      t: 'Condizioni',
+      d: 'if, else if, switch, l’operatore ternario e FizzBuzz.',
+      guide: [
+        { h: 'if, else if ed else', p: [
+          '`if (condizione)` esegue un blocco solo se la condizione è vera. `else if` concatena altri casi ed `else` raccoglie tutto il resto.',
+          'Usa sempre le graffe `{ }`, anche se il blocco ha una sola riga: eviti errori quando in seguito aggiungi righe.' ],
+          code: `int voto = 7;\nif (voto >= 9) {\n    std::cout << "Ottimo";\n} else if (voto >= 7) {\n    std::cout << "Buono";        // viene eseguito questo\n} else if (voto >= 5) {\n    std::cout << "Sufficiente";\n} else {\n    std::cout << "Insufficiente";\n}` },
+        { h: 'Vero, falso e l’errore dell’=', p: [
+          'In C++ qualsiasi numero diverso da 0 conta come vero e lo 0 come falso.',
+          'Errore classico: `if (x = 5)` assegna 5 a `x` (invece di confrontare) ed è sempre vero. Per confrontare si usa `==`. Compila con `-Wall` e il compilatore ti avviserà.',
+          'Da C++17 puoi dichiarare una variabile dentro l’`if`: `if (auto pos = s.find(\'@\'); pos != std::string::npos)`. Così esiste solo dove serve.' ] },
+        { h: 'switch', p: [
+          '`switch` confronta un intero, un `char` o un `enum` con vari `case`. Non funziona con `std::string`.',
+          'Ogni `case` deve terminare con `break`; altrimenti l’esecuzione «cade» nel caso successivo. A volte lo si fa apposta per raggruppare casi.',
+          '`default` viene eseguito quando nessun caso corrisponde.' ],
+          code: `char opzione = 'b';\nswitch (opzione) {\n    case 'a':\n        std::cout << "Nuova partita";\n        break;\n    case 'b':\n    case 'c':                   // b e c fanno la stessa cosa\n        std::cout << "Carica partita";\n        break;\n    default:\n        std::cout << "Opzione non valida";\n}` },
+        { h: 'L’operatore ternario', p: [
+          '`std::string` è il tipo di C++ per memorizzare testo; lo vedrai a fondo nel giorno 6.',
+          '`condizione ? valore_se_vero : valore_se_falso` sceglie un valore dentro un’espressione. È ideale per i casi brevi.',
+          'Si possono annidare, ma oltre due livelli diventa difficile da leggere; in quel caso torna all’`if`.' ],
+          code: `int eta = 16;\nstd::string tipo = eta >= 18 ? "adulto" : "minorenne";\nstd::cout << tipo;  // minorenne` },
+        { h: 'Esempio reale: tariffa di spedizione', real: true, p: [
+          'Un negozio fa pagare la spedizione per fasce di peso e aggiunge il 50 % se è urgente. Gli `else if` controllano le fasce in ordine e il ternario applica il sovrapprezzo.' ],
+          code: `#include <iostream>\n\ndouble tariffa_spedizione(double kg, bool urgente) {\n    double prezzo;\n    if (kg <= 1) prezzo = 4.5;\n    else if (kg <= 5) prezzo = 7.9;\n    else prezzo = 7.9 + (kg - 5) * 1.2;   // 1,20 € per ogni kg in più\n    return urgente ? prezzo * 1.5 : prezzo;\n}\n\nint main() {\n    std::cout << tariffa_spedizione(3, false) << "\\n";  // 7.9\n    std::cout << tariffa_spedizione(8, true) << "\\n";   // 17.25\n}` },
+      ],
+      x: [
+        out(`int x = 4;\nif (x % 2 == 0)\n    std::cout << "pari";\nelse\n    std::cout << "dispari";`, ['pari', 'dispari', 'paridispari', '0'], '4 diviso 2 dà resto 0, quindi la condizione è vera.'),
+        fill(`if (x > 0) {\n    std::cout << "positivo";\n} ___ if (x < 0) {\n    std::cout << "negativo";\n}`, ['else', 'elif', 'elseif', 'or'], 'C++ concatena le condizioni con `else if`, in due parole.'),
+        out(`int in_sospeso = 0;\nif (!in_sospeso) std::cout << "in regola";`, ['in regola', '0', 'Niente', 'Errore'], '0 equivale a `false`, e `!false` è `true`.'),
+        mc('Che tipo di valori accetta uno `switch` in C++?', ['Interi, char ed enum', 'Stringhe', 'Double', 'Qualsiasi oggetto'], 'Per confrontare `std::string` usa una catena di `if`/`else if`.'),
+        out(`int x = 0;\nif (x = 5) std::cout << "sì";\nelse std::cout << "no";`, ['sì', 'no', 'Errore di compilazione'], '`x = 5` assegna (non confronta) e il risultato, 5, conta come vero.'),
+        out(`int d = 2;\nswitch (d) {\n    case 1: std::cout << "L";\n    case 2: std::cout << "M";\n    case 3: std::cout << "X"; break;\n    default: std::cout << "?";\n}`, ['MX', 'M', 'MX?', 'LMX'], 'Entra in `case 2` e, senza `break`, prosegue fino al `break` di `case 3`.'),
+        out(`int voto = 7;\nstd::cout << (voto >= 9 ? "A" : voto >= 7 ? "B" : "C");`, ['B', 'A', 'C', 'AB'], 'La prima condizione fallisce, quindi si valuta il secondo ternario: 7 >= 7 è vero.'),
+        // Sfida finale
+        out(`int n = 30;\nstd::string r;\nif (n % 3 == 0) r += "Fizz";\nif (n % 5 == 0) r += "Buzz";\nif (r.empty()) r = std::to_string(n);\nswitch (n % 4) {\n    case 2: r += "!";\n    case 3: r += "?"; break;\n    default: r += ".";\n}\nstd::cout << r;`, ['FizzBuzz!?', 'FizzBuzz!', 'Fizz!?', 'FizzBuzz.'], '30 è multiplo di 3 e di 5, quindi si eseguono entrambi gli `if`. 30 % 4 = 2: si aggiunge "!" e, senza `break`, anche "?".'),
+      ],
+    },
+    // ───────────── Giorno 5 ─────────────
+    {
+      id: 'cpp-loops',
+      t: 'Cicli',
+      d: 'for, while, do-while, range-for, break e continue.',
+      guide: [
+        { h: 'Il ciclo for', p: [
+          '`for (inizio; condizione; passo)` è ideale quando sai quanti giri fare. La variabile dichiarata all’inizio esiste solo dentro il ciclo.',
+          'Errore tipico: usare `<=` invece di `<` scorrendo gli indici e uscire dal contenitore di una posizione.' ],
+          code: `for (int i = 1; i <= 5; i++) {\n    std::cout << i << " ";   // 1 2 3 4 5\n}\nfor (int i = 10; i > 0; i -= 3) {\n    std::cout << i << " ";   // 10 7 4 1\n}` },
+        { h: 'while e do-while', p: [
+          '`while (condizione)` ripete finché la condizione è vera. Usalo quando non sai in anticipo quanti giri ci saranno.',
+          '`do { ... } while (condizione);` controlla alla fine, quindi il blocco viene eseguito almeno una volta. È perfetto per i menu e per chiedere dati finché non sono validi.' ],
+          code: `int voto;\ndo {\n    std::cout << "Voto (0-10): ";\n    std::cin >> voto;\n} while (voto < 0 || voto > 10);   // ripete finché non è valido` },
+        { h: 'Il range-for', p: [
+          'Negli esempi compaiono `std::string` (testo) e `std::vector` (una lista di valori). Per ora basta sapere che il range-for li scorre elemento per elemento; li vedrai a fondo nei giorni 6 e 8.',
+          '`for (tipo x : contenitore)` scorre tutti gli elementi di un vector, array, set, map o string senza indici.',
+          'Ricorda: `for (auto x : v)` lavora su copie; `for (auto& x : v)` modifica gli originali e `for (const auto& x : v)` legge senza copiare.' ],
+          code: `std::string parola = "ciao";\nint vocali = 0;\nfor (char c : parola)\n    if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') vocali++;\nstd::cout << vocali;  // 3` },
+        { h: 'break, continue e cicli annidati', p: [
+          '`break` esce subito dal ciclo e `continue` passa al giro successivo.',
+          'Con cicli annidati, `break` esce solo dal ciclo più interno. Se devi uscire da tutti, sposta il codice in una funzione e usa `return`.' ],
+          code: `for (int i = 1; i <= 10; i++) {\n    if (i % 2 == 0) continue;   // salta i pari\n    if (i > 7) break;           // si ferma al 9\n    std::cout << i << " ";       // 1 3 5 7\n}` },
+        { h: 'Esempio reale: quanto ci mettono a crescere i tuoi risparmi?', real: true, p: [
+          'Versi 1.000 € su un conto al 5 % annuo e vuoi sapere quanti anni servono per arrivare a 1.500 €. Non sai quanti giri ci saranno, quindi `while` è lo strumento giusto.' ],
+          code: `#include <iostream>\n\nint main() {\n    double saldo = 1000;\n    int anni = 0;\n    while (saldo < 1500) {\n        saldo *= 1.05;   // interessi dell’anno\n        anni++;\n    }\n    std::cout << "Anni: " << anni << ", saldo: " << saldo << "\\n";\n    // Anni: 9, saldo: 1551.33\n}` },
+      ],
+      x: [
+        out(`for (int i = 0; i < 4; i += 2)\n    std::cout << i;`, ['02', '0123', '024', '24'], '`i` vale 0 e poi 2; arrivato a 4 la condizione fallisce.'),
+        typ('Completa la condizione perché stampi 1 2 3 4 5', `for (int i = 1; i ___ 5; i++)\n    std::cout << i << " ";`, '<=', 'Con `<=` il ciclo include il 5; con `<` si fermerebbe al 4.'),
+        fill(`std::vector<int> v = {1, 2, 3};\nfor (int x ___ v) std::cout << x;`, [':', 'in', 'of', '->'], 'Il range-for usa i due punti: `for (tipo x : contenitore)`.'),
+        out(`int n = 0;\ndo {\n    n++;\n} while (n < 0);\nstd::cout << n;`, ['1', '0', 'Ciclo infinito', '-1'], '`do-while` esegue il blocco una volta prima di controllare la condizione.'),
+        mc('Con due cicli annidati, da dove esce un `break` scritto in quello interno?', ['Solo dal ciclo interno', 'Da entrambi i cicli', 'Dal ciclo esterno', 'Dall’intera funzione'], '`break` esce solo dal ciclo più vicino. Per uscire da tutti, sposta il codice in una funzione e usa `return`.'),
+        out(`for (int i = 0; i < 5; i++) {\n    if (i % 2 == 0) continue;\n    std::cout << i;\n}`, ['13', '024', '01234', '1'], '`continue` salta i pari, quindi si stampano solo 1 e 3.'),
+        out(`int c = 0;\nfor (int i = 0; i < 3; i++)\n    for (int j = i; j < 3; j++) c++;\nstd::cout << c;`, ['6', '9', '3', '5'], 'Il ciclo interno fa 3, 2 e 1 giri: 3 + 2 + 1 = 6.'),
+        // Sfida finale
+        out(`int n = 1234, somma = 0, cifre = 0;\nwhile (n > 0) {\n    somma += n % 10;\n    n /= 10;\n    cifre++;\n}\nstd::cout << somma << " " << cifre;`, ['10 4', '4 10', '10 3', '1234 4'], '`n % 10` estrae l’ultima cifra e `n /= 10` la toglie. Si sommano 4 + 3 + 2 + 1 = 10 in 4 giri.'),
+      ],
+    },
+    // ───────────── Giorno 6 ─────────────
+    {
       id: 'cpp-strings',
       t: 'Stringhe',
       d: 'std::string: concatenare, size, substr, find e conversioni.',
@@ -165,7 +244,7 @@
         out(`std::string email = "eva.rossi@posta.it";\nauto pos = email.find('@');\nstd::string user = email.substr(0, pos);\nuser[0] = 'E';\nstd::cout << user << " " << email.size() - pos - 1;`, ['Eva.rossi 8', 'eva.rossi 8', 'Eva.rossi 9', 'Eva.rossi@ 8'], 'La @ è in posizione 9: l’utente sono i primi 9 caratteri e se ne modifica l’iniziale. L’email è lunga 18, quindi il dominio ha 18 - 9 - 1 = 8 caratteri.'),
       ],
     },
-    // ───────────── Giorno 5 ─────────────
+    // ───────────── Giorno 7 ─────────────
     {
       id: 'cpp-arrays',
       t: 'Array',
@@ -202,7 +281,7 @@
         out(`std::array<int, 5> v = {3, 8, 1, 9, 4};\nint mx = v[0], pos = 0;\nfor (int i = 1; i < 5; i++)\n    if (v[i] > mx) { mx = v[i]; pos = i; }\nstd::cout << mx << " in " << pos;`, ['9 in 3', '9 in 4', '8 in 1', '9 in 2'], 'Il ciclo tiene il valore più grande visto e il suo indice. Il 9 è all’indice 3 perché si conta da 0.'),
       ],
     },
-    // ───────────── Giorno 6 ─────────────
+    // ───────────── Giorno 8 ─────────────
     {
       id: 'cpp-vectors',
       t: 'Vettori',
@@ -240,7 +319,7 @@
         out(`std::vector<int> v = {5, 3, 8};\nfor (auto& x : v) x *= 2;\nv.insert(v.begin(), 1);\nv.pop_back();\nstd::cout << v.front() + v.back() << " " << v.size();`, ['7 3', '17 3', '1 3', '7 4'], 'Con `auto&` gli originali raddoppiano: {10, 6, 16}. Dopo aver inserito l’1 e tolto l’ultimo resta {1, 10, 6}: 1 + 6 = 7 e dimensione 3.'),
       ],
     },
-    // ───────────── Giorno 7 ─────────────
+    // ───────────── Giorno 9 ─────────────
     {
       id: 'cpp-sets',
       t: 'Insiemi',
@@ -278,7 +357,7 @@
         out(`std::set<int> a = {1, 3, 5, 7};\nstd::set<int> b = {3, 4, 5};\nint comuni = 0;\nfor (int x : b) if (a.count(x)) comuni++;\na.insert(b.begin(), b.end());\nstd::cout << comuni << " " << a.size();`, ['2 5', '2 7', '3 5', '1 5'], 'I valori comuni sono 3 e 5. Inserendo `b` in `a` entra solo il 4: {1, 3, 4, 5, 7}, cinque elementi.'),
       ],
     },
-    // ───────────── Giorno 8 ─────────────
+    // ───────────── Giorno 10 ─────────────
     {
       id: 'cpp-maps',
       t: 'Mappe',
@@ -313,83 +392,6 @@
         out(`std::map<char, int> c;\nfor (char ch : std::string("data bat"))\n    if (ch != ' ') c[ch]++;\nstd::cout << c['a'] << c['t'] << c.size();`, ['324', '314', '325', '323'], '"a" compare tre volte, "t" due, e "d" e "b" una: a=3, t=2 e ci sono 4 chiavi diverse.'),
         // Sfida finale
         out(`std::map<std::string, int> scorte = {{"pane", 3}, {"latte", 0}};\nscorte["pane"] -= 1;\nscorte["uova"] += 12;\nint totale = 0;\nfor (const auto& [p, n] : scorte) totale += n;\nstd::cout << scorte.size() << " " << totale << " " << scorte.begin()->first;`, ['3 14 latte', '2 14 latte', '3 15 latte', '3 14 uova'], '`scorte["uova"]` crea la chiave con 0 e le somma 12. Totale: 2 + 0 + 12 = 14. La chiave più piccola in ordine alfabetico è "latte".'),
-      ],
-    },
-    // ───────────── Giorno 9 ─────────────
-    {
-      id: 'cpp-conditionals',
-      t: 'Condizioni',
-      d: 'if, else if, switch, l’operatore ternario e FizzBuzz.',
-      guide: [
-        { h: 'if, else if ed else', p: [
-          '`if (condizione)` esegue un blocco solo se la condizione è vera. `else if` concatena altri casi ed `else` raccoglie tutto il resto.',
-          'Usa sempre le graffe `{ }`, anche se il blocco ha una sola riga: eviti errori quando in seguito aggiungi righe.' ],
-          code: `int voto = 7;\nif (voto >= 9) {\n    std::cout << "Ottimo";\n} else if (voto >= 7) {\n    std::cout << "Buono";        // viene eseguito questo\n} else if (voto >= 5) {\n    std::cout << "Sufficiente";\n} else {\n    std::cout << "Insufficiente";\n}` },
-        { h: 'Vero, falso e l’errore dell’=', p: [
-          'In C++ qualsiasi numero diverso da 0 conta come vero e lo 0 come falso.',
-          'Errore classico: `if (x = 5)` assegna 5 a `x` (invece di confrontare) ed è sempre vero. Per confrontare si usa `==`. Compila con `-Wall` e il compilatore ti avviserà.',
-          'Da C++17 puoi dichiarare una variabile dentro l’`if`: `if (auto pos = s.find(\'@\'); pos != std::string::npos)`. Così esiste solo dove serve.' ] },
-        { h: 'switch', p: [
-          '`switch` confronta un intero, un `char` o un `enum` con vari `case`. Non funziona con `std::string`.',
-          'Ogni `case` deve terminare con `break`; altrimenti l’esecuzione «cade» nel caso successivo. A volte lo si fa apposta per raggruppare casi.',
-          '`default` viene eseguito quando nessun caso corrisponde.' ],
-          code: `char opzione = 'b';\nswitch (opzione) {\n    case 'a':\n        std::cout << "Nuova partita";\n        break;\n    case 'b':\n    case 'c':                   // b e c fanno la stessa cosa\n        std::cout << "Carica partita";\n        break;\n    default:\n        std::cout << "Opzione non valida";\n}` },
-        { h: 'L’operatore ternario', p: [
-          '`condizione ? valore_se_vero : valore_se_falso` sceglie un valore dentro un’espressione. È ideale per i casi brevi.',
-          'Si possono annidare, ma oltre due livelli diventa difficile da leggere; in quel caso torna all’`if`.' ],
-          code: `int eta = 16;\nstd::string tipo = eta >= 18 ? "adulto" : "minorenne";\nstd::cout << tipo;  // minorenne` },
-        { h: 'Esempio reale: tariffa di spedizione', real: true, p: [
-          'Un negozio fa pagare la spedizione per fasce di peso e aggiunge il 50 % se è urgente. Gli `else if` controllano le fasce in ordine e il ternario applica il sovrapprezzo.' ],
-          code: `#include <iostream>\n\ndouble tariffa_spedizione(double kg, bool urgente) {\n    double prezzo;\n    if (kg <= 1) prezzo = 4.5;\n    else if (kg <= 5) prezzo = 7.9;\n    else prezzo = 7.9 + (kg - 5) * 1.2;   // 1,20 € per ogni kg in più\n    return urgente ? prezzo * 1.5 : prezzo;\n}\n\nint main() {\n    std::cout << tariffa_spedizione(3, false) << "\\n";  // 7.9\n    std::cout << tariffa_spedizione(8, true) << "\\n";   // 17.25\n}` },
-      ],
-      x: [
-        out(`int x = 4;\nif (x % 2 == 0)\n    std::cout << "pari";\nelse\n    std::cout << "dispari";`, ['pari', 'dispari', 'paridispari', '0'], '4 diviso 2 dà resto 0, quindi la condizione è vera.'),
-        fill(`if (x > 0) {\n    std::cout << "positivo";\n} ___ if (x < 0) {\n    std::cout << "negativo";\n}`, ['else', 'elif', 'elseif', 'or'], 'C++ concatena le condizioni con `else if`, in due parole.'),
-        out(`int in_sospeso = 0;\nif (!in_sospeso) std::cout << "in regola";`, ['in regola', '0', 'Niente', 'Errore'], '0 equivale a `false`, e `!false` è `true`.'),
-        mc('Che tipo di valori accetta uno `switch` in C++?', ['Interi, char ed enum', 'Stringhe', 'Double', 'Qualsiasi oggetto'], 'Per confrontare `std::string` usa una catena di `if`/`else if`.'),
-        out(`int x = 0;\nif (x = 5) std::cout << "sì";\nelse std::cout << "no";`, ['sì', 'no', 'Errore di compilazione'], '`x = 5` assegna (non confronta) e il risultato, 5, conta come vero.'),
-        out(`int d = 2;\nswitch (d) {\n    case 1: std::cout << "L";\n    case 2: std::cout << "M";\n    case 3: std::cout << "X"; break;\n    default: std::cout << "?";\n}`, ['MX', 'M', 'MX?', 'LMX'], 'Entra in `case 2` e, senza `break`, prosegue fino al `break` di `case 3`.'),
-        out(`int voto = 7;\nstd::cout << (voto >= 9 ? "A" : voto >= 7 ? "B" : "C");`, ['B', 'A', 'C', 'AB'], 'La prima condizione fallisce, quindi si valuta il secondo ternario: 7 >= 7 è vero.'),
-        // Sfida finale
-        out(`int n = 30;\nstd::string r;\nif (n % 3 == 0) r += "Fizz";\nif (n % 5 == 0) r += "Buzz";\nif (r.empty()) r = std::to_string(n);\nswitch (n % 4) {\n    case 2: r += "!";\n    case 3: r += "?"; break;\n    default: r += ".";\n}\nstd::cout << r;`, ['FizzBuzz!?', 'FizzBuzz!', 'Fizz!?', 'FizzBuzz.'], '30 è multiplo di 3 e di 5, quindi si eseguono entrambi gli `if`. 30 % 4 = 2: si aggiunge "!" e, senza `break`, anche "?".'),
-      ],
-    },
-    // ───────────── Giorno 10 ─────────────
-    {
-      id: 'cpp-loops',
-      t: 'Cicli',
-      d: 'for, while, do-while, range-for, break e continue.',
-      guide: [
-        { h: 'Il ciclo for', p: [
-          '`for (inizio; condizione; passo)` è ideale quando sai quanti giri fare. La variabile dichiarata all’inizio esiste solo dentro il ciclo.',
-          'Errore tipico: usare `<=` invece di `<` scorrendo gli indici e uscire dal contenitore di una posizione.' ],
-          code: `for (int i = 1; i <= 5; i++) {\n    std::cout << i << " ";   // 1 2 3 4 5\n}\nfor (int i = 10; i > 0; i -= 3) {\n    std::cout << i << " ";   // 10 7 4 1\n}` },
-        { h: 'while e do-while', p: [
-          '`while (condizione)` ripete finché la condizione è vera. Usalo quando non sai in anticipo quanti giri ci saranno.',
-          '`do { ... } while (condizione);` controlla alla fine, quindi il blocco viene eseguito almeno una volta. È perfetto per i menu e per chiedere dati finché non sono validi.' ],
-          code: `int voto;\ndo {\n    std::cout << "Voto (0-10): ";\n    std::cin >> voto;\n} while (voto < 0 || voto > 10);   // ripete finché non è valido` },
-        { h: 'Il range-for', p: [
-          '`for (tipo x : contenitore)` scorre tutti gli elementi di un vector, array, set, map o string senza indici.',
-          'Ricorda: `for (auto x : v)` lavora su copie; `for (auto& x : v)` modifica gli originali e `for (const auto& x : v)` legge senza copiare.' ],
-          code: `std::string parola = "ciao";\nint vocali = 0;\nfor (char c : parola)\n    if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') vocali++;\nstd::cout << vocali;  // 3` },
-        { h: 'break, continue e cicli annidati', p: [
-          '`break` esce subito dal ciclo e `continue` passa al giro successivo.',
-          'Con cicli annidati, `break` esce solo dal ciclo più interno. Se devi uscire da tutti, sposta il codice in una funzione e usa `return`.' ],
-          code: `for (int i = 1; i <= 10; i++) {\n    if (i % 2 == 0) continue;   // salta i pari\n    if (i > 7) break;           // si ferma al 9\n    std::cout << i << " ";       // 1 3 5 7\n}` },
-        { h: 'Esempio reale: quanto ci mettono a crescere i tuoi risparmi?', real: true, p: [
-          'Versi 1.000 € su un conto al 5 % annuo e vuoi sapere quanti anni servono per arrivare a 1.500 €. Non sai quanti giri ci saranno, quindi `while` è lo strumento giusto.' ],
-          code: `#include <iostream>\n\nint main() {\n    double saldo = 1000;\n    int anni = 0;\n    while (saldo < 1500) {\n        saldo *= 1.05;   // interessi dell’anno\n        anni++;\n    }\n    std::cout << "Anni: " << anni << ", saldo: " << saldo << "\\n";\n    // Anni: 9, saldo: 1551.33\n}` },
-      ],
-      x: [
-        out(`for (int i = 0; i < 4; i += 2)\n    std::cout << i;`, ['02', '0123', '024', '24'], '`i` vale 0 e poi 2; arrivato a 4 la condizione fallisce.'),
-        typ('Completa la condizione perché stampi 1 2 3 4 5', `for (int i = 1; i ___ 5; i++)\n    std::cout << i << " ";`, '<=', 'Con `<=` il ciclo include il 5; con `<` si fermerebbe al 4.'),
-        fill(`std::vector<int> v = {1, 2, 3};\nfor (int x ___ v) std::cout << x;`, [':', 'in', 'of', '->'], 'Il range-for usa i due punti: `for (tipo x : contenitore)`.'),
-        out(`int n = 0;\ndo {\n    n++;\n} while (n < 0);\nstd::cout << n;`, ['1', '0', 'Ciclo infinito', '-1'], '`do-while` esegue il blocco una volta prima di controllare la condizione.'),
-        mc('Con due cicli annidati, da dove esce un `break` scritto in quello interno?', ['Solo dal ciclo interno', 'Da entrambi i cicli', 'Dal ciclo esterno', 'Dall’intera funzione'], '`break` esce solo dal ciclo più vicino. Per uscire da tutti, sposta il codice in una funzione e usa `return`.'),
-        out(`for (int i = 0; i < 5; i++) {\n    if (i % 2 == 0) continue;\n    std::cout << i;\n}`, ['13', '024', '01234', '1'], '`continue` salta i pari, quindi si stampano solo 1 e 3.'),
-        out(`int c = 0;\nfor (int i = 0; i < 3; i++)\n    for (int j = i; j < 3; j++) c++;\nstd::cout << c;`, ['6', '9', '3', '5'], 'Il ciclo interno fa 3, 2 e 1 giri: 3 + 2 + 1 = 6.'),
-        // Sfida finale
-        out(`int n = 1234, somma = 0, cifre = 0;\nwhile (n > 0) {\n    somma += n % 10;\n    n /= 10;\n    cifre++;\n}\nstd::cout << somma << " " << cifre;`, ['10 4', '4 10', '10 3', '1234 4'], '`n % 10` estrae l’ultima cifra e `n /= 10` la toglie. Si sommano 4 + 3 + 2 + 1 = 10 in 4 giri.'),
       ],
     },
     // ───────────── Giorno 11 ─────────────

@@ -371,7 +371,7 @@
           '`pop(clé)` supprime et renvoie la valeur ; `del d[clé]` supprime seulement. `in` vérifie si une clé existe (pas une valeur).' ],
           code: `stock = {"pommes": 10}\nstock["poires"] = 5        # ajouter\nstock["pommes"] -= 3       # modifier\nstock.update({"raisins": 8})\ndel stock["poires"]\nprint(stock)               # {'pommes': 7, 'raisins': 8}\nprint("raisins" in stock)  # True` },
         { h: 'Parcourir un dictionnaire', p: [
-          '`keys()` donne les clés, `values()` les valeurs et `items()` les paires. Avec `for cle, valeur in d.items()` tu parcours tout d’un coup (tu verras les boucles en détail au jour 10).',
+          '`keys()` donne les clés, `values()` les valeurs et `items()` les paires. Avec `for cle, valeur in d.items()` tu parcours tout d’un coup.',
           'Depuis Python 3.7, les dictionnaires conservent l’ordre d’insertion des clés.' ],
           code: `notes = {"Ana": 9, "Luis": 6, "Eva": 8}\nfor eleve, note in notes.items():\n    print(eleve, "->", note)\nprint(list(notes.keys()))  # ['Ana', 'Luis', 'Eva']\nprint(sum(notes.values()) / len(notes))  # 7.666666666666667` },
         { h: 'Données imbriquées', p: [
@@ -731,7 +731,7 @@
           code: `def creer_remise(pourcentage):\n    def appliquer(prix):\n        return prix * (1 - pourcentage / 100)\n    return appliquer\n\nsoldes = creer_remise(20)\nprint(soldes(50))  # 40.0` },
         { h: 'Décorateurs', p: [
           'Un décorateur est une fonction qui en reçoit une autre et renvoie une version enrichie. On l’applique avec `@nom` au-dessus du `def`.',
-          'On s’en sert pour journaliser les appels, mesurer le temps, vérifier des droits ou mettre en cache des résultats sans toucher à la fonction d’origine. Flask, que tu verras au jour 26, les utilise pour les routes.' ],
+          'On s’en sert pour journaliser les appels, mesurer le temps, vérifier des droits ou mettre en cache des résultats sans toucher à la fonction d’origine. Flask, que tu verras au jour 27, les utilise pour les routes.' ],
           code: `def journaliser(fonction):\n    def enveloppe(*args):\n        print("Appel de", fonction.__name__)\n        return fonction(*args)\n    return enveloppe\n\n@journaliser\ndef additionner(a, b):\n    return a + b\n\nprint(additionner(2, 3))\n# Appel de additionner\n# 5` },
         { h: 'Exemple réel : le catalogue d’une boutique', real: true, p: [
           'Avec `filter`, `map`, `sorted` et `max` avec `key`, tu peux répondre à des questions sur un catalogue : quels produits coûtent moins de 20 € et lequel est le plus cher.' ],

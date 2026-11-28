@@ -180,7 +180,7 @@
           code: `for (const letter of "sun") console.log(letter);  // s, u, n (one per line)\n\nconst ages = { Ana: 30, Leo: 8 };\nfor (const name in ages) {\n  console.log(name, ages[name]);\n}\n// Ana 30\n// Leo 8` },
         { h: 'break and continue', p: [
           '`break` leaves the loop completely: useful when you already found what you were looking for. `continue` skips the rest of the current pass and moves on to the next one.',
-          'Use them sparingly: a loop full of `break` and `continue` is hard to follow. Often an array method such as `find` or `filter` (day 9) expresses it better.' ],
+          'Use them sparingly: a loop full of `break` and `continue` is hard to follow. Often an array method such as `find` or `filter` (day 10) expresses it better.' ],
           code: `const marks = [7, 3, 9, 4];\nfor (const m of marks) {\n  if (m < 5) continue;   // skips the fails\n  console.log("Passed:", m);\n}\n// Passed: 7\n// Passed: 9` },
         { h: 'Real example: receipt total and the most expensive item', real: true, p: [
           'Going through a list while accumulating results is the most common use of a loop: adding amounts, finding maximums, counting cases.' ],
@@ -213,7 +213,7 @@
           code: 'function greet(name = "friend") {\n  return `Hello, ${name}`;\n}\nconsole.log(greet());       // Hello, friend\n\nfunction add(...nums) {\n  let total = 0;\n  for (const n of nums) total += n;\n  return total;\n}\nconsole.log(add(1, 2, 3));  // 6' },
         { h: 'Arrow functions', p: [
           'Arrow functions are a short way to write functions: `const double = (n) => n * 2`. If the body is a single expression, the `return` is implicit.',
-          'With braces you need an explicit `return`: `(n) => { return n * 2; }`. They are perfect for small functions that are passed to others (you will see this on day 9).' ],
+          'With braces you need an explicit `return`: `(n) => { return n * 2; }`. They are perfect for small functions that are passed to others (you will see this on day 10).' ],
           code: `const double = (n) => n * 2;\nconst hello = () => "Hi!";\nconst max = (a, b) => {\n  if (a > b) return a;\n  return b;\n};\nconsole.log(double(5), hello(), max(3, 8));  // 10 Hi! 8` },
         { h: 'Scope and hoisting', p: [
           'Variables declared inside a function (or inside a `{ }` block with `let`/`const`) only exist in there. An inner variable with the same name as an outer one "hides" it without changing it.',

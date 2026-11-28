@@ -2,7 +2,7 @@
 
 Aprende **Python, Java, JavaScript y C++** byte a byte, con retos de 30 días, rachas, vidas, experiencia y ejercicios cortos. Un *nibble* son 4 bits, uno por cada lenguaje del curso; cada día del reto es un byte y cada uno de sus 8 niveles, un bit.
 
-El formato de reto de 30 días se inspira en retos de la comunidad como 30 Days Of Python de Asabeneh.
+El formato de reto de 30 días se inspira en retos de la comunidad como 30 Days Of Python de Asabeneh. El temario, las lecciones y los ejercicios de Nibble son propios.
 
 Te acompaña **Kibi**, un hámster programador que mordisquea código. Lleva una tarjeta `</>` del color del curso que estás haciendo.
 

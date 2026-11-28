@@ -14,10 +14,11 @@
       'js-arrays', 'js-objects', 'js-higher-order', 'js-destructuring', 'js-sets-maps', 'js-regex', 'js-workshop-contacts',
       'js-dom', 'js-dom-edit', 'js-events', 'js-json', 'js-errors', 'js-closures', 'js-workshop-sales',
       'js-classes', 'js-promises', 'js-async', 'js-modules', 'js-iterators', 'js-node', 'js-testing', 'js-clean-code', 'js-workshop-shop'],
-    java: ['java-intro', 'java-vars', 'java-operators', 'java-strings', 'java-arrays', 'java-arraylist', 'java-sets', 'java-maps', 'java-conditionals', 'java-loops',
+    // Java y C++: decisiones y bucles en los días 4 y 5, antes que los textos y las colecciones.
+    java: ['java-intro', 'java-vars', 'java-operators', 'java-conditionals', 'java-loops', 'java-strings', 'java-arrays', 'java-arraylist', 'java-sets', 'java-maps',
       'java-methods', 'java-packages', 'java-classes', 'java-encapsulation', 'java-inheritance', 'java-polymorphism', 'java-exceptions', 'java-generics', 'java-datetime', 'java-regex',
       'java-files', 'java-lambdas', 'java-streams', 'java-optional', 'java-enums', 'java-concurrency', 'java-build', 'java-jdbc', 'java-spring', 'java-wrapup'],
-    cpp: ['cpp-intro', 'cpp-vars', 'cpp-operators', 'cpp-strings', 'cpp-arrays', 'cpp-vectors', 'cpp-sets', 'cpp-maps', 'cpp-conditionals', 'cpp-loops',
+    cpp: ['cpp-intro', 'cpp-vars', 'cpp-operators', 'cpp-conditionals', 'cpp-loops', 'cpp-strings', 'cpp-arrays', 'cpp-vectors', 'cpp-sets', 'cpp-maps',
       'cpp-functions', 'cpp-headers', 'cpp-references', 'cpp-pointers', 'cpp-memory', 'cpp-structs', 'cpp-classes', 'cpp-constructors', 'cpp-inheritance', 'cpp-polymorphism',
       'cpp-overloading', 'cpp-templates', 'cpp-exceptions', 'cpp-stl', 'cpp-iterators', 'cpp-smart-pointers', 'cpp-move', 'cpp-files', 'cpp-concurrency', 'cpp-wrapup'],
   };

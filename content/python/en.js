@@ -371,7 +371,7 @@
           '`pop(key)` deletes and returns the value; `del d[key]` only deletes. `in` checks whether a key exists (not a value).' ],
           code: `stock = {"apples": 10}\nstock["pears"] = 5        # add\nstock["apples"] -= 3      # change\nstock.update({"grapes": 8})\ndel stock["pears"]\nprint(stock)              # {'apples': 7, 'grapes': 8}\nprint("grapes" in stock)  # True` },
         { h: 'Looping over a dictionary', p: [
-          '`keys()` gives the keys, `values()` the values and `items()` the pairs. With `for key, value in d.items()` you go through everything at once (you will look at loops in depth on day 10).',
+          '`keys()` gives the keys, `values()` the values and `items()` the pairs. With `for key, value in d.items()` you go through everything at once.',
           'Since Python 3.7, dictionaries keep the order in which you inserted the keys.' ],
           code: `marks = {"Ana": 9, "Luis": 6, "Eva": 8}\nfor student, mark in marks.items():\n    print(student, "->", mark)\nprint(list(marks.keys()))  # ['Ana', 'Luis', 'Eva']\nprint(sum(marks.values()) / len(marks))  # 7.666666666666667` },
         { h: 'Nested data', p: [
@@ -731,7 +731,7 @@
           code: `def make_discount(percent):\n    def apply(price):\n        return price * (1 - percent / 100)\n    return apply\n\nsale = make_discount(20)\nprint(sale(50))  # 40.0` },
         { h: 'Decorators', p: [
           'A decorator is a function that takes another one and returns an extended version. You apply it with `@name` above the `def`.',
-          'They are used to log calls, measure time, check permissions or cache results without touching the original function. Flask, which you will see on day 26, uses them for routes.' ],
+          'They are used to log calls, measure time, check permissions or cache results without touching the original function. Flask, which you will see on day 27, uses them for routes.' ],
           code: `def log(function):\n    def wrapper(*args):\n        print("Calling", function.__name__)\n        return function(*args)\n    return wrapper\n\n@log\ndef add(a, b):\n    return a + b\n\nprint(add(2, 3))\n# Calling add\n# 5` },
         { h: 'Real example: a shop catalogue', real: true, p: [
           'With `filter`, `map`, `sorted` and `max` with `key` you can answer questions about a catalogue: which products cost less than €20 and which one is the most expensive.' ],

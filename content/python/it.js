@@ -371,7 +371,7 @@
           '`pop(chiave)` elimina e restituisce il valore; `del d[chiave]` elimina soltanto. `in` controlla se esiste una chiave (non un valore).' ],
           code: `magazzino = {"mele": 10}\nmagazzino["pere"] = 5        # aggiungere\nmagazzino["mele"] -= 3       # modificare\nmagazzino.update({"uva": 8})\ndel magazzino["pere"]\nprint(magazzino)             # {'mele': 7, 'uva': 8}\nprint("uva" in magazzino)    # True` },
         { h: 'Percorrere un dizionario', p: [
-          '`keys()` dà le chiavi, `values()` i valori e `items()` le coppie. Con `for chiave, valore in d.items()` percorri tutto in una volta (vedrai i cicli a fondo il giorno 10).',
+          '`keys()` dà le chiavi, `values()` i valori e `items()` le coppie. Con `for chiave, valore in d.items()` percorri tutto in una volta.',
           'Da Python 3.7 i dizionari mantengono l’ordine in cui hai inserito le chiavi.' ],
           code: `voti = {"Ana": 9, "Luis": 6, "Eva": 8}\nfor studente, voto in voti.items():\n    print(studente, "->", voto)\nprint(list(voti.keys()))  # ['Ana', 'Luis', 'Eva']\nprint(sum(voti.values()) / len(voti))  # 7.666666666666667` },
         { h: 'Dati annidati', p: [
@@ -731,7 +731,7 @@
           code: `def crea_sconto(percentuale):\n    def applica(prezzo):\n        return prezzo * (1 - percentuale / 100)\n    return applica\n\nsaldi = crea_sconto(20)\nprint(saldi(50))  # 40.0` },
         { h: 'Decoratori', p: [
           'Un decoratore è una funzione che ne riceve un’altra e ne restituisce una versione arricchita. Si applica con `@nome` sopra il `def`.',
-          'Si usano per registrare le chiamate, misurare i tempi, controllare i permessi o mettere in cache i risultati senza toccare la funzione originale. Flask, che vedrai il giorno 26, li usa per le rotte.' ],
+          'Si usano per registrare le chiamate, misurare i tempi, controllare i permessi o mettere in cache i risultati senza toccare la funzione originale. Flask, che vedrai il giorno 27, li usa per le rotte.' ],
           code: `def registra(funzione):\n    def involucro(*args):\n        print("Chiamata a", funzione.__name__)\n        return funzione(*args)\n    return involucro\n\n@registra\ndef somma(a, b):\n    return a + b\n\nprint(somma(2, 3))\n# Chiamata a somma\n# 5` },
         { h: 'Esempio reale: il catalogo di un negozio', real: true, p: [
           'Con `filter`, `map`, `sorted` e `max` con `key` puoi rispondere a domande su un catalogo: quali prodotti costano meno di 20 € e qual è il più caro.' ],

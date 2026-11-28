@@ -180,7 +180,7 @@
           code: `for (const lettera of "sol") console.log(lettera);  // s, o, l (una per riga)\n\nconst eta = { Ana: 30, Leo: 8 };\nfor (const nome in eta) {\n  console.log(nome, eta[nome]);\n}\n// Ana 30\n// Leo 8` },
         { h: 'break e continue', p: [
           '`break` esce del tutto dal ciclo: utile quando hai già trovato ciò che cercavi. `continue` salta il resto del giro attuale e passa al successivo.',
-          'Usali con moderazione: un ciclo pieno di `break` e `continue` è difficile da seguire. Spesso un metodo degli array come `find` o `filter` (giorno 9) lo esprime meglio.' ],
+          'Usali con moderazione: un ciclo pieno di `break` e `continue` è difficile da seguire. Spesso un metodo degli array come `find` o `filter` (giorno 10) lo esprime meglio.' ],
           code: `const voti = [7, 3, 9, 4];\nfor (const v of voti) {\n  if (v < 5) continue;   // salta le insufficienze\n  console.log("Promosso:", v);\n}\n// Promosso: 7\n// Promosso: 9` },
         { h: 'Esempio reale: totale di uno scontrino e articolo più caro', real: true, p: [
           'Scorrere una lista accumulando risultati è l’uso più comune di un ciclo: sommare importi, cercare massimi, contare casi.' ],
@@ -213,7 +213,7 @@
           code: 'function saluta(nome = "amico") {\n  return `Ciao, ${nome}`;\n}\nconsole.log(saluta());       // Ciao, amico\n\nfunction somma(...nums) {\n  let totale = 0;\n  for (const n of nums) totale += n;\n  return totale;\n}\nconsole.log(somma(1, 2, 3));  // 6' },
         { h: 'Funzioni freccia', p: [
           'Le funzioni freccia sono un modo breve di scrivere funzioni: `const doppio = (n) => n * 2`. Se il corpo è una sola espressione, il `return` è implicito.',
-          'Con le graffe serve un `return` esplicito: `(n) => { return n * 2; }`. Sono perfette per piccole funzioni da passare ad altre (lo vedrai il giorno 9).' ],
+          'Con le graffe serve un `return` esplicito: `(n) => { return n * 2; }`. Sono perfette per piccole funzioni da passare ad altre (lo vedrai il giorno 10).' ],
           code: `const doppio = (n) => n * 2;\nconst saluto = () => "Ciao!";\nconst max = (a, b) => {\n  if (a > b) return a;\n  return b;\n};\nconsole.log(doppio(5), saluto(), max(3, 8));  // 10 Ciao! 8` },
         { h: 'Ambito e hoisting', p: [
           'Le variabili dichiarate dentro una funzione (o dentro un blocco `{ }` con `let`/`const`) esistono solo lì. Una variabile interna con lo stesso nome di una esterna la “copre” senza modificarla.',

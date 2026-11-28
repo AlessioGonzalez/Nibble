@@ -180,7 +180,7 @@
           code: `for (const lettre of "sol") console.log(lettre);  // s, o, l (une par ligne)\n\nconst ages = { Ana: 30, Leo: 8 };\nfor (const nom in ages) {\n  console.log(nom, ages[nom]);\n}\n// Ana 30\n// Leo 8` },
         { h: 'break et continue', p: [
           '`break` sort complètement de la boucle : utile quand tu as déjà trouvé ce que tu cherchais. `continue` saute le reste du tour actuel et passe au suivant.',
-          'Utilise-les avec modération : une boucle pleine de `break` et de `continue` est difficile à suivre. Souvent, une méthode de tableau comme `find` ou `filter` (jour 9) l’exprime mieux.' ],
+          'Utilise-les avec modération : une boucle pleine de `break` et de `continue` est difficile à suivre. Souvent, une méthode de tableau comme `find` ou `filter` (jour 10) l’exprime mieux.' ],
           code: `const notes = [7, 3, 9, 4];\nfor (const n of notes) {\n  if (n < 5) continue;   // saute les notes insuffisantes\n  console.log("Reçu :", n);\n}\n// Reçu : 7\n// Reçu : 9` },
         { h: 'Exemple réel : total d’un ticket et l’article le plus cher', real: true, p: [
           'Parcourir une liste en accumulant des résultats est l’usage le plus courant d’une boucle : additionner des montants, chercher un maximum, compter des cas.' ],
@@ -213,7 +213,7 @@
           code: 'function saluer(nom = "ami") {\n  return `Bonjour, ${nom}`;\n}\nconsole.log(saluer());       // Bonjour, ami\n\nfunction additionner(...nums) {\n  let total = 0;\n  for (const n of nums) total += n;\n  return total;\n}\nconsole.log(additionner(1, 2, 3));  // 6' },
         { h: 'Fonctions fléchées', p: [
           'Les fonctions fléchées sont une manière courte d’écrire des fonctions : `const double = (n) => n * 2`. Si le corps est une seule expression, le `return` est implicite.',
-          'Avec des accolades, il faut un `return` explicite : `(n) => { return n * 2; }`. Elles sont parfaites pour les petites fonctions qu’on passe à d’autres (tu le verras au jour 9).' ],
+          'Avec des accolades, il faut un `return` explicite : `(n) => { return n * 2; }`. Elles sont parfaites pour les petites fonctions qu’on passe à d’autres (tu le verras au jour 10).' ],
           code: `const double = (n) => n * 2;\nconst coucou = () => "Salut !";\nconst max = (a, b) => {\n  if (a > b) return a;\n  return b;\n};\nconsole.log(double(5), coucou(), max(3, 8));  // 10 Salut ! 8` },
         { h: 'Portée et hoisting', p: [
           'Les variables déclarées dans une fonction (ou dans un bloc `{ }` avec `let`/`const`) n’existent que là. Une variable interne qui a le même nom qu’une externe la « masque » sans la modifier.',

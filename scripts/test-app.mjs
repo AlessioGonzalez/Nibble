@@ -15,7 +15,8 @@ const COURSES = ['python', 'javascript', 'java', 'cpp'];
 const vars = s => [...new Set([...String(s).matchAll(/\{(\w+)\}/g)].map(m => m[1]))].sort().join(',');
 // Generador con semilla, para que la prueba sea siempre igual.
 const seeded = seed => () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; };
-const key = ex => ex.t + '|' + ex.c + '|' + ex.q;
+// Los ejercicios de escribir comparten enunciado sin traducir ('gen.call'...): la respuesta los distingue.
+const key = ex => ex.t + '|' + ex.c + '|' + ex.q + '|' + JSON.stringify(ex.a || ex.o?.[0] || '');
 
 test('los 4 idiomas tienen los mismos textos y las mismas variables', () => {
   for (const l of ['en', 'fr', 'it']) {
