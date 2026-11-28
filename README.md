@@ -4,7 +4,7 @@ Aprende **Python, Java, JavaScript y C++** byte a byte, con retos de 30 días, r
 
 El formato de reto de 30 días se inspira en retos de la comunidad como 30 Days Of Python de Asabeneh. El temario, las lecciones y los ejercicios de Nibble son propios.
 
-Te acompaña **Kibi**, un hámster programador que mordisquea código. Lleva una tarjeta `</>` del color del curso que estás haciendo.
+Te acompaña **Kibi**, un hámster programador que mordisquea código. Lleva una tarjeta `</>` del color del curso que estás haciendo. Tiene armario: cada logro le trae un disfraz (gorros, gafas, una capa, una corona…) que le pones en la pestaña **Kibi**. Los disfraces se dibujan encima de Kibi sin cambiar su forma, su cara ni sus colores.
 
 
 Si falta la traducción de un curso, la app muestra la versión en español.

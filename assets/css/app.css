@@ -237,8 +237,7 @@ main.swap > *{animation:swapIn .28s var(--ease)}
 .hero .lead{font-size:1rem}
 .hero .row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:4px}
 .hero .row small{color:var(--muted);font-size:.8125rem}
-.hero-visual{position:relative;padding-top:56px;align-self:end}
-.hero-kibi{position:absolute;top:0;right:20px}
+.hero-visual{position:relative;align-self:center}
 
 /* ---------- Registro de 8 bits (el objeto de Nibble) ----------
    Una placa con una luz por nivel (la 7 es el nivel 1, como el bit más alto) y un visor con el byte del día.
@@ -269,9 +268,6 @@ main.swap > *{animation:swapIn .28s var(--ease)}
 .done-reg{position:relative;padding-top:64px;margin-bottom:4px}
 .done-kibi{position:absolute;top:0;left:50%;transform:translateX(-50%)}
 .hero .meter.course{grid-column:1/-1;height:6px;margin-top:10px}
-.welcome{display:flex;gap:14px;align-items:center;padding:16px 18px;border-radius:var(--r-lg);background:var(--lang-soft);border:1px solid color-mix(in srgb, var(--lang) 25%, var(--line))}
-.welcome b{display:block;margin-bottom:2px}
-.welcome p{font-size:.9375rem;color:var(--ink-2)}
 .phase{display:flex;flex-direction:column;gap:10px}
 .phase-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:0 4px}
 .phase-h h2{font-size:1.125rem}
@@ -751,7 +747,7 @@ main.swap > *{animation:swapIn .28s var(--ease)}
   main{padding:20px 0 calc(env(safe-area-inset-bottom,0px) + 104px)}
   .searchbtn .lbl,.searchbtn .kbd{display:none}
   .searchbtn{width:44px;padding:0;justify-content:center}
-  .bottomnav{display:grid;grid-template-columns:repeat(4,1fr);position:fixed;left:0;right:0;bottom:0;z-index:40;
+  .bottomnav{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:40;
     padding:6px max(8px, env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 6px) max(8px, env(safe-area-inset-left,0px));
     background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line)}
   .bottomnav .navbtn{flex-direction:column;gap:3px;justify-content:center;min-height:52px;padding:4px 2px;font-size:.6875rem;font-weight:500;text-align:center;border:0;background:none;box-shadow:none}
@@ -868,3 +864,66 @@ main.swap > *{animation:swapIn .28s var(--ease)}
 .outpanel{padding:16px;border-radius:var(--r);border:1px dashed var(--line-2);display:flex;flex-direction:column;gap:6px}
 .outpanel h2{font:500 .8125rem var(--f-mono);color:var(--muted)}
 .outpanel p{color:var(--ink-2)}
+
+/* ---------- Kibi protagonista: bocadillo, tira del mapa y armario ---------- */
+:root{ --kibi:#EBA45E; --kibi-soft:color-mix(in srgb, var(--kibi) 13%, var(--surface)); --kibi-line:color-mix(in srgb, var(--kibi) 38%, var(--line)); --kibi-text:color-mix(in srgb, var(--kibi) 50%, var(--ink)) }
+.kibi-poke{display:inline-grid;place-items:center;padding:0;border:0;background:none;border-radius:50%;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.kibi-poke:focus-visible{outline:3px solid var(--focus);outline-offset:4px}
+.kibi-poke:active .kibi{transform:scale(.94)}
+.kibi.still,.kibi.still *{animation:none!important}
+.kibi.happy.float{animation:hop .7s var(--ease) 1}
+
+.bubble{position:relative;min-width:0;padding:10px 14px 11px;border-radius:14px;background:var(--surface);border:1px solid var(--kibi-line);box-shadow:var(--shadow-sm)}
+.bubble::before{content:"";position:absolute;left:-7px;top:22px;width:12px;height:12px;background:inherit;border-left:1px solid var(--kibi-line);border-bottom:1px solid var(--kibi-line);transform:rotate(45deg)}
+.bubble-tag{display:block;font:600 .6875rem/1.2 var(--f-mono);color:var(--kibi-text);letter-spacing:.01em;margin-bottom:3px}
+.bubble p{font-size:.9375rem;color:var(--ink-2);animation:swapIn .35s var(--ease)}
+.bubble p b{color:var(--ink)}
+
+.kibistrip{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:6px 16px;padding:14px 18px 14px 12px;border-radius:var(--r-lg);
+  background:var(--dots) 0 0/14px 14px,var(--kibi-soft);border:1px solid var(--kibi-line)}
+.kibistrip .kibi-poke{align-self:end}
+.kibistrip .bubble::before{top:auto;bottom:18px}
+.kibistrip > .btn{align-self:center;white-space:nowrap}
+.kibistrip > .btn svg{width:18px;height:18px}
+@media (max-width:620px){
+  .kibistrip{grid-template-columns:auto minmax(0,1fr);padding:12px 14px 12px 8px}
+  .kibistrip > .btn{grid-column:2;justify-self:start}
+}
+.dnum .kibi{display:block;margin:-8px 0 -6px -2px}
+.dayrow.cur .dnum{line-height:0}
+
+.kibicard{display:flex;align-items:center;gap:12px}
+.kibicard h3{font-size:.9375rem}
+.kibicard .note{margin-top:2px}
+.reward.outfit svg.kibi{width:28px;height:28px}
+
+.stage{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px 28px;align-items:center;padding:24px 28px;border-radius:22px;border:1px solid var(--kibi-line);
+  background:radial-gradient(120% 90% at 18% 20%, color-mix(in srgb, var(--kibi) 20%, transparent), transparent 60%),var(--dots) 0 0/16px 16px,var(--surface)}
+.stage-kibi{position:relative;display:grid;place-items:center;width:220px;padding:34px 0 10px}
+.stage-kibi::after{content:"";position:absolute;left:10%;right:10%;bottom:8px;height:22px;border-radius:50%;
+  background:radial-gradient(closest-side, color-mix(in srgb, var(--kibi) 45%, transparent), transparent);z-index:-1}
+.stage-kibi .kibi{width:clamp(128px,36vw,168px);height:auto}
+.stage-copy{display:flex;flex-direction:column;gap:12px;min-width:0}
+.stage-copy h1{font-size:clamp(1.75rem,4vw,2.25rem);letter-spacing:-.035em}
+.stage-copy .lead{font-size:1rem}
+.stage-copy .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.stage-copy .row small{color:var(--muted);font-size:.8125rem}
+.stage-copy .btn svg{width:18px;height:18px}
+@media (max-width:620px){
+  .stage{grid-template-columns:1fr;padding:18px}
+  .stage-kibi{width:100%;padding-top:26px}
+  .stage .bubble::before{left:50%;top:-7px;margin-left:-6px;transform:rotate(135deg)}
+}
+.wgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:12px}
+.wtile{display:flex;flex-direction:column;align-items:center;gap:4px;padding:22px 10px 12px;border-radius:var(--r-lg);border:1px solid var(--line);background:var(--surface);color:var(--ink);text-align:center;
+  transition:transform .2s var(--ease),border-color .2s,box-shadow .2s}
+.wtile:hover{transform:translateY(-2px);border-color:var(--kibi-line)}
+.wtile .kibi{margin-bottom:4px}
+.wtile b{font-size:.875rem;font-weight:600}
+.wtile small{display:inline-flex;align-items:center;gap:4px;font-size:.75rem;color:var(--muted)}
+.wtile small svg{width:13px;height:13px;flex:none}
+.wtile.on{border-color:var(--kibi);background:var(--kibi-soft);box-shadow:0 0 0 3px color-mix(in srgb, var(--kibi) 28%, transparent)}
+.wtile.on small{color:var(--kibi-text);font-weight:600}
+.wtile.locked .kibi{filter:grayscale(1);opacity:.45}
+.wtile.locked:hover{transform:none}
+@media (prefers-reduced-motion:reduce){.wtile,.wtile:hover{transition:none;transform:none}}

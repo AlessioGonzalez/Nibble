@@ -1,7 +1,7 @@
 /* Nibble: interfaz. Depende de content-api.js, i18n.js y store.js. */
 (function () {
 'use strict';
-const VERSION = '4.6.0';
+const VERSION = '4.7.0';
 const Store = window.SintaxisStore;
 const P = window.NibbleProgress;
 const t = (k, v) => window.I18N.t(k, v);
@@ -120,12 +120,15 @@ const I = {
   chat: sv('<path d="M20 12.5a7.5 7.5 0 0 1-11 6.6L4 20.5l1.4-4.6A7.5 7.5 0 1 1 20 12.5zM9 11h6M9 14.5h4"/>'),
   chain: sv('<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>'),
   sun: sv('<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/>'),
+  hanger: sv('<path d="M12 7.5a2.2 2.2 0 1 1 2.2-2.2c0 1.3-2.2 1.6-2.2 3.1V9l8.6 6.3a1.4 1.4 0 0 1-.8 2.6H4.2a1.4 1.4 0 0 1-.8-2.6L12 9"/>'),
+  sparkle: sv('<path d="M12 3l1.9 5.6L19.5 10l-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.4zM18.5 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/>', 1),
   bulb: sv('<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/>'),
 };
 
 /* ---------- Kibi, la mascota: un hámster que aprende código a mordiscos ---------- */
 const KB = { fur: '#EBA45E', line: '#B86F32', cream: '#FCE8CC', pink: '#F3A99C', ink: '#2B1A10', nose: '#8E4A35' };
-function kibi(mood = 'idle', size = 64, extra = '') {
+function kibi(mood = 'idle', size = 64, extra = '', fit) {
+  const o = fit || wearing(), on = sl => (o[sl] && KIT[o[sl]]) || '';
   let face;
   if (mood === 'happy') face = `<path d="M26 41q4-6 8 0M46 41q4-6 8 0" stroke="${KB.ink}" stroke-width="2.8" fill="none" stroke-linecap="round"/>
     <path d="M34 50q6 9 12 0z" fill="${KB.nose}"/><path d="M37.5 53.5q2.5 2.5 5 0" stroke="${KB.pink}" stroke-width="2.4" fill="none" stroke-linecap="round"/>`;
@@ -136,7 +139,7 @@ function kibi(mood = 'idle', size = 64, extra = '') {
     <g class="eye"><circle cx="50" cy="40" r="4.4" fill="${KB.ink}"/><circle cx="51.5" cy="38.5" r="1.4" fill="#fff"/></g>
     <path d="M36.5 50.5q3.5 3 3.5 0q0 3 3.5 0" stroke="${KB.nose}" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="38.4" y="51.6" width="3.2" height="3.2" rx=".8" fill="#fff"/>`;
   return `<svg class="kibi ${mood} ${extra}" width="${size}" height="${size}" viewBox="0 0 80 80" aria-hidden="true">
-    <ellipse cx="40" cy="76" rx="21" ry="3" fill="#000" opacity=".12"/>
+    <ellipse cx="40" cy="76" rx="21" ry="3" fill="#000" opacity=".12"/>${o.neck === 'cape' ? KIT.cape : ''}
     <g class="ears"><circle cx="21" cy="21" r="9" fill="${KB.fur}" stroke="${KB.line}" stroke-width="1.6"/><circle cx="21" cy="21" r="4.8" fill="${KB.pink}"/>
     <circle cx="59" cy="21" r="9" fill="${KB.fur}" stroke="${KB.line}" stroke-width="1.6"/><circle cx="59" cy="21" r="4.8" fill="${KB.pink}"/></g>
     <g class="body"><ellipse cx="28" cy="73" rx="6.5" ry="3.4" fill="${KB.cream}" stroke="${KB.line}" stroke-width="1.4"/><ellipse cx="52" cy="73" rx="6.5" ry="3.4" fill="${KB.cream}" stroke="${KB.line}" stroke-width="1.4"/>
@@ -144,11 +147,55 @@ function kibi(mood = 'idle', size = 64, extra = '') {
     <path d="M40 34c13 0 21 8 21 19s-9 19-21 19-21-8-21-19 8-19 21-19z" fill="${KB.cream}"/>
     <path d="M36 17q4 7 8 0" stroke="${KB.line}" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".7"/>
     <ellipse cx="22" cy="50" rx="5.5" ry="3.4" fill="${KB.pink}" opacity=".75"/><ellipse cx="58" cy="50" rx="5.5" ry="3.4" fill="${KB.pink}" opacity=".75"/>
-    <ellipse cx="40" cy="46.5" rx="2.8" ry="2" fill="${KB.nose}"/>${face}
+    <ellipse cx="40" cy="46.5" rx="2.8" ry="2" fill="${KB.nose}"/>${face}${o.neck !== 'cape' ? on('neck') : ''}
     <g class="card"><rect x="29" y="58" width="22" height="13" rx="3.5" fill="var(--lang)" stroke="var(--lang-dark)" stroke-width="1.6"/>
     <path d="M36 62l-3 2.5 3 2.5M44 62l3 2.5-3 2.5M41.5 61l-3 7" stroke="var(--lang-ink)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
-    <ellipse cx="29" cy="63" rx="4.2" ry="3.6" fill="${KB.cream}" stroke="${KB.line}" stroke-width="1.4"/><ellipse cx="51" cy="63" rx="4.2" ry="3.6" fill="${KB.cream}" stroke="${KB.line}" stroke-width="1.4"/></g></svg>`;
+    <ellipse cx="29" cy="63" rx="4.2" ry="3.6" fill="${KB.cream}" stroke="${KB.line}" stroke-width="1.4"/><ellipse cx="51" cy="63" rx="4.2" ry="3.6" fill="${KB.cream}" stroke="${KB.line}" stroke-width="1.4"/>${on('face')}${on('head')}</g></svg>`;
 }
+
+/* Disfraces de Kibi: piezas que se dibujan encima, sin cambiar su forma, su cara ni sus colores.
+   [id, hueco, logro que lo desbloquea (null: libre desde el principio)]. La capa va detrás de Kibi. */
+const OUTFITS = [
+  ['cap', 'head', null], ['party', 'head', 'first'], ['flower', 'head', 'perfect'], ['beanie', 'head', 'streak3'], ['grad', 'head', 'week'],
+  ['headphones', 'head', 'poly'], ['wizard', 'head', 'xp1000'], ['crown', 'head', 'course'],
+  ['glasses', 'face', null], ['hearts', 'face', 'extra'], ['shades', 'face', 'run50'],
+  ['scarf', 'neck', 'half'], ['chain', 'neck', 'run10'], ['cape', 'neck', 'reto'],
+];
+const SLOTS = ['head', 'face', 'neck'];
+const outfitOpen = id => { const r = OUTFITS.find(([k]) => k === id); return !!r && (!r[2] || !!S.ach[r[2]]); };
+// Lo que lleva puesto: solo piezas que existen, en su hueco y ya desbloqueadas (el estado puede venir de otra versión).
+function wearing() {
+  const o = (S && S.outfit) || {};
+  return Object.fromEntries(SLOTS.map(sl => [sl, OUTFITS.some(([k, h]) => k === o[sl] && h === sl) && outfitOpen(o[sl]) ? o[sl] : null]));
+}
+const DARK = '#2B2F3A', GOLD = '#F2C230', GOLD_D = '#B8860B', RED = '#D9534F', RED_D = '#A23431';
+const KIT = {
+  cap: `<path d="M26.5 18.5Q27 6 40 6t13.5 12.5z" fill="var(--lang)" stroke="var(--lang-dark)" stroke-width="1.6" stroke-linejoin="round"/><path d="M51 17.5q8-1.5 13 2.5q-6 2-13.5.5z" fill="var(--lang-dark)"/><circle cx="40" cy="6.4" r="1.8" fill="var(--lang-dark)"/>`,
+  party: `<g transform="rotate(-12 40 17)"><path d="M31 17.5 40-3l9 20.5z" fill="#F06EAA" stroke="#B8417A" stroke-width="1.4" stroke-linejoin="round"/><path d="M35.4 8h9.2M33.4 13h13.2" stroke="#FFD54A" stroke-width="2.4"/><circle cx="40" cy="-3.6" r="2.8" fill="#FFD54A"/></g>`,
+  flower: `<g transform="translate(60 12)">${[0, 72, 144, 216, 288].map(a => `<ellipse rx="2.6" ry="4.4" cy="-4" fill="#fff" stroke="#E2C9A0" stroke-width=".8" transform="rotate(${a})"/>`).join('')}<circle r="2.6" fill="#FFC83D"/></g>`,
+  beanie: `<path d="M24 19.5Q24 4 40 4t16 15.5z" fill="${RED}" stroke="${RED_D}" stroke-width="1.5"/><rect x="22.5" y="15" width="35" height="6.5" rx="3.2" fill="#E8716D" stroke="${RED_D}" stroke-width="1.5"/><circle cx="40" cy="3.4" r="3.8" fill="#FBEFE2" stroke="#D8C6B0"/>`,
+  grad: `<path d="M31 11v6.5q9 4 18 0V11" fill="${DARK}"/><path d="M20 10 40 3l20 7-20 7z" fill="#383D4A" stroke="#1E2129" stroke-width="1.3" stroke-linejoin="round"/><path d="M40 10l15 3v8" stroke="${GOLD}" stroke-width="1.4" fill="none"/><path d="M53.6 20.5h2.8l.6 4h-4z" fill="${GOLD}"/><circle cx="40" cy="10" r="1.4" fill="${GOLD}"/>`,
+  headphones: `<path d="M15 31Q15 6 40 6t25 25" stroke="${DARK}" stroke-width="3.4" fill="none" stroke-linecap="round"/><rect x="9" y="26" width="9" height="15" rx="4" fill="var(--lang)" stroke="var(--lang-dark)" stroke-width="1.6"/><rect x="62" y="26" width="9" height="15" rx="4" fill="var(--lang)" stroke="var(--lang-dark)" stroke-width="1.6"/>`,
+  wizard: `<path d="M28 17.5 43-9l9 26.5z" fill="#6B4FBB" stroke="#47317F" stroke-width="1.5" stroke-linejoin="round"/><ellipse cx="40" cy="17.5" rx="17" ry="3.6" fill="#7D61CC" stroke="#47317F" stroke-width="1.5"/><path d="M41 3l1 2.2 2.4.3-1.8 1.6.5 2.4-2.1-1.2-2.1 1.2.5-2.4-1.8-1.6 2.4-.3z" fill="#FFD54A"/><circle cx="36.5" cy="12" r="1.1" fill="#FFD54A"/>`,
+  crown: `<path d="M27.5 18 26 6l7.5 5.5L40 2l6.5 9.5L54 6l-1.5 12z" fill="${GOLD}" stroke="${GOLD_D}" stroke-width="1.5" stroke-linejoin="round"/><circle cx="40" cy="13" r="2" fill="#E0445A"/><circle cx="32" cy="14.5" r="1.4" fill="#5BA8E6"/><circle cx="48" cy="14.5" r="1.4" fill="#5BA8E6"/>`,
+  glasses: `<g fill="rgba(255,255,255,.18)" stroke="${DARK}" stroke-width="2"><circle cx="30" cy="40" r="7.2"/><circle cx="50" cy="40" r="7.2"/></g><path d="M37.2 39q2.8-2 5.6 0M22.8 39 16 36.5M57.2 39 64 36.5" stroke="${DARK}" stroke-width="2" fill="none" stroke-linecap="round"/>`,
+  hearts: `<g fill="#E0445A" fill-opacity=".5" stroke="#B52A40" stroke-width="1.6" stroke-linejoin="round"><path d="M30 46.5c-5-3.5-8-6-8-9.2a3.9 3.9 0 0 1 8-1.6 3.9 3.9 0 0 1 8 1.6c0 3.2-3 5.7-8 9.2z"/><path d="M50 46.5c-5-3.5-8-6-8-9.2a3.9 3.9 0 0 1 8-1.6 3.9 3.9 0 0 1 8 1.6c0 3.2-3 5.7-8 9.2z"/></g><path d="M38 38.5h4M22 37.5l-6-1.5M58 37.5l6-1.5" stroke="#B52A40" stroke-width="1.6" stroke-linecap="round"/>`,
+  shades: `<path d="M21 35h16v5h-2v2H24v-2h-3zM43 35h16v5h-3v2H45v-2h-2zM37 35h6v2.4h-6zM16 35h5v2.4h-5zM59 35h5v2.4h-5z" fill="#15171D"/><path d="M24 37h3v1.6h-3zM46 37h3v1.6h-3z" fill="#fff" opacity=".85"/>`,
+  scarf: `<path d="M15.5 52.5Q40 64 64.5 52.5l1.5 6Q40 71 14 58.5z" fill="${RED}" stroke="${RED_D}" stroke-width="1.4" stroke-linejoin="round"/><path d="M55 59.5l2 13h6.5L62 58z" fill="#E8716D" stroke="${RED_D}" stroke-width="1.4" stroke-linejoin="round"/>`,
+  chain: `<path d="M20 53.5Q40 66 60 53.5" stroke="#E0A100" stroke-width="2.6" fill="none" stroke-dasharray="2.6 1.4" stroke-linecap="round"/>`,
+  cape: `<path d="M24 26Q8 48 5 73.5h70Q72 48 56 26z" fill="#C8323C" stroke="#8E1F27" stroke-width="1.5" stroke-linejoin="round"/>`,
+};
+// Lo que dice Kibi: primero lo que importa ahora (vidas, meta, racha); si no, un saludo según la hora. poke: una frase al azar.
+function kibiSays(poke) {
+  if (poke) return t('kibi.quip.' + Math.floor(Math.random() * 8));
+  if (S.hearts === 0) return t('kibi.say.noHearts');
+  if (dailyXp() >= S.goal) return t('kibi.say.goalDone');
+  if (S.streak >= 2 && S.lastDay !== today()) return t('kibi.say.keepStreak', { n: S.streak });
+  const hr = new Date().getHours();
+  return t(hr < 6 || hr >= 21 ? 'kibi.say.night' : hr < 13 ? 'kibi.say.morning' : 'kibi.say.afternoon');
+}
+const bubble = html => `<div class="bubble" aria-live="polite"><span class="bubble-tag">kibi.say()</span><p>${html}</p></div>`;
+const pokeKibi = (mood, size, cls = '') => `<button class="kibi-poke ${cls}" data-act="poke" aria-label="${t('kibi.poke')}">${kibi(mood, size)}</button>`;
 
 /* ---------- sonido ---------- */
 let AC = null;
@@ -232,7 +279,7 @@ function parseHash() {
   let m;
   if ((m = h.match(/^day-(\d+)-code-(\d+)$/))) return { v: 'code', d: Math.max(0, Math.min(DAYS - 1, +m[1] - 1)), i: +m[2] };
   if ((m = h.match(/^day-(\d+)(?:-(guide|practice))?$/))) return { v: 'day', d: Math.max(0, Math.min(DAYS - 1, +m[1] - 1)), tab: m[2] || null };
-  if (h === 'courses' || h === 'profile') return { v: h };
+  if (h === 'courses' || h === 'profile' || h === 'kibi') return { v: h };
   if (h === 'sugerencias') return { v: 'suggest' };
   return { v: 'map' };
 }
@@ -312,6 +359,7 @@ function navItems() {
     ['map', t('nav.map'), I.map, '#map'],
     ['today', t('nav.today'), I.play, '#' + dayHash(cd)],
     ['courses', t('nav.courses'), I.grid, '#courses'],
+    ['kibi', t('nav.kibi'), I.hanger, '#kibi'],
     ['profile', t('nav.profile'), I.user, '#profile'],
     ['suggest', t('nav.suggest'), I.chat, '#sugerencias'],
   ];
@@ -356,8 +404,9 @@ function topbarHTML() {
   <span class="grow"></span><div class="stats">${statsHTML()}${statPopHTML()}</div>`;
 }
 function railHTML() {
-  const dx = dailyXp(), pct = Math.min(100, dx / S.goal * 100);
-  return `<section class="card"><div class="card-h"><h3>${t('hearts.title')}</h3><span class="timer" data-timer>${timerText()}</span></div>${heartsMeter()}
+  const dx = dailyXp(), pct = Math.min(100, dx / S.goal * 100), n = OUTFITS.filter(([k]) => outfitOpen(k)).length;
+  return `<section class="card kibicard"><button class="kibi-poke" data-go="kibi" aria-label="${t('kibi.dress')}">${kibi('idle', 56)}</button><div><h3>${t('kibi.title')}</h3><p class="note">${t('kibi.count', { n, m: OUTFITS.length })}</p></div></section>
+  <section class="card"><div class="card-h"><h3>${t('hearts.title')}</h3><span class="timer" data-timer>${timerText()}</span></div>${heartsMeter()}
     <p class="note">${t('hearts.desc', { n: EXTRA_HEARTS })}</p><button class="btn gold small block" data-act="extra">${I.plus}${t('hearts.extraBtn', { n: EXTRA_HEARTS })}</button></section>
   <section class="card"><div class="card-h"><h3>${t('goal.title')}</h3><span class="mono">${dx}/${S.goal} XP</span></div>
     <span class="meter" role="progressbar" aria-label="${t('goal.title')}" aria-valuemin="0" aria-valuemax="${S.goal}" aria-valuenow="${dx}"><i style="width:${pct}%"></i></span>
@@ -381,7 +430,7 @@ function dayRow(c, d, cur, cd) {
   const st = soon ? 'soon' : done ? 'done' : isCur ? 'cur' : !dayUnlocked(c, d) ? 'lock' : 'open';
   const end = st === 'done' ? I.check : st === 'lock' || st === 'soon' ? I.lock : st === 'cur' ? `<span class="go">${t('map.go')}</span>` : I.right;
   return `<button class="dayrow ${st}" data-go="${dayHash(d)}" style="--i:${d % 10}" aria-label="${t('day.n', { d: d + 1 })}: ${esc(dayTitle(d))}. ${t('bits.aria', { n, m: PER_DAY })}">
-    <span class="dnum">${String(d + 1).padStart(2, '0')}</span><span class="dtitle">${esc(dayTitle(d))}</span>${bitsHTML(c, d, st === 'cur' ? cur % PER_DAY : -1)}<code class="hex">${hex(byteOf(c, d))}</code><span class="dend">${end}</span></button>`;
+    <span class="dnum">${st === 'cur' ? kibi('idle', 30, 'still') : String(d + 1).padStart(2, '0')}</span><span class="dtitle">${esc(dayTitle(d))}</span>${bitsHTML(c, d, st === 'cur' ? cur % PER_DAY : -1)}<code class="hex">${hex(byteOf(c, d))}</code><span class="dend">${end}</span></button>`;
 }
 function renderMap() {
   const c = S.course, cur = currentIndex(c), cd = currentDay(c), dn = doneCount(c), all = cur >= DAYS * PER_DAY;
@@ -391,9 +440,9 @@ function renderMap() {
     <h1>${all ? t('map.allDone') : esc(dayTitle(cd))}</h1>
     <p class="lead">${all ? t('map.allDoneDesc') : esc(dayData(cd) ? dayData(cd).d : '')}</p>
     <div class="row"><button class="btn primary" data-go="${dayHash(cd)}">${I.play}${dn ? t('map.continue', { d: cd + 1 }) : t('map.start')}</button><small class="mono">${t('map.levels', { n: dn, m: DAYS * PER_DAY })}</small></div></div>
-    <div class="hero-visual"><div class="hero-kibi">${kibi('idle', 76)}</div>${registerHTML(c, cd, { cur: all ? -1 : cur % PER_DAY })}</div>
+    <div class="hero-visual">${registerHTML(c, cd, { cur: all ? -1 : cur % PER_DAY })}</div>
     <span class="meter course" role="progressbar" aria-label="${t('map.title', { c: META[c].name })}" aria-valuemin="0" aria-valuemax="${DAYS * PER_DAY}" aria-valuenow="${dn}"><i style="width:${dn / (DAYS * PER_DAY) * 100}%"></i></span></section>`;
-  if (S.stats.lessons === 0) h += `<div class="welcome">${kibi('idle', 52)}<div><b>${t('map.welcomeTitle')}</b><p>${t('map.welcome')}</p></div></div>`;
+  h += `<div class="kibistrip">${pokeKibi('idle', 64)}${bubble(S.stats.lessons === 0 ? `<b>${t('map.welcomeTitle')}</b> ${t('map.welcome')}` : kibiSays())}<button class="btn small ghost" data-go="kibi">${I.hanger}<span>${t('kibi.dress')}</span></button></div>`;
   // Un curso con semanas (NibbleWeeks) se agrupa por semana; el resto, en tres bloques de 10 días.
   const weeks = window.NibbleWeeks && NibbleWeeks[c];
   const groups = weeks ? weeks.map((b, i) => [i ? weeks[i - 1] : 0, b, t('phase.week', { n: i + 1 })]) : [0, 1, 2].map(p => [p * 10, p * 10 + 10, t('phase.' + p)]);
@@ -524,6 +573,48 @@ function renderCourses() {
       <div class="foot"><small class="mono">${dn === DAYS * PER_DAY ? t('courses.done') : t('courses.next', { d: currentDay(c) + 1 })} · ${p}%</small><button class="btn small ${c === S.course ? 'primary' : 'ghost'}" data-course="${c}" data-open="1">${dn ? t('courses.continue') : t('courses.start')}</button></div></article>`;
   }
   return h + `</div></div>`;
+}
+
+/* ---------- vista: armario de Kibi ---------- */
+function renderWardrobe() {
+  const w = wearing(), n = OUTFITS.filter(([k]) => outfitOpen(k)).length;
+  let h = `<div class="page wardrobe"><section class="stage"><div class="stage-kibi">${pokeKibi('idle', 168)}</div>
+    <div class="stage-copy"><p class="eyebrow">${t('nav.kibi')}</p><h1>${t('kibi.title')}</h1><p class="lead">${t('kibi.lead')}</p>${bubble(kibiSays())}
+    <div class="row"><button class="btn primary" data-act="outfit-random">${I.sparkle}${t('kibi.random')}</button><button class="btn ghost" data-act="outfit-clear">${t('kibi.clear')}</button>
+    <small class="mono">${t('kibi.count', { n, m: OUTFITS.length })}</small></div></div></section>`;
+  for (const sl of SLOTS) {
+    h += `<h2>${t('kibi.slot.' + sl)}</h2><div class="wgrid">`;
+    for (const [k, , a] of OUTFITS.filter(r => r[1] === sl)) {
+      const on = w[sl] === k, op = outfitOpen(k);
+      h += `<button class="wtile ${on ? 'on' : ''} ${op ? '' : 'locked'}" data-outfit="${k}" aria-pressed="${on}">
+        ${kibi('idle', 76, 'still', { [sl]: k })}<b>${t('outfit.' + k)}</b><small>${op ? t(on ? 'kibi.wearing' : 'kibi.wear') : I.lock + esc(t('ach.' + a))}</small></button>`;
+    }
+    h += `</div>`;
+  }
+  return h + `</div>`;
+}
+// Ponerse o quitarse una pieza. Bloqueada: dice qué logro la trae.
+function wearOutfit(id) {
+  const r = OUTFITS.find(([k]) => k === id); if (!r) return;
+  if (!outfitOpen(id)) { toast(t('kibi.locked', { a: t('ach.' + r[2]), d: t('ach.' + r[2] + '.d') })); return; }
+  const o = Object.assign({}, wearing()); o[r[1]] = o[r[1]] === id ? null : id;
+  S.outfit = o; Store.save(); render();
+  const k = document.querySelector('.stage .kibi'); if (k) bounce(k);
+}
+function randomOutfit() {
+  const o = {};
+  for (const sl of SLOTS) { const opts = OUTFITS.filter(([k, h]) => h === sl && outfitOpen(k)).map(([k]) => k); o[sl] = Math.random() < .75 && opts.length ? opts[Math.floor(Math.random() * opts.length)] : null; }
+  S.outfit = o; Store.save(); render();
+  const k = document.querySelector('.stage .kibi'); if (k) bounce(k);
+}
+// Un salto de Kibi: se reinicia la animación quitando y poniendo la clase.
+function bounce(svg) { svg.classList.remove('idle', 'happy'); void svg.getBoundingClientRect(); svg.classList.add('happy'); }
+// Tocar a Kibi: salta y dice otra cosa en su bocadillo (si lo tiene cerca).
+function pokeAt(btn) {
+  const k = btn.querySelector('.kibi'); if (k) bounce(k);
+  const p = btn.parentElement.closest('.kibistrip, .stage')?.querySelector('.bubble p');
+  if (p) p.textContent = kibiSays(true);
+  sfx('ok');
 }
 
 /* ---------- vista: perfil ---------- */
@@ -696,8 +787,8 @@ function render(swap) {
   const m = $('#main');
   if (cm) { flushDraft(); cm.destroy(); cm = null; }
   m.classList.toggle('swap', !!swap && !firstRender);
-  if (!CUR.data && !['profile', 'courses', 'suggest'].includes(route.v)) m.innerHTML = `<div class="wrap"><div class="nextday">${kibi('sad', 90)}<h2>${t('content.missing')}</h2><button class="btn primary" data-go="courses">${t('nav.courses')}</button></div></div>`;
-  else m.innerHTML = route.v === 'day' ? renderDay() : route.v === 'code' ? renderCode() : route.v === 'courses' ? renderCourses() : route.v === 'profile' ? renderProfile() : route.v === 'suggest' ? renderSuggest() : renderMap();
+  if (!CUR.data && !['profile', 'courses', 'suggest', 'kibi'].includes(route.v)) m.innerHTML = `<div class="wrap"><div class="nextday">${kibi('sad', 90)}<h2>${t('content.missing')}</h2><button class="btn primary" data-go="courses">${t('nav.courses')}</button></div></div>`;
+  else m.innerHTML = route.v === 'day' ? renderDay() : route.v === 'code' ? renderCode() : route.v === 'courses' ? renderCourses() : route.v === 'profile' ? renderProfile() : route.v === 'kibi' ? renderWardrobe() : route.v === 'suggest' ? renderSuggest() : renderMap();
   firstRender = false;
   if (route.v === 'code' && CUR.data) mountEditor();
 }
@@ -1078,7 +1169,11 @@ function finish() {
   Object.assign(inc, { xp, course: c, sec: secs, perfect: perfect && inc.lessons ? 1 : 0 });
   P.add(S, Store.dev, inc, today());
   if (bumpStreak()) rewards.unshift(`<p class="reward flame">${I.flame}${t('done.streak', { n: S.streak })}</p>`);
-  checkAch().forEach(id => rewards.push(`<p class="reward gold">${I.trophy}${t('done.ach', { a: t('ach.' + id) })}</p>`));
+  checkAch().forEach(id => {
+    rewards.push(`<p class="reward gold">${I.trophy}${t('done.ach', { a: t('ach.' + id) })}</p>`);
+    const fit = OUTFITS.find(r => r[2] === id);
+    if (fit) rewards.push(`<p class="reward outfit">${kibi('idle', 28, 'still', { [fit[1]]: fit[0] })}${t('kibi.new', { o: t('outfit.' + fit[0]) })}</p>`);
+  });
   Store.save();
   const acc = Math.round(L.firstOk / L.total * 100);
   Store.logResult({ course: c, locale: S.locale, mode: L.mode, day: L.d === undefined ? null : L.d + 1, day_id: L.d === undefined ? null : dayId(c, L.d), level: L.k === undefined ? null : L.k + 1,
@@ -1174,14 +1269,14 @@ function renderLanding() {
      <div class="lcta">${startBtn}${login ? `<button class="btn ghost big" data-land="signin">${t('land.signin')}</button>` : ''}</div><p class="note">${t('land.free')}</p></div>
      <div class="lart"><div class="lcode" id="lcode"><div class="lcode-top"><i></i><i></i><i></i><span id="lfile"></span></div><div id="typer"></div>
        <div class="lout" id="lout"><span>${t('land.output')}</span><code>nibble = 4 bits</code>${I.check}</div></div>
-       <div class="lkibi">${kibi('idle', 132, 'float')}</div></div></section>
+       <button class="lkibi kibi-poke" data-act="poke-land" aria-label="${t('land.kibiTry')}" title="${t('land.kibiTry')}">${kibi('idle', 132, 'float')}</button></div></section>
    <section class="lsec lsplit reveal"><div><p class="eyebrow">${t('land.byteTag')}</p><h2>${t('land.byteTitle')}</h2><p class="lead">${t('land.byteDesc')}</p>
        <div class="lbyte" aria-hidden="true">${bits}<code class="hex">0xF0</code></div></div>${trialHTML()}</section>
    <section class="lsec reveal"><p class="eyebrow">${t('land.coursesTag')}</p><h2>${t('land.coursesTitle')}</h2><div class="lcourses">${COURSES.map((c, i) => { const m = META[c]; return `<article class="lcourse" style="--c:${m.color};--cd:${m.dark};--ci:${m.ink};--i:${i}">
        <div class="top">${badge(c)}<b>${m.name}</b></div><p>${t('course.' + c)}</p><small class="mono">${t('land.days')}</small>
        <details class="syl" data-syl="${c}"><summary>${t('land.syllabus')}</summary><ol class="syl-list"><li class="note">${t('land.loading')}</li></ol></details>
        <button class="btn small ghost" data-land="start" data-lc="${c}">${t('land.startCourse', { c: m.name })}</button></article>`; }).join('')}</div></section>
-   <section class="lsec reveal"><p class="eyebrow">${t('land.featTag')}</p><h2>${t('land.featTitle')}</h2><div class="lhow">${dayPreview()}<ol class="lpoints">${[1, 2, 3, 4].map(n => `<li><span class="mono">0${n}</span><div><b>${t('land.f' + n)}</b><p>${t('land.f' + n + '.d')}</p></div></li>`).join('')}</ol></div></section>
+   <section class="lsec reveal"><p class="eyebrow">${t('land.featTag')}</p><h2>${t('land.featTitle')}</h2><div class="lhow">${dayPreview()}<ol class="lpoints">${[1, 2, 3, 4, 5].map(n => `<li><span class="mono">0${n}</span><div><b>${t('land.f' + n)}</b><p>${t('land.f' + n + '.d')}</p></div></li>`).join('')}</ol></div></section>
    <section class="lsec reveal"><p class="eyebrow">${t('land.faqTag')}</p><h2>${t('land.faqTitle')}</h2><div class="faq">${[1, 2, 3, 4, 5, 6].map(n => `<details><summary>${t('faq.q' + n)}</summary><p>${t('faq.a' + n)}</p></details>`).join('')}</div></section>
    <section class="lsec lfinal reveal">${kibi('happy', 96)}<h2>${t('land.finalTitle')}</h2>${startBtn}</section>
    </main>
@@ -1367,6 +1462,7 @@ document.addEventListener('click', async e => {
   if (d.themeSet) { S.theme = d.themeSet; Store.save(); render(); return; }
   if (d.goal) { S.goal = +d.goal; Store.save(); render(); return; }
   if (d.font) { S.font = d.font; Store.save(); render(); return; }
+  if (d.outfit) { wearOutfit(d.outfit); return; }
   if (d.codetheme) { if (codeThemeOpen(d.codetheme)) { S.codeTheme = d.codetheme; Store.save(); render(); } return; }
   if (d.obgoal) { ob.goal = +d.obgoal; openOnboard(`[data-obgoal="${d.obgoal}"]`); return; }
   if (d.oblevel !== undefined) { ob.level = +d.oblevel; openOnboard(`[data-oblevel="${d.oblevel}"]`); return; }
@@ -1391,6 +1487,10 @@ document.addEventListener('click', async e => {
     case 'coursemenu': menuOpen = !menuOpen; renderChrome(); break;
     case 'palette': openPalette(); break;
     case 'extra': startExtra(); break;
+    case 'poke': pokeAt(b); break;
+    case 'poke-land': { const all = {}; SLOTS.forEach(sl => { const o = OUTFITS.filter(r => r[1] === sl); all[sl] = Math.random() < .6 ? o[Math.floor(Math.random() * o.length)][0] : null; }); b.innerHTML = kibi('happy', 132, 'float', all); sfx('ok'); break; }
+    case 'outfit-random': randomOutfit(); break;
+    case 'outfit-clear': S.outfit = {}; Store.save(); render(); break;
     case 'hearts': heartsModal(); break;
     case 'close': closeModal(); break;
     case 'check': check(false); break;

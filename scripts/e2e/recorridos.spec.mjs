@@ -124,3 +124,18 @@ test('6. el editor se carga solo al abrirlo y el borrador sigue tras recargar', 
   await page.locator('[data-act="code-reset"]').click();
   await expect(page.locator('#editor .cm-content')).not.toContainText('print(42)');
 });
+
+test('7. vestir a Kibi: lo libre se pone, lo bloqueado no, y se guarda al recargar', async ({ page }) => {
+  await start(page);
+  await page.locator('.kibistrip [data-go="kibi"]').click();
+  await expect(page.locator('.wtile')).toHaveCount(14);
+  await page.locator('[data-outfit="cap"]').click();
+  await expect(page.locator('[data-outfit="cap"]')).toHaveAttribute('aria-pressed', 'true');
+  await page.locator('[data-outfit="crown"]').click();
+  await expect(page.locator('.toast')).toBeVisible();
+  await expect(page.locator('[data-outfit="crown"]')).toHaveAttribute('aria-pressed', 'false');
+  await page.reload();
+  await expect(page.locator('[data-outfit="cap"]')).toHaveAttribute('aria-pressed', 'true');
+  await page.locator('.stage [data-act="poke"]').click();
+  await expect(page.locator('.stage .bubble p')).not.toBeEmpty();
+});
